@@ -1,45 +1,42 @@
-package com.example.demo.model;
+package com.example.demo.dto;
 
-public class Passenger {
+public class PassengerRequestDTO {
 
-    private Integer id;
     private String name;
-    private String lastName;
+    private String surname;
     private String profilePicture;
     private String telephoneNumber;
     private String email;
-    private String adress;
+    private String address;
     private String password;
-
-    public Passenger() {
-        this.id = 0;
-    }
-
-    public Passenger(String name, String lastName, String profilePicture, String telephoneNumber, String email, String adress, String password) {
-        this.id = 0;
-        this.name = name;
-        this.lastName = lastName;
-        this.profilePicture = profilePicture;
-        this.telephoneNumber = telephoneNumber;
-        this.email = email;
-        this.adress = adress;
-        this.password = password;
-    }
 
     public String getName() {
         return name;
+    }
+
+    public PassengerRequestDTO() {
+    }
+
+    public PassengerRequestDTO(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.profilePicture = profilePicture;
+        this.telephoneNumber = telephoneNumber;
+        this.email = email;
+        this.address = address;
+        this.password = password;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getProfilePicture() {
@@ -66,12 +63,12 @@ public class Passenger {
         this.email = email;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPassword() {
@@ -82,23 +79,15 @@ public class Passenger {
         this.password = password;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
-        return "Passenger{" +
+        return "PassengerRequestDTO{" +
                 "name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", surname='" + surname + '\'' +
                 ", profilePicture='" + profilePicture + '\'' +
                 ", telephoneNumber='" + telephoneNumber + '\'' +
                 ", email='" + email + '\'' +
-                ", adress='" + adress + '\'' +
+                ", address='" + address + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
