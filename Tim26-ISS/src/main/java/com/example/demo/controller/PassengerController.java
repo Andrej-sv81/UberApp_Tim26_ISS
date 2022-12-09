@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MultiplePassengersDTO;
 import com.example.demo.dto.PassengerRequestDTO;
 import com.example.demo.dto.PassengerResponseDTO;
 import com.example.demo.model.Passenger;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/passenger")
@@ -32,15 +34,18 @@ public class PassengerController {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<PassengerResponseDTO>> getPassengers(){
+    public ResponseEntity<MultiplePassengersDTO> getPassengers(@RequestParam(required = false)Integer page, @RequestParam(required = false)Integer size){
         //Collection<Passenger> passengers = passengerService.findAll();
-        Collection<PassengerResponseDTO> passengers = new ArrayList<PassengerResponseDTO>();
+        List<PassengerResponseDTO> passengers = new ArrayList<PassengerResponseDTO>();
         for(int i=0;i<10;i++){
             PassengerResponseDTO dummy = new PassengerResponseDTO();
             dummy.setId(i);
             passengers.add(dummy);
         }
-        return new ResponseEntity<Collection<PassengerResponseDTO>>(passengers, HttpStatus.OK);
+        MultiplePassengersDTO response = new MultiplePassengersDTO();
+        response.setResults(passengers);
+        response.setTotalCount(passengers.size());
+        return new ResponseEntity<MultiplePassengersDTO>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
