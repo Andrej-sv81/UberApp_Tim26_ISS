@@ -42,4 +42,11 @@ public class DriverController {
         responseDTO.setId(id);
         return new ResponseEntity<DriverResponseDTO>(responseDTO,HttpStatus.OK);
     }
+
+    @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DriverResponseDTO> updateDriver(@PathVariable("id") Integer id,@RequestBody DriverRequestDTO driver){
+        DriverResponseDTO updated = new DriverResponseDTO();
+        updated.setId(id);
+        return new ResponseEntity<DriverResponseDTO>(updated,HttpStatus.OK);
+    }
 }
