@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MultipleReviewsDTO;
 import com.example.demo.dto.ReviewRequestDTO;
 import com.example.demo.dto.ReviewResponseDTO;
 import org.springframework.http.HttpStatus;
@@ -22,5 +23,17 @@ public class ReviewController {
     public ResponseEntity<ReviewResponseDTO> createReviewDriver(@PathVariable("id") int id, @PathVariable("rideId") int rideId, @RequestBody ReviewRequestDTO rating){
         ReviewResponseDTO response = new ReviewResponseDTO();
         return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/driver/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MultipleReviewsDTO> getReviewsDriver(@PathVariable("id") int id){
+        MultipleReviewsDTO response = new MultipleReviewsDTO();
+        return new ResponseEntity<MultipleReviewsDTO>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/vehicle/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MultipleReviewsDTO> getReviewsVehicle(@PathVariable("id") int id){
+        MultipleReviewsDTO response = new MultipleReviewsDTO();
+        return new ResponseEntity<MultipleReviewsDTO>(response,HttpStatus.OK);
     }
 }
