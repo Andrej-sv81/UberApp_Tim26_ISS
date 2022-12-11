@@ -122,4 +122,11 @@ public class DriverController {
         response.setCurrentLocation(new Location("Bulevar Jase tomica",15.11101001,23.09090932093));
         return new ResponseEntity<DriverVehicleResponseDTO>(response,HttpStatus.OK);
     }
+
+    @PutMapping(value = "/{id}/vehicle",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DriverVehicleResponseDTO> updateDriverVehicle(@PathVariable("id") int id,@RequestBody DriverVehicleRequestDTO update){
+        DriverVehicleResponseDTO response = new DriverVehicleResponseDTO();
+        response.setCurrentLocation(new Location("Bulevar Jase tomica",15.11101001,23.09090932093));
+        return new ResponseEntity<DriverVehicleResponseDTO>(response,HttpStatus.OK);
+    }
 }
