@@ -132,8 +132,23 @@ public class UserController {
         response.setId(id);
         return new ResponseEntity<UserNoteResponseDTO>(response,HttpStatus.OK);
     }
-    
 
+
+    @GetMapping(value="/{id}/note",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MultipleMessagesDTO> getNotes(
+            @PathVariable(value ="id", required = true) Integer id,
+            @RequestParam(required = false)Integer page,
+            @RequestParam(required = false)Integer size){
+
+
+        MultipleMessagesDTO response = new MultipleMessagesDTO();
+        List<UserNoteResponseDTO> list = new ArrayList<>();
+        for(int i=0;i<10;i++){
+            list.add(new UserNoteResponseDTO());
+        }
+        response.setResults(list);
+        return new ResponseEntity<MultipleMessagesDTO>(response, HttpStatus.OK);
+    }
 }
 
 
