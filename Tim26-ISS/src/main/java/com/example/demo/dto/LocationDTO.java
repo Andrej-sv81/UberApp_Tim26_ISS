@@ -1,18 +1,16 @@
 package com.example.demo.dto;
 
 public class LocationDTO {
-    String address;
-    double longitude;
-    double latitude;
+    private String address;
+    private double latitude;
+    private double longitude;
 
-    public LocationDTO() {
+    public LocationDTO(){};
 
-    }
-
-    public LocationDTO(String address, double longitude, double latitude) {
+    public LocationDTO(String address, double latitude, double longitude) {
         this.address = address;
-        this.longitude = longitude;
         this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getAddress() {
@@ -37,5 +35,14 @@ public class LocationDTO {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+    
+    @Override
+    public String toString() {
+        return "LocationDTO{" +
+                "address='" + address + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
     }
 }
