@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
+import com.example.demo.model.Location;
 import com.example.demo.model.WorkingHour;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -101,5 +102,12 @@ public class DriverController {
     public ResponseEntity<WorkingHour> getDetailedWorkingHour(@PathVariable("working-hour-id") int id){
         WorkingHour response = new WorkingHour(id,LocalDateTime.now(),LocalDateTime.now().plusHours(4));
         return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/vehicle",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DriverVehicleResponseDTO> getDriversVehicle(@PathVariable("id") int id){
+        DriverVehicleResponseDTO response = new DriverVehicleResponseDTO();
+        response.setCurrentLocation(new Location("Bulevar Jase tomica",15.11101001,23.09090932093));
+        return new ResponseEntity<DriverVehicleResponseDTO>(response,HttpStatus.OK);
     }
 }

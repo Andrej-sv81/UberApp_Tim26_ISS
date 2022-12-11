@@ -2,13 +2,11 @@ package com.example.demo.model;
 
 public class Location {
     private String address;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
-    public Location() {
-    }
 
-    public Location(String address, float latitude, float longitude) {
+    public Location(String address, double latitude, double longitude) {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -22,19 +20,19 @@ public class Location {
         this.address = address;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
