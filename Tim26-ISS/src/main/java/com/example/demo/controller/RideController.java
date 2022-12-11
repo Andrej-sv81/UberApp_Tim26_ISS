@@ -48,14 +48,26 @@ public class RideController {
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}/panic",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RideResponseDTO> panicProcedure(@PathVariable("id")int id,@RequestBody ExplanationDTO panic){
-        RideResponseDTO response = new RideResponseDTO();
-        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    @PutMapping(value = "/{id}/panic",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RidePanicResponseDTO> panicProcedure(@PathVariable("id")int id,@RequestBody ExplanationDTO panic){
+        RidePanicResponseDTO response = new RidePanicResponseDTO();
+        return new ResponseEntity<RidePanicResponseDTO>(response,HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}/accept",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> acceptRide(@PathVariable("id") int id){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/end",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> endRide(@PathVariable("id") int id){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/cancel",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> cancelWithExplanation(@PathVariable("id")int id,@RequestBody ExplanationDTO explanation){
         RideResponseDTO response = new RideResponseDTO();
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
