@@ -57,4 +57,13 @@ public class DriverController {
         responseDTO.add(doc);
         return new ResponseEntity<List<DriverDocumentsResponseDTO>>(responseDTO,HttpStatus.OK);
     }
+
+    @PostMapping(value = "/{id}/documents",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<DriverDocumentsResponseDTO> addDriverDocument(@PathVariable("id") int id,@RequestBody DriverDocumentsRequestDTO docs){
+        DriverDocumentsResponseDTO responseDTO = new DriverDocumentsResponseDTO();
+        responseDTO.setDriverId(id);
+        responseDTO.setId(id);
+        responseDTO.setName(docs.getName());
+        return new ResponseEntity<DriverDocumentsResponseDTO>(responseDTO,HttpStatus.OK);
+    }
 }
