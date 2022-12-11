@@ -80,9 +80,22 @@ public class UserController {
     }
 
     @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserLoginResponseDTO> createPassenger(@RequestBody UserLoginRequestDTO request) throws Exception{
+    public ResponseEntity<UserLoginResponseDTO> logIn(@RequestBody UserLoginRequestDTO request) throws Exception{
 
         UserLoginResponseDTO response = new UserLoginResponseDTO();
         return new ResponseEntity<UserLoginResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value="/{id}/message",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserMessagesResponseDTO> getMessage(
+            @PathVariable(value = "id", required = true) Integer id){
+
+        UserMessagesResponseDTO response = new UserMessagesResponseDTO();
+        List<UserMessageResponseDTO> list = new ArrayList<>();
+        for(int i = 0;i<10; i++){
+            list.add(new UserMessageResponseDTO());
+        }
+        response.setResults(list);
+        return new ResponseEntity<UserMessagesResponseDTO>(response, HttpStatus.OK);
     }
 }
