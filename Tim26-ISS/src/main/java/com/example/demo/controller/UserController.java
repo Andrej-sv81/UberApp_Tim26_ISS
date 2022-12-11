@@ -107,6 +107,16 @@ public class UserController {
         response.setId(id);
         return new ResponseEntity<UserMessageResponseDTO>(response,HttpStatus.OK);
     }
+
+    @PutMapping(value = "/{id}/block")
+    public HttpStatus blockUser(@PathVariable(value="id", required = true) Integer id) throws Exception{
+
+        //Service to block user and send back http code
+
+        return HttpStatus.NO_CONTENT;
+    }
+    
+
 }
 
 
