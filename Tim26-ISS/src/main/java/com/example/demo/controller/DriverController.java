@@ -66,4 +66,9 @@ public class DriverController {
         responseDTO.setName(docs.getName());
         return new ResponseEntity<DriverDocumentsResponseDTO>(responseDTO,HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/document/{document-id}")
+    public ResponseEntity<HttpStatus> deleteDriverDocument(@PathVariable("document-id") int documentId){
+        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+    }
 }
