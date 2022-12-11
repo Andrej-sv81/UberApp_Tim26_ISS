@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.dto.MultipleRidesDTO;
-import com.example.demo.dto.MultipleUsersDTO;
-import com.example.demo.dto.UserResponseDTO;
-import com.example.demo.dto.RideDTO;
+import com.example.demo.dto.*;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,14 +49,40 @@ public class UserController {
         //TODO: Napraviti ispravne mockup podatke za sve 'dubine' da bi se prikazala struktura
         MultipleRidesDTO rides = new MultipleRidesDTO();
         List<RideDTO> rideList = new ArrayList<>();
+
+        RideDriverDTO driver = new RideDriverDTO();
+
+        List<RidePassengerDTO> passengerList = new ArrayList<>();
+        for(int i = 0; i<10;i++){
+            passengerList.add(new RidePassengerDTO());
+        }
+
+        RejectionDTO rejection = new RejectionDTO();
+
+        List<RidePathDTO> pathList= new ArrayList<>();
+        for(int i = 0; i<10; i++){
+            pathList.add(new RidePathDTO(new LocationDTO(), new LocationDTO()));
+        }
+
         for(int i =0; i<10; i++){
             RideDTO dummy = new RideDTO();
             dummy.setId(i);
+            dummy.setPassengers(passengerList);
+            dummy.setRejection(rejection);
+            dummy.setLocations(pathList);
+            dummy.setDriver(driver);
             rideList.add(dummy);
         }
 
         rides.setResults(rideList);
 
         return new ResponseEntity<MultipleRidesDTO>(rides, HttpStatus.OK);
+    }
+
+    @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserLoginResponseDTO> createPassenger(@RequestBody UserLoginRequestDTO request) throws Exception{
+
+        UserLoginResponseDTO response = new UserLoginResponseDTO();
+        return new ResponseEntity<UserLoginResponseDTO>(response,HttpStatus.OK);
     }
 }
