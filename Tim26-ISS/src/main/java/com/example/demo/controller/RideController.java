@@ -44,4 +44,10 @@ public class RideController {
         RideResponseDTO response = new RideResponseDTO();
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
+
+    @PutMapping(value = "{id}/withdraw",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> cancelRide(@PathVariable("id") int id){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
 }
