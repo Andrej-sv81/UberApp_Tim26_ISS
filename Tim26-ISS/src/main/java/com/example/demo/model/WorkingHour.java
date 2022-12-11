@@ -10,7 +10,7 @@ public class WorkingHour {
     private Integer id;
     private LocalDateTime start;
     private LocalDateTime end;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
 
     public WorkingHour() {
     }
@@ -50,14 +50,7 @@ public class WorkingHour {
     public void setEnd(LocalDateTime end) {
         this.end = end;
     }
-
-    public DateTimeFormatter getFormatter() {
-        return formatter;
-    }
-
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.formatter = formatter;
-    }
+    
 
     @Override
     public String toString() {
