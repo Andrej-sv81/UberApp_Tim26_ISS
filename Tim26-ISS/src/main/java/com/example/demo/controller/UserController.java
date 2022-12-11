@@ -98,4 +98,15 @@ public class UserController {
         response.setResults(list);
         return new ResponseEntity<UserMessagesResponseDTO>(response, HttpStatus.OK);
     }
+
+    @PostMapping(value="/{id}/message",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserMessageResponseDTO> sendMessage(@PathVariable(value = "id", required = true) Integer id,
+                                                              @RequestBody UserMessageRequestDTO request) throws Exception{
+
+        UserMessageResponseDTO response = new UserMessageResponseDTO();
+        response.setId(id);
+        return new ResponseEntity<UserMessageResponseDTO>(response,HttpStatus.OK);
+    }
 }
+
+
