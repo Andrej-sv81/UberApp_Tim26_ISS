@@ -62,7 +62,6 @@ public class PassengerController {
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PassengerResponseDTO> updatePassenger(@RequestBody PassengerRequestDTO passenger, @PathVariable int id) throws Exception{
         PassengerResponseDTO passengerForUpdate = new PassengerResponseDTO();
-        //TODO ZAVRSI APDEJTOVANJE PUTNIKA
         passengerForUpdate.setName("APDEJTOVANKO");
         passengerForUpdate.setSurname("KANTA");
         passengerForUpdate.setEmail(passenger.getEmail());
