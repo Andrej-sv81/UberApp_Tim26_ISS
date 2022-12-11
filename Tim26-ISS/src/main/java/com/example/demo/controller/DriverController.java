@@ -104,7 +104,6 @@ public class DriverController {
         return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
     }
 
-
     @GetMapping(value = "/{id}/vehicle",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DriverVehicleResponseDTO> getDriversVehicle(@PathVariable("id") int id){
         DriverVehicleResponseDTO response = new DriverVehicleResponseDTO();
@@ -115,5 +114,12 @@ public class DriverController {
     @PutMapping(value = "/working-hour/{working-hour-id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingHour> updateWorkingHour(@PathVariable("working-hour-id") int id,@RequestBody WorkingHour updated){
         return new ResponseEntity<>(updated,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{id}/vehicle",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DriverVehicleResponseDTO> driverNewVehicle(@PathVariable("id") int id,@RequestBody DriverVehicleRequestDTO addVehicle){
+        DriverVehicleResponseDTO response = new DriverVehicleResponseDTO();
+        response.setCurrentLocation(new Location("Bulevar Jase tomica",15.11101001,23.09090932093));
+        return new ResponseEntity<DriverVehicleResponseDTO>(response,HttpStatus.OK);
     }
 }
