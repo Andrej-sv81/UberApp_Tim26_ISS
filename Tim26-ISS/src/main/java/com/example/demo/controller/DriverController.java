@@ -96,4 +96,10 @@ public class DriverController {
         WorkingHour response = new WorkingHour(2,workingHour.getStart().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),workingHour.getEnd().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
     }
+
+    @GetMapping(value = "/working-hour/{working-hour-id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WorkingHour> getDetailedWorkingHour(@PathVariable("working-hour-id") int id){
+        WorkingHour response = new WorkingHour(id,LocalDateTime.now(),LocalDateTime.now().plusHours(4));
+        return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
+    }
 }
