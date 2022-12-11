@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ride")
@@ -28,5 +25,11 @@ public class RideController {
         created.setLocations(ride.getLocations());
         created.setRejection(new RejectionDTO());
         return new ResponseEntity<RideResponseDTO>(created, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/driver/{driverId}/active",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> activeRideDriver(@PathVariable("driverId") int driverId){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
 }
