@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @GetMapping(value="/{id}/message",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserMessagesResponseDTO> getMessage(
+    public ResponseEntity<UserMessagesResponseDTO> getMessages(
             @PathVariable(value = "id", required = true) Integer id){
 
         UserMessagesResponseDTO response = new UserMessagesResponseDTO();
@@ -122,6 +122,15 @@ public class UserController {
         //Service to unblock user and send back http code
 
         return HttpStatus.NO_CONTENT;
+    }
+
+    @PostMapping(value="/{id}/note",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserNoteResponseDTO> createNote(@PathVariable(value = "id", required = true) Integer id,
+                                                              @RequestBody UserNoteRequestDTO request) throws Exception{
+
+        UserNoteResponseDTO response = new UserNoteResponseDTO();
+        response.setId(id);
+        return new ResponseEntity<UserNoteResponseDTO>(response,HttpStatus.OK);
     }
     
 
