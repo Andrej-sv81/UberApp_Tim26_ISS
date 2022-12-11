@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.dto.MultipleRidesDTO;
-import com.example.demo.dto.MultipleUsersDTO;
-import com.example.demo.dto.UserResponseDTO;
-import com.example.demo.dto.RideDTO;
+import com.example.demo.dto.*;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,9 +49,27 @@ public class UserController {
         //TODO: Napraviti ispravne mockup podatke za sve 'dubine' da bi se prikazala struktura
         MultipleRidesDTO rides = new MultipleRidesDTO();
         List<RideDTO> rideList = new ArrayList<>();
+        RideDriverDTO driver = new RideDriverDTO();
+        RideMultiplePassengersDTO passengers = new RideMultiplePassengersDTO();
+        List<RidePassengerDTO> passengerList = new ArrayList<>();
+        for(int i = 0; i<10;i++){
+            passengerList.add(new RidePassengerDTO());
+        }
+        passengers.setPassengers(passengerList);
+        RejectionDTO rejection = new RejectionDTO();
+        MultipleLocationsDTO locations = new MultipleLocationsDTO();
+        List<RidePathDTO> pathList= new ArrayList<>();
+        for(int i = 0; i<10; i++){
+            pathList.add(new RidePathDTO(new LocationDTO(), new LocationDTO()));
+        }
+        locations.setLocations(pathList);
         for(int i =0; i<10; i++){
             RideDTO dummy = new RideDTO();
             dummy.setId(i);
+            dummy.setPassengers(passengers);
+            dummy.setRejection(rejection);
+            dummy.setLocations(locations);
+            dummy.setDriver(new RideDriverDTO());
             rideList.add(dummy);
         }
 
