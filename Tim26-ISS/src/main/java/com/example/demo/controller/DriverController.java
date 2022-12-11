@@ -1,12 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
+import com.example.demo.model.WorkingHour;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -70,5 +73,20 @@ public class DriverController {
     @DeleteMapping(value = "/document/{document-id}")
     public ResponseEntity<HttpStatus> deleteDriverDocument(@PathVariable("document-id") int documentId){
         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/{id}/working-hour",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DriverWorkingHoursDTO> getWorkingHours(@PathVariable("id") int id,
+                                                                 @RequestParam(required = false) Integer page,
+                                                                 @RequestParam(required = false) Integer size,
+                                                                 @RequestParam(required = false) String from,
+                                                                 @RequestParam(required = false) String to){
+        DriverWorkingHoursDTO response = new DriverWorkingHoursDTO();
+        for (int i=0;i<10;i++){
+            WorkingHour wh = new WorkingHour(i, LocalDateTime.now(),LocalDateTime.now().plusHours(5));
+            response.getResults().add(wh);
+        }
+        response.setTotal(response.getResults().size());
+        return new ResponseEntity<DriverWorkingHoursDTO>(response,HttpStatus.OK);
     }
 }
