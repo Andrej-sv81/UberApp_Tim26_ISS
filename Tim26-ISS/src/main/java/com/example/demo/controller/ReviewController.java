@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.MultipleReviewsDTO;
+import com.example.demo.dto.OneRideAllReviewsDTO;
 import com.example.demo.dto.ReviewRequestDTO;
 import com.example.demo.dto.ReviewResponseDTO;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,11 @@ public class ReviewController {
     public ResponseEntity<MultipleReviewsDTO> getReviewsVehicle(@PathVariable("id") int id){
         MultipleReviewsDTO response = new MultipleReviewsDTO();
         return new ResponseEntity<MultipleReviewsDTO>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{rideId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OneRideAllReviewsDTO> allReviewsOneRide(@PathVariable("rideId") int rideId){
+        OneRideAllReviewsDTO response = new OneRideAllReviewsDTO();
+        return new ResponseEntity<OneRideAllReviewsDTO>(response,HttpStatus.OK);
     }
 }
