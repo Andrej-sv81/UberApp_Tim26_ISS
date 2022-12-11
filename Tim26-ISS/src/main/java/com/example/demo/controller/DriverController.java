@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.DriverRequestDTO;
-import com.example.demo.dto.DriverResponseDTO;
-import com.example.demo.dto.MultipleDriversDTO;
+import com.example.demo.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +46,15 @@ public class DriverController {
         DriverResponseDTO updated = new DriverResponseDTO();
         updated.setId(id);
         return new ResponseEntity<DriverResponseDTO>(updated,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/documents",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DriverDocumentsResponseDTO>> getDocuments(@PathVariable("id") int id){
+        List<DriverDocumentsResponseDTO> responseDTO = new ArrayList<DriverDocumentsResponseDTO>();
+        DriverDocumentsResponseDTO doc = new DriverDocumentsResponseDTO();
+        doc.setId(id);
+        doc.setDriverId(id);
+        responseDTO.add(doc);
+        return new ResponseEntity<List<DriverDocumentsResponseDTO>>(responseDTO,HttpStatus.OK);
     }
 }
