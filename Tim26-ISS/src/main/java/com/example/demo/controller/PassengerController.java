@@ -29,7 +29,7 @@ public class PassengerController {
     public ResponseEntity<PassengerResponseDTO> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
         //Passenger savedPassenger = passengerService.create(passenger);
         PassengerResponseDTO savedPassengerDTO = new PassengerResponseDTO(1,passenger.getName(),passenger.getSurname(),passenger.getProfilePicture(),passenger.getTelephoneNumber(),passenger.getEmail(),passenger.getAddress());
-        return new ResponseEntity<PassengerResponseDTO>(savedPassengerDTO,HttpStatus.CREATED);
+        return new ResponseEntity<PassengerResponseDTO>(savedPassengerDTO,HttpStatus.OK);
     }
 
 

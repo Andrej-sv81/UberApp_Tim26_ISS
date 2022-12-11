@@ -22,7 +22,7 @@ public class DriverController {
     public ResponseEntity<DriverResponseDTO> createDriver(@RequestBody DriverRequestDTO driverRequestDTO){
         DriverResponseDTO response = new DriverResponseDTO();
         response.setId(1);
-        return new ResponseEntity<DriverResponseDTO>(response, HttpStatus.CREATED);
+        return new ResponseEntity<DriverResponseDTO>(response, HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
