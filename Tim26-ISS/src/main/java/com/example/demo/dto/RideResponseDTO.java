@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RideResponseDTO {
@@ -19,6 +20,10 @@ public class RideResponseDTO {
     private String status;
 
     public RideResponseDTO() {
+        this.setRejection(new RejectionDTO());
+        this.setLocations(new ArrayList<RouteDTO>());
+        this.setPassengers(new ArrayList<PassengerRideOverDTO>());
+        this.setDriver(new DriverRideOverDTO());
     }
 
     public RideResponseDTO(int id, LocalDateTime startTime, LocalDateTime endTime, int totalCost, DriverRideOverDTO driver, List<PassengerRideOverDTO> passengers, String estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, List<RouteDTO> locations, String status) {
