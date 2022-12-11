@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,8 +43,8 @@ public class UserController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sort,
-            @RequestParam(required = false) LocalDateTime from,
-            @RequestParam(required = false) LocalDateTime to
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to
 
             ){
         //TODO: Napraviti ispravne mockup podatke za sve 'dubine' da bi se prikazala struktura
@@ -109,19 +110,19 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/block")
-    public HttpStatus blockUser(@PathVariable(value="id", required = true) Integer id) throws Exception{
+    public ResponseStatusException blockUser(@PathVariable(value="id", required = true) Integer id) throws Exception{
 
         //Service to block user and send back http code
 
-        return HttpStatus.NO_CONTENT;
+        return new ResponseStatusException(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(value = "/{id}/unblock")
-    public HttpStatus unblockUser(@PathVariable(value="id", required = true) Integer id) throws Exception{
+    public ResponseStatusException unblockUser(@PathVariable(value="id", required = true) Integer id) throws Exception{
 
         //Service to unblock user and send back http code
 
-        return HttpStatus.NO_CONTENT;
+        return new ResponseStatusException(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value="/{id}/note",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
