@@ -1,21 +1,23 @@
 package com.example.demo.dto;
 
+import java.util.List;
+
 public class RideDTO {
     private Integer id;
     private String startTime;
     private String endTime;
     private Integer totalCost;
     private RideDriverDTO driver;
-    private RideMultiplePassengersDTO passengers;
+    private List<RidePassengerDTO> passengers;
     private Integer estimatedTimeInMinutes;
     private String vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
     private RejectionDTO rejection;
-    private MultipleLocationsDTO locations;
+    private List<RidePathDTO> locations;
 
     public RideDTO(){};
-    public RideDTO(Integer id, String startTime, String endTime, Integer totalCost, RideDriverDTO driver, RideMultiplePassengersDTO passengers, Integer estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, MultipleLocationsDTO locations) {
+    public RideDTO(Integer id, String startTime, String endTime, Integer totalCost, RideDriverDTO driver, List<RidePassengerDTO> passengers, Integer estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, List<RidePathDTO> locations) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -70,11 +72,11 @@ public class RideDTO {
         this.driver = driver;
     }
 
-    public RideMultiplePassengersDTO getPassengers() {
+    public List<RidePassengerDTO> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(RideMultiplePassengersDTO passengers) {
+    public void setPassengers(List<RidePassengerDTO> passengers) {
         this.passengers = passengers;
     }
 
@@ -118,11 +120,11 @@ public class RideDTO {
         this.rejection = rejection;
     }
 
-    public MultipleLocationsDTO getLocations() {
+    public List<RidePathDTO> getLocations() {
         return locations;
     }
 
-    public void setLocations(MultipleLocationsDTO locations) {
+    public void setLocations(List<RidePathDTO> locations) {
         this.locations = locations;
     }
 

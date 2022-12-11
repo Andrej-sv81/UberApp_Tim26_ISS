@@ -49,32 +49,40 @@ public class UserController {
         //TODO: Napraviti ispravne mockup podatke za sve 'dubine' da bi se prikazala struktura
         MultipleRidesDTO rides = new MultipleRidesDTO();
         List<RideDTO> rideList = new ArrayList<>();
+
         RideDriverDTO driver = new RideDriverDTO();
-        RideMultiplePassengersDTO passengers = new RideMultiplePassengersDTO();
+
         List<RidePassengerDTO> passengerList = new ArrayList<>();
         for(int i = 0; i<10;i++){
             passengerList.add(new RidePassengerDTO());
         }
-        passengers.setPassengers(passengerList);
+
         RejectionDTO rejection = new RejectionDTO();
-        MultipleLocationsDTO locations = new MultipleLocationsDTO();
+
         List<RidePathDTO> pathList= new ArrayList<>();
         for(int i = 0; i<10; i++){
             pathList.add(new RidePathDTO(new LocationDTO(), new LocationDTO()));
         }
-        locations.setLocations(pathList);
+
         for(int i =0; i<10; i++){
             RideDTO dummy = new RideDTO();
             dummy.setId(i);
-            dummy.setPassengers(passengers);
+            dummy.setPassengers(passengerList);
             dummy.setRejection(rejection);
-            dummy.setLocations(locations);
-            dummy.setDriver(new RideDriverDTO());
+            dummy.setLocations(pathList);
+            dummy.setDriver(driver);
             rideList.add(dummy);
         }
 
         rides.setResults(rideList);
 
         return new ResponseEntity<MultipleRidesDTO>(rides, HttpStatus.OK);
+    }
+
+    @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PassengerResponseDTO> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
+        //Passenger savedPassenger = passengerService.create(passenger);
+        PassengerResponseDTO savedPassengerDTO = new PassengerResponseDTO(1,passenger.getName(),passenger.getSurname(),passenger.getProfilePicture(),passenger.getTelephoneNumber(),passenger.getEmail(),passenger.getAddress());
+        return new ResponseEntity<PassengerResponseDTO>(savedPassengerDTO,HttpStatus.CREATED);
     }
 }
