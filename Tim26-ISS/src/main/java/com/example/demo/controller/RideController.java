@@ -32,4 +32,16 @@ public class RideController {
         RideResponseDTO response = new RideResponseDTO();
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
+
+    @GetMapping(value = "/passenger/{passengerId}/active",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> activeRidePassenger(@PathVariable("passengerId") int passengerId){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> getDetailsRide(@PathVariable("id") int id){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
 }
