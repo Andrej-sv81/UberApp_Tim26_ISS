@@ -88,7 +88,7 @@ public class DriverController {
             WorkingHour wh = new WorkingHour(i, LocalDateTime.now(),LocalDateTime.now().plusHours(5));
             response.getResults().add(wh);
         }
-        response.setTotal(response.getResults().size());
+        response.setTotalCount(response.getResults().size());
         return new ResponseEntity<DriverWorkingHoursDTO>(response,HttpStatus.OK);
     }
 
@@ -128,5 +128,16 @@ public class DriverController {
         DriverVehicleResponseDTO response = new DriverVehicleResponseDTO();
         response.setCurrentLocation(new Location("Bulevar Jase tomica",15.11101001,23.09090932093));
         return new ResponseEntity<DriverVehicleResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/ride",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MultipleRidesDTO> getAllRides(@PathVariable("id") int id,
+                                                        @RequestParam(required = false) int page,
+                                                        @RequestParam(required = false) int size,
+                                                        @RequestParam(required = false) String sort,
+                                                        @RequestParam(required = false) String from,
+                                                        @RequestParam(required = false) String to){
+        MultipleRidesDTO response = new MultipleRidesDTO();
+        return new ResponseEntity<MultipleRidesDTO>(response,HttpStatus.OK);
     }
 }
