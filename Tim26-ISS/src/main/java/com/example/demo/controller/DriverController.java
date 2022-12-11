@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,5 +89,11 @@ public class DriverController {
         }
         response.setTotal(response.getResults().size());
         return new ResponseEntity<DriverWorkingHoursDTO>(response,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{id}/working-hour",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WorkingHour> createWorkingHour(@PathVariable("id") int id,@RequestBody WorkingHour workingHour){
+        WorkingHour response = new WorkingHour(2,workingHour.getStart().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),workingHour.getEnd().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
     }
 }
