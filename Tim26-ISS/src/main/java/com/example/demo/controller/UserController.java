@@ -115,6 +115,14 @@ public class UserController {
 
         return HttpStatus.NO_CONTENT;
     }
+
+    @PutMapping(value = "/{id}/unblock")
+    public HttpStatus unblockUser(@PathVariable(value="id", required = true) Integer id) throws Exception{
+
+        //Service to unblock user and send back http code
+
+        return HttpStatus.NO_CONTENT;
+    }
     
 
 }
