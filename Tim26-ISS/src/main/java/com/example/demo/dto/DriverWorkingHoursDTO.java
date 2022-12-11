@@ -6,25 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DriverWorkingHoursDTO {
-    private int total;
+    private int totalCount;
     private List<WorkingHour> results;
 
     public DriverWorkingHoursDTO() {
-        this.total = 0;
+        this.totalCount = 0;
         this.results = new ArrayList<WorkingHour>();
     }
 
     public DriverWorkingHoursDTO(int total, List<WorkingHour> results) {
-        this.total = total;
+        this.totalCount = total;
         this.results = results;
     }
 
-    public int getTotal() {
-        return total;
+    public int getTotalCount() {
+        return totalCount;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setTotalCount(int total) {
+        this.totalCount = total;
     }
 
     public List<WorkingHour> getResults() {
@@ -38,7 +38,7 @@ public class DriverWorkingHoursDTO {
     @Override
     public String toString() {
         return "DriverWorkingHoursDTO{" +
-                "total=" + total +
+                "total=" + totalCount +
                 ", results=" + results +
                 '}';
     }
