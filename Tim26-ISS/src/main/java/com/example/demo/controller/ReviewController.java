@@ -17,4 +17,10 @@ public class ReviewController {
         ReviewResponseDTO response = new ReviewResponseDTO();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
+    @PostMapping(value = "/{rideId}/driver/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewResponseDTO> createReviewDriver(@PathVariable("id") int id, @PathVariable("rideId") int rideId, @RequestBody ReviewRequestDTO rating){
+        ReviewResponseDTO response = new ReviewResponseDTO();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }
