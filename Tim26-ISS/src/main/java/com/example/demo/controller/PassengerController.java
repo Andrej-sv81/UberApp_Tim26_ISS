@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.MultiplePassengersDTO;
+import com.example.demo.dto.MultipleRidesDTO;
 import com.example.demo.dto.PassengerRequestDTO;
 import com.example.demo.dto.PassengerResponseDTO;
 import com.example.demo.model.Passenger;
@@ -50,10 +51,6 @@ public class PassengerController {
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PassengerResponseDTO> getPassenger(@PathVariable("id") int id){
-//        Passenger passenger = passengerService.findOne(id);
-//        if(passenger == null){
-//            return new ResponseEntity<Passenger>(HttpStatus.NOT_FOUND);
-//        }
         PassengerResponseDTO response = new PassengerResponseDTO();
         response.setId(id);
         return new ResponseEntity<PassengerResponseDTO>(response,HttpStatus.OK);
@@ -71,14 +68,19 @@ public class PassengerController {
         return new ResponseEntity<>(passengerForUpdate,HttpStatus.OK);
     }
 
-
-
     @GetMapping(value = "/activate/{activationId}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> activateAccount(@PathVariable int activationId){
-//        Passenger found = passengerService.findOne(activationId);
-//        if (found == null){
-//            return new ResponseEntity<String>("Account not found.",HttpStatus.NOT_FOUND);
-//        }
-        return new ResponseEntity<String>("ACTIVATED",HttpStatus.OK);
+    public ResponseEntity<HttpStatus> activateAccount(@PathVariable int activationId){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/ride",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MultipleRidesDTO> getAllRides(@PathVariable("id") int id,
+                                                        @RequestParam(required = false) int page,
+                                                        @RequestParam(required = false) int size,
+                                                        @RequestParam(required = false) String sort,
+                                                        @RequestParam(required = false) String from,
+                                                        @RequestParam(required = false) String to){
+        MultipleRidesDTO response = new MultipleRidesDTO();
+        return new ResponseEntity<MultipleRidesDTO>(response,HttpStatus.OK);
     }
 }
