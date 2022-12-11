@@ -102,4 +102,9 @@ public class DriverController {
         WorkingHour response = new WorkingHour(id,LocalDateTime.now(),LocalDateTime.now().plusHours(4));
         return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
     }
+
+    @PutMapping(value = "/working-hour/{working-hour-id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WorkingHour> updateWorkingHour(@PathVariable("working-hour-id") int id,@RequestBody WorkingHour updated){
+        return new ResponseEntity<>(updated,HttpStatus.OK);
+    }
 }
