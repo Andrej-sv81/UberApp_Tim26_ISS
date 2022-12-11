@@ -80,9 +80,9 @@ public class UserController {
     }
 
     @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PassengerResponseDTO> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
-        //Passenger savedPassenger = passengerService.create(passenger);
-        PassengerResponseDTO savedPassengerDTO = new PassengerResponseDTO(1,passenger.getName(),passenger.getSurname(),passenger.getProfilePicture(),passenger.getTelephoneNumber(),passenger.getEmail(),passenger.getAddress());
-        return new ResponseEntity<PassengerResponseDTO>(savedPassengerDTO,HttpStatus.CREATED);
+    public ResponseEntity<UserLoginResponseDTO> createPassenger(@RequestBody UserLoginRequestDTO request) throws Exception{
+
+        UserLoginResponseDTO response = new UserLoginResponseDTO();
+        return new ResponseEntity<UserLoginResponseDTO>(response,HttpStatus.OK);
     }
 }
