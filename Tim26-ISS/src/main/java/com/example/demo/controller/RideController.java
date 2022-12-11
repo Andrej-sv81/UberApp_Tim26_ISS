@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.DriverRideOverDTO;
-import com.example.demo.dto.RejectionDTO;
-import com.example.demo.dto.RideRequestDTO;
-import com.example.demo.dto.RideResponseDTO;
+import com.example.demo.dto.*;
 import com.example.demo.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +44,18 @@ public class RideController {
 
     @PutMapping(value = "{id}/withdraw",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> cancelRide(@PathVariable("id") int id){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/panic",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> panicProcedure(@PathVariable("id")int id,@RequestBody ExplanationDTO panic){
+        RideResponseDTO response = new RideResponseDTO();
+        return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/accept",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> acceptRide(@PathVariable("id") int id){
         RideResponseDTO response = new RideResponseDTO();
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
