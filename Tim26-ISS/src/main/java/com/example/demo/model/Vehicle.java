@@ -1,14 +1,32 @@
 package com.example.demo.model;
 
 
+import jakarta.persistence.*;
 
+@Entity
 public class Vehicle {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
+    @Column(name="address")
     private String address;
 
+    @Column(name="latitude")
     private double latitude;
 
+    @Column(name = "longitude")
     private double longitude;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public enum vehicleType {STANDARDNO};
 
     public Vehicle(){};

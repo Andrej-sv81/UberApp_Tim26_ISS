@@ -1,13 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.repository.RideRepository;
+import com.example.demo.repository.PanicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RideService{
+public class PanicService {
 
     @Autowired
-    private RideRepository rideRepository;
-
+    private PanicRepository panicRepository;
 }
