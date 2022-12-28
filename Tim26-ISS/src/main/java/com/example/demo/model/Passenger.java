@@ -1,105 +1,68 @@
 package com.example.demo.model;
 
-public class Passenger {
+import jakarta.persistence.*;
 
-    private Integer id;
-    private String name;
-    private String lastName;
-    private String profilePicture;
-    private String telephoneNumber;
-    private String email;
-    private String adress;
-    private String password;
+import java.util.List;
+
+@Entity
+@DiscriminatorValue("PASSENGER")
+public class Passenger extends User {
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "passenger_rides",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "ride_id"))
+    private List<Ride> rides;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Route> routes;
 
     public Passenger() {
-        this.id = 0;
+        super();
     }
 
-    public Passenger(String name, String lastName, String profilePicture, String telephoneNumber, String email, String adress, String password) {
-        this.id = 0;
-        this.name = name;
-        this.lastName = lastName;
-        this.profilePicture = profilePicture;
-        this.telephoneNumber = telephoneNumber;
-        this.email = email;
-        this.adress = adress;
-        this.password = password;
+    public Passenger(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password, boolean blocked, boolean active, List<Ride> rides, List<Route> routes) {
+        super(name, surname, profilePicture, telephoneNumber, email, address, password, blocked, active);
+        this.rides = rides;
+        this.routes = routes;
     }
 
-    public String getName() {
-        return name;
+    public List<Ride> getRides() {
+        return rides;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRides(List<Ride> rides) {
+        this.rides = rides;
     }
 
-    public String getLastName() {
-        return lastName;
+    public List<Route> getRoutes() {
+        return routes;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public void addRide(Ride ride){
+        rides.add(ride);
+        List<Passenger> l = ride.getPassengers();
+        l.add(this);
+        ride.setPassengers(l);
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public String getTelephoneNumber() {
-        return telephoneNumber;
-    }
-
-    public void setTelephoneNumber(String telephoneNumber) {
-        this.telephoneNumber = telephoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAdress() {
-        return adress;
-    }
-
-    public void setAdress(String adress) {
-        this.adress = adress;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public void removeRide(Ride ride){
+        rides.remove(ride);
+        List<Passenger> l = ride.getPassengers();
+        l.remove(this);
+        ride.setPassengers(l);
     }
 
     @Override
     public String toString() {
-        return "Passenger{" +
-                "name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", profilePicture='" + profilePicture + '\'' +
-                ", telephoneNumber='" + telephoneNumber + '\'' +
-                ", email='" + email + '\'' +
-                ", adress='" + adress + '\'' +
-                ", password='" + password + '\'' +
+        return super.toString()+"\nPassenger{" +
+                "rides=" + rides +
+                ", routes=" + routes +
                 '}';
     }
 }
