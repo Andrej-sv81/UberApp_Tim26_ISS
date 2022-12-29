@@ -9,8 +9,8 @@ public class VehicleType {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Enumerated(EnumType.ORDINAL)
+    private VehicleTypeEnum name;
 
     @Column(name="price_per_km", nullable = false)
     private int price;
@@ -19,7 +19,7 @@ public class VehicleType {
         super();
     }
 
-    public VehicleType(String name, int price) {
+    public VehicleType(VehicleTypeEnum name, int price) {
         this.name = name;
         this.price = price;
     }
@@ -32,11 +32,11 @@ public class VehicleType {
         this.id = id;
     }
 
-    public String getName() {
+    public VehicleTypeEnum getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(VehicleTypeEnum name) {
         this.name = name;
     }
 

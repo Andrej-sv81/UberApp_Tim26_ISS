@@ -11,13 +11,10 @@ public class Ride {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "start_time", nullable = true)
     private Time startTime;
-
     @Column(name = "end_time", nullable = false)
     private Time endTime;
-
     @Column(name = "total_cost", nullable = true)
     private int totalCost;
     @ManyToOne
@@ -26,33 +23,25 @@ public class Ride {
     @ManyToMany
     @Column(name = "passengers", nullable = false)
     private List<Passenger> passengers;
-
     @OneToMany
     private List<Route> routes;
-
+    @Column(name="estimated_times")
     private Time estimatedTime;
     @OneToMany
     private List<Review> reviews;
-
     @Enumerated(EnumType.ORDINAL)
     private RideState rideState;
-
-    //TODO
-    @ManyToOne
-    @JoinColumn(name = "rejection_message_id")
+    @OneToOne
     private RejectionMessage rejectionMessage;
 
+    @Column(name="panic_flag", nullable = false)
     private boolean panicFlag;
-
+    @Column(name="baby_flag", nullable = false)
     private boolean babyFlag;
-
+    @Column(name="pet_flag", nullable = false)
     private boolean petFlag;
-
-    //TODO
-    @ManyToOne
-    @JoinColumn(name = "vehicle_type_id")
+    @OneToOne
     private VehicleType vehicleType;
-
     public Ride(){
         super();
     }

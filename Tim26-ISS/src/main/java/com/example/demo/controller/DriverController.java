@@ -84,24 +84,24 @@ public class DriverController {
                                                                  @RequestParam(required = false) String from,
                                                                  @RequestParam(required = false) String to){
         DriverWorkingHoursDTO response = new DriverWorkingHoursDTO();
-        for (int i=0;i<10;i++){
-            WorkingHour wh = new WorkingHour(i, LocalDateTime.now(),LocalDateTime.now().plusHours(5));
-            response.getResults().add(wh);
-        }
+//        for (int i=0;i<10;i++){
+//            WorkingHour wh = new WorkingHour(i, LocalDateTime.now(),LocalDateTime.now().plusHours(5));
+//            response.getResults().add(wh);
+//        }
         response.setTotalCount(response.getResults().size());
         return new ResponseEntity<DriverWorkingHoursDTO>(response,HttpStatus.OK);
     }
 
     @PostMapping(value = "/{id}/working-hour",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingHour> createWorkingHour(@PathVariable("id") int id,@RequestBody WorkingHour workingHour){
-        WorkingHour response = new WorkingHour(2,workingHour.getStart().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),workingHour.getEnd().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
+//        WorkingHour response = new WorkingHour(2,workingHour.getStart().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),workingHour.getEnd().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        return new ResponseEntity<WorkingHour>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/working-hour/{working-hour-id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WorkingHour> getDetailedWorkingHour(@PathVariable("working-hour-id") int id){
-        WorkingHour response = new WorkingHour(id,LocalDateTime.now(),LocalDateTime.now().plusHours(4));
-        return new ResponseEntity<WorkingHour>(response,HttpStatus.OK);
+//        WorkingHour response = new WorkingHour(id,LocalDateTime.now(),LocalDateTime.now().plusHours(4));
+        return new ResponseEntity<WorkingHour>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/vehicle",produces = MediaType.APPLICATION_JSON_VALUE)
