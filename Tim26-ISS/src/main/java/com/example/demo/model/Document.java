@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(name = "document_id", nullable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)

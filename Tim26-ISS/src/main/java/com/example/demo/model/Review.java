@@ -14,10 +14,11 @@ public class Review {
     @Column(name="comment", nullable = true)
     private String comment;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviews")
     private Ride ride;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Passenger passenger;
 
     public Review(){

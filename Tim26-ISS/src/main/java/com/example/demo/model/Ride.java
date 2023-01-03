@@ -9,7 +9,7 @@ import java.util.List;
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ride_id", nullable = false)
     private Long id;
     @Column(name = "start_time", nullable = true)
     private Time startTime;
@@ -25,9 +25,9 @@ public class Ride {
     private List<Passenger> passengers;
     @OneToMany
     private List<Route> routes;
-    @Column(name="estimated_times")
+    @Column(name="estimated_time")
     private Time estimatedTime;
-    @OneToMany
+    @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
     @Enumerated(EnumType.ORDINAL)
     private RideState rideState;
@@ -182,6 +182,16 @@ public class Ride {
 
     public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setRide(this);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setRide(null);
     }
 
     @Override

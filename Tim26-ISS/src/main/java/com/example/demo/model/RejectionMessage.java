@@ -8,7 +8,7 @@ import java.sql.Time;
 public class RejectionMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(name = "rmessage_id", nullable = false)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

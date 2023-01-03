@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Warning {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(name = "warning_id", nullable = false)
     private Long id;
     @Column(name="message", nullable = false)
     private String message;

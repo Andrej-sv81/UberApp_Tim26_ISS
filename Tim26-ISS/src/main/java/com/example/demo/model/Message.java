@@ -8,7 +8,7 @@ import java.sql.Time;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @Column(name = "message_id", nullable = false)
     private Long id;
 
     @OneToOne
