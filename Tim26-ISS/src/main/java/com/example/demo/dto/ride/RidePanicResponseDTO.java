@@ -1,18 +1,21 @@
-package com.example.demo.dto;
+package com.example.demo.dto.ride;
 
-import com.example.demo.dto.ride.RideResponseDTO;
 import com.example.demo.dto.user.UserResponseDTO;
 
-public class PanicResponseDTO {
+import java.time.LocalDateTime;
 
-    private Integer id;
-    private UserResponseDTO user;
-    private RideResponseDTO ride;
-    private String time;
-    private String reason;
+public class RidePanicResponseDTO {
+   private int id;
+   private UserResponseDTO user;
+   private RideDTO ride;
+   private LocalDateTime time;
+   private String reason;
 
-    public PanicResponseDTO(){};
-    public PanicResponseDTO(Integer id, UserResponseDTO user, RideResponseDTO ride, String time, String reason) {
+    public RidePanicResponseDTO() {
+        this.time = LocalDateTime.now();
+    }
+
+    public RidePanicResponseDTO(int id, UserResponseDTO user, RideDTO ride, LocalDateTime time, String reason) {
         this.id = id;
         this.user = user;
         this.ride = ride;
@@ -20,11 +23,11 @@ public class PanicResponseDTO {
         this.reason = reason;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -36,19 +39,19 @@ public class PanicResponseDTO {
         this.user = user;
     }
 
-    public RideResponseDTO getRide() {
+    public RideDTO getRide() {
         return ride;
     }
 
-    public void setRide(RideResponseDTO ride) {
+    public void setRide(RideDTO ride) {
         this.ride = ride;
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime tine) {
         this.time = time;
     }
 
@@ -62,11 +65,11 @@ public class PanicResponseDTO {
 
     @Override
     public String toString() {
-        return "PanicResponseDTO{" +
+        return "RidePanicResponseDTO{" +
                 "id=" + id +
                 ", user=" + user +
                 ", ride=" + ride +
-                ", time='" + time + '\'' +
+                ", tine=" + time +
                 ", reason='" + reason + '\'' +
                 '}';
     }

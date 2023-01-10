@@ -2,6 +2,11 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dto.*;
+import com.example.demo.dto.ride.RideDTO;
+import com.example.demo.dto.ride.RideDriverDTO;
+import com.example.demo.dto.ride.RidePassengerDTO;
+import com.example.demo.dto.ride.RidePathDTO;
+import com.example.demo.dto.user.*;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,16 +1,13 @@
-package com.example.demo.dto;
-
-import com.example.demo.dto.user.UserNoteResponseDTO;
+package com.example.demo.dto.user;
 
 import java.util.List;
 
-public class MultipleMessagesDTO {
+public class UserMessagesResponseDTO {
     private Integer totalCount;
-    List<UserNoteResponseDTO> results;
+    private List<UserMessageResponseDTO> results;
 
-    public MultipleMessagesDTO(){};
-
-    public MultipleMessagesDTO(Integer totalCount, List<UserNoteResponseDTO> results) {
+    public UserMessagesResponseDTO(){};
+    public UserMessagesResponseDTO(Integer totalCount, List<UserMessageResponseDTO> results) {
         this.totalCount = totalCount;
         this.results = results;
     }
@@ -23,17 +20,17 @@ public class MultipleMessagesDTO {
         this.totalCount = totalCount;
     }
 
-    public List<UserNoteResponseDTO> getResults() {
+    public List<UserMessageResponseDTO> getResults() {
         return results;
     }
 
-    public void setResults(List<UserNoteResponseDTO> results) {
+    public void setResults(List<UserMessageResponseDTO> results) {
         this.results = results;
     }
 
     @Override
     public String toString() {
-        return "MultipleMessagesDTO{" +
+        return "UserMessagesResponseDTO{" +
                 "totalCount=" + totalCount +
                 ", results=" + results +
                 '}';

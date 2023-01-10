@@ -1,6 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
+import com.example.demo.dto.driver.DriverRideOverDTO;
+import com.example.demo.dto.ride.RidePanicResponseDTO;
+import com.example.demo.dto.ride.RideRequestDTO;
+import com.example.demo.dto.ride.RideResponseDTO;
 import com.example.demo.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +53,7 @@ public class RideController {
     }
 
     @PutMapping(value = "/{id}/panic",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RidePanicResponseDTO> panicProcedure(@PathVariable("id")int id,@RequestBody ExplanationDTO panic){
+    public ResponseEntity<RidePanicResponseDTO> panicProcedure(@PathVariable("id")int id, @RequestBody ExplanationDTO panic){
         RidePanicResponseDTO response = new RidePanicResponseDTO();
         return new ResponseEntity<RidePanicResponseDTO>(response,HttpStatus.OK);
     }
