@@ -2,9 +2,10 @@ package com.example.demo.dto;
 
 import com.example.demo.model.Location;
 import com.example.demo.model.Vehicle;
+import com.example.demo.model.VehicleType;
 
 public class DriverVehicleRequestDTO {
-    private Vehicle.vehicleType vehicleType;
+    private VehicleType vehicleType;
     private String model;
     private String licenseNumber;
     private Location currentLocation;
@@ -15,8 +16,8 @@ public class DriverVehicleRequestDTO {
     public DriverVehicleRequestDTO() {
     }
 
-    public DriverVehicleRequestDTO(Vehicle.vehicleType vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
-        this.vehicleType = vehicleType;
+    public DriverVehicleRequestDTO(VehicleType type, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
+        this.vehicleType = type;
         this.model = model;
         this.licenseNumber = licenseNumber;
         this.currentLocation = currentLocation;
@@ -25,13 +26,13 @@ public class DriverVehicleRequestDTO {
         this.petTransport = petTransport;
     }
 
-    public Vehicle.vehicleType getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(Vehicle.vehicleType vehicleType) {
-        this.vehicleType = vehicleType;
-    }
+//    public Vehicle.vehicleType getVehicleType() {
+//        return vehicleType;
+//    }
+//
+//    public void setVehicleType(Vehicle.vehicleType vehicleType) {
+//        this.vehicleType = vehicleType;
+//    }
 
     public String getModel() {
         return model;

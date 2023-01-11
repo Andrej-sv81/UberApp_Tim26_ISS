@@ -1,63 +1,70 @@
 package com.example.demo.model;
 
-import javax.print.attribute.standard.MediaSize;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import jakarta.persistence.*;
 
+import java.sql.Time;
+
+@Entity
 public class WorkingHour {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", nullable = false)
+    private Long id;
+    @Column(name="start_time", nullable = false)
+    private Time startTime;
+    @Column(name="end_time", nullable = false)
+    private Time endTime;
+    @OneToOne
+    private Driver driver;
 
-    private Integer id;
-    private LocalDateTime start;
-    private LocalDateTime end;
-
-
-    public WorkingHour() {
+    public WorkingHour(){
+        super();
+    }
+    public WorkingHour(Time startTime, Time endTime, Driver driver) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.driver = driver;
     }
 
-    public WorkingHour(Integer id, LocalDateTime start, LocalDateTime end) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-    }
-
-    public WorkingHour(Integer id, String start, String end) {
-        this.id = id;
-        this.start = LocalDateTime.parse(start, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        this.end = LocalDateTime.parse(end,DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDateTime getStart() {
-        return start;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setStart(LocalDateTime start) {
-        this.start = start;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public Time getEndTime() {
+        return endTime;
     }
 
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
     }
-    
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
 
     @Override
     public String toString() {
         return "WorkingHour{" +
                 "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", driver=" + driver +
                 '}';
     }
 }

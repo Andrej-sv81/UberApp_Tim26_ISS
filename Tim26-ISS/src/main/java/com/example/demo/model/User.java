@@ -1,17 +1,40 @@
 package com.example.demo.model;
 
-public class User {
-    private Integer id;
-    private String name;
-    private String surname;
-    private String profilePicture;
-    private String telephoneNumber;
-    private String email;
-    private String address;
-    private String password;
+import jakarta.persistence.*;
 
-    public User(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password) {
-        this.id = id;
+@Entity
+@Table(name="users_table")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
+    private Integer id;
+    @Column(name="name", nullable = false)
+    private String name;
+    @Column(name="surname", nullable = false)
+    private String surname;
+    @Column(name="profilePicture", nullable = true)
+    private String profilePicture;
+    @Column(name="telephoneNumber", nullable = false)
+    private String telephoneNumber;
+    @Column(name="email", nullable = false)
+    private String email;
+    @Column(name="address", nullable = false)
+    private String address;
+    @Column(name="password", nullable = false)
+    private String password;
+    @Column(name="blocked_flag", nullable = false)
+    private boolean blocked;
+    @Column(name="active_flag", nullable = false)
+    private boolean active;
+
+    public User() {
+    }
+
+    public User(String name, String surname, String profilePicture, String telephoneNumber,
+                String email, String address, String password, boolean blocked, boolean active) {
         this.name = name;
         this.surname = surname;
         this.profilePicture = profilePicture;
@@ -19,6 +42,8 @@ public class User {
         this.email = email;
         this.address = address;
         this.password = password;
+        this.blocked = blocked;
+        this.active = active;
     }
 
     public Integer getId() {
@@ -85,6 +110,22 @@ public class User {
         this.password = password;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -96,6 +137,8 @@ public class User {
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", password='" + password + '\'' +
+                ", blocked=" + blocked +
+                ", active=" + active +
                 '}';
     }
 }

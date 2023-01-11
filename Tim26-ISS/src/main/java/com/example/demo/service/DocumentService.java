@@ -1,13 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.repository.RideRepository;
+import com.example.demo.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RideService{
+public class DocumentService {
 
     @Autowired
-    private RideRepository rideRepository;
-
+    private DocumentRepository documentRepository;
 }

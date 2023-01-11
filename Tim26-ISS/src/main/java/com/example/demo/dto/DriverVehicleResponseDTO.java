@@ -2,11 +2,12 @@ package com.example.demo.dto;
 
 import com.example.demo.model.Location;
 import com.example.demo.model.Vehicle;
+import com.example.demo.model.VehicleType;
 
 public class DriverVehicleResponseDTO {
     private int id;
     private int driverId;
-    private Vehicle.vehicleType vehicleType;
+    private VehicleType vehicleType;
     private String model;
     private String licenseNumber;
     private Location currentLocation;
@@ -17,7 +18,7 @@ public class DriverVehicleResponseDTO {
     public DriverVehicleResponseDTO() {
     }
 
-    public DriverVehicleResponseDTO(int id, int driverId, Vehicle.vehicleType vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
+    public DriverVehicleResponseDTO(int id, int driverId, VehicleType vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
         this.id = id;
         this.driverId = driverId;
         this.vehicleType = vehicleType;
@@ -45,11 +46,11 @@ public class DriverVehicleResponseDTO {
         this.driverId = driverId;
     }
 
-    public Vehicle.vehicleType getVehicleType() {
+    public VehicleType getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(Vehicle.vehicleType vehicleType) {
+    public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
     }
 
