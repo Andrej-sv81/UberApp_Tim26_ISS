@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.dto.passenger.PassengerRideOverDTO;
+
 public class ReviewResponseDTO {
     private int id;
     private int rating;

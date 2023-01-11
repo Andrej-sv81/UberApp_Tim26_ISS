@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.dto.passenger.PassengerResponseDTO;
+
 import java.util.List;
 
 public class MultiplePassengersDTO {

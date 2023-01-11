@@ -2,8 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.MultiplePassengersDTO;
 import com.example.demo.dto.MultipleRidesDTO;
-import com.example.demo.dto.PassengerRequestDTO;
-import com.example.demo.dto.PassengerResponseDTO;
+import com.example.demo.dto.passenger.PassengerRequestDTO;
+import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

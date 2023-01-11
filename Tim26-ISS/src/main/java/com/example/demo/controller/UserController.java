@@ -2,21 +2,38 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dto.*;
+import com.example.demo.dto.ride.RideDTO;
+import com.example.demo.dto.ride.RideDriverDTO;
+import com.example.demo.dto.ride.RidePassengerDTO;
+import com.example.demo.dto.ride.RidePathDTO;
+import com.example.demo.dto.token.UserTokenStateDTO;
+import com.example.demo.dto.user.*;
+import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import com.example.demo.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    @Autowired
+    private TokenUtils tokenUtils;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     UserService userService;
@@ -82,9 +99,15 @@ public class UserController {
 
     @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserLoginResponseDTO> logIn(@RequestBody UserLoginRequestDTO request) throws Exception{
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getEmail(), request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserLoginResponseDTO response = new UserLoginResponseDTO();
-        return new ResponseEntity<UserLoginResponseDTO>(response,HttpStatus.OK);
+        User user = (User) authentication.getPrincipal();
+        String jwt = tokenUtils.generateToken(user.getEmail());
+        int expiresIn = tokenUtils.getExpiredIn();
+        //TODO create refresh token
+        return ResponseEntity.ok(new UserLoginResponseDTO(jwt, jwt));
     }
 
     @GetMapping(value="/{id}/message",produces = MediaType.APPLICATION_JSON_VALUE)

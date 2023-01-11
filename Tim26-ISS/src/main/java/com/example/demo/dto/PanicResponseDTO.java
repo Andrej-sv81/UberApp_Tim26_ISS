@@ -1,5 +1,8 @@
 package com.example.demo.dto;
 
+import com.example.demo.dto.ride.RideResponseDTO;
+import com.example.demo.dto.user.UserResponseDTO;
+
 public class PanicResponseDTO {
 
     private Integer id;

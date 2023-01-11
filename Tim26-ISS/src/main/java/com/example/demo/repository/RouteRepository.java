@@ -3,5 +3,5 @@ package com.example.demo.repository;
 import com.example.demo.model.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RouteRepository extends JpaRepository<Route, Integer> {
+public interface RouteRepository extends JpaRepository<Route, Long> {
 }

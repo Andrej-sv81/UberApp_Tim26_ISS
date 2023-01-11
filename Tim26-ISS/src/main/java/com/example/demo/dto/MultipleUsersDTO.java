@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.dto.user.UserResponseDTO;
+
 import java.util.List;
 
 public class MultipleUsersDTO {
