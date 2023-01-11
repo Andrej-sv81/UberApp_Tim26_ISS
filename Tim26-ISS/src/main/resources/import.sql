@@ -1,0 +1,1 @@
+INSERT INTO users_table (name, surname, telephone_number, email, address, password, blocked_flag, active_flag, password_date, type) VALUES ('Marko', 'Markovic', '0662322322', 'marko@gmail.com', 'Ulica br 2', 'marko123', 0, 0, NOW()-400, 'PASSENGER');

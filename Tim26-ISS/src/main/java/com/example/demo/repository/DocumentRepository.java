@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    public List<Document> findAll();
+    List<Document> findAll();
 
-    public Document findOneById(int id);
+    Document findOneById(int id);
 }

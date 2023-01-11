@@ -2,49 +2,73 @@ package com.example.demo.service;
 
 import com.example.demo.dto.user.UserRequestDTO;
 import com.example.demo.dto.user.UserResponseDTO;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, IUserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Bean
+    public BCryptPasswordEncoder passwordEncoderUser() {
+        return new BCryptPasswordEncoder();
+    }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findOneByEmail(email);
+        if(user == null){
+            throw new UsernameNotFoundException("User not found in database");
+        }
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
-    public List<User> findAll() { return userRepository.findAll();}
-    public Page<User> findAll(Pageable page){ return  userRepository.findAll(page);}
-    public User findOne(int id) { return userRepository.findOneById(id);}
-    public User findOneByEmail(String email){ return userRepository.findOneByEmail(email);}
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-    public void remove(Long id) {
-        userRepository.deleteById(id);
+    public User saveUser(User user) {
+        user.setPassword(passwordEncoderUser().encode(user.getPassword()));
+        userRepository.save(user);
+        return user;
     }
 
-    public UserResponseDTO create(UserRequestDTO user) throws Exception {
-        return null;
+    @Override
+    public Role saveRole(Role role) {
+        roleRepository.save(role);
+        return role;
     }
 
-    public User activateAcc(int activationId) {
-        return null;
+    @Override
+    public void addRoleToUser(String email, String rolename) {
+        User user = userRepository.findOneByEmail(email);
+        Role role = roleRepository.findByName(rolename);
+        user.getRoles().add(role);
     }
 
-    public User update(int id) throws Exception {
-        return null;
+    @Override
+    public User getUser(String email) {
+        return userRepository.findOneByEmail(email);
     }
 }
