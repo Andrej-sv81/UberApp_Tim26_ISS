@@ -19,7 +19,7 @@ public class User {
     private String profilePicture;
     @Column(name="telephoneNumber", nullable = false)
     private String telephoneNumber;
-    @Column(name="email", nullable = false)
+    @Column(name="email", nullable = false, unique = true)
     private String email;
     @Column(name="address", nullable = false)
     private String address;

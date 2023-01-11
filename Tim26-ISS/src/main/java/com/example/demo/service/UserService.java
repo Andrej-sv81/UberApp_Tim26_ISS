@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
     public User save(User user) {
         return userRepository.save(user);
     }
-    public void remove(Integer id) {
+    public void remove(Long id) {
         userRepository.deleteById(id);
     }
 

@@ -1,6 +1,6 @@
 package com.example.demo.dto.token;
 
-// DTO koji enkapsulira generisani JWT i njegovo trajanje koji se vracaju klijentu
+//TODO DTO koji enkapsulira generisani JWT i njegovo trajanje koji se vracaju klijentu USER LOIGN RESPONSE
 public class UserTokenStateDTO {
 
     private String accessToken;
