@@ -6,7 +6,7 @@ import com.example.demo.dto.ride.RideDTO;
 import com.example.demo.dto.ride.RideDriverDTO;
 import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RidePathDTO;
-import com.example.demo.dto.token.UserTokenStateDTO;
+
 import com.example.demo.dto.user.*;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
@@ -105,10 +105,22 @@ public class UserController {
 
         User user = (User) authentication.getPrincipal();
         String jwt = tokenUtils.generateToken(user.getEmail());
-        int expiresIn = tokenUtils.getExpiredIn();
-        //TODO create refresh token
-        return ResponseEntity.ok(new UserLoginResponseDTO(jwt, jwt));
+        String jwt_refresh = tokenUtils.generateRefreshToken(user.getEmail());
+        return ResponseEntity.ok(new UserLoginResponseDTO(jwt, jwt_refresh));
     }
+
+    //    @PostMapping("/signup")
+//    public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest, UriComponentsBuilder ucBuilder) {
+//        User existUser = this.userService.findOneByEmail(userRequest.getEmail());
+//
+////TODO        if (existUser != null) {
+////            throw new ResourceConflictException(userRequest.getId(), "Username already exists");
+////        }
+////        User user = this.userService.save(userRequest);
+////        return new ResponseEntity<>(user, HttpStatus.CREATED);
+//
+//        return null;
+
 
     @GetMapping(value="/{id}/message",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserMessagesResponseDTO> getMessages(

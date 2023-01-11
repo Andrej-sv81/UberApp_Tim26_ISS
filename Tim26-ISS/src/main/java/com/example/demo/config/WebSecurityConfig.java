@@ -13,6 +13,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -49,21 +50,26 @@ public class WebSecurityConfig{
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
     @Autowired
     private TokenUtils tokenUtils;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint);
         http.authorizeHttpRequests()
-                .requestMatchers("/api/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated().and()
+                .requestMatchers("/").permitAll()
+                .and()
+                .authorizeHttpRequests().requestMatchers("/h2-console/**").permitAll()
+                .and()
+                .authorizeHttpRequests().anyRequest().authenticated()
+                .and()
+                .headers().frameOptions().disable()
+                .and()
+                .csrf().disable()
                 .cors().and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenUtils,  userDetailsService()), BasicAuthenticationFilter.class);
-        http.csrf().and();
-        http.headers().frameOptions().disable();
+
         http.authenticationProvider(authenticationProvider());
         return http.build();
     }
@@ -72,7 +78,7 @@ public class WebSecurityConfig{
         return (web) -> web.ignoring()
                 .requestMatchers(HttpMethod.POST, "/api/user/login")
                 .requestMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "favicon.ico",
-                        "/**/*.html", "/**/*.css", "/**/*.js");
+                        "/*/*.html", "/*/*.css", "/*/*.js");
     }
 }
 

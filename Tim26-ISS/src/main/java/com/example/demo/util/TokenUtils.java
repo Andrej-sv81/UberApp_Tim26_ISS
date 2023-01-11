@@ -31,6 +31,9 @@ public class TokenUtils{
     @Value("3600000")
     private int EXPIRES_IN;
 
+    @Value("36000000")
+    private int REFRESH_EXPIRES_IN;
+
     // Naziv headera kroz koji ce se prosledjivati JWT u komunikaciji server-klijent
     @Value("Authorization")
     private String AUTH_HEADER;
@@ -69,6 +72,19 @@ public class TokenUtils{
         // moguce je postavljanje proizvoljnih podataka u telo JWT tokena pozivom funkcije .claim("key", value), npr. .claim("role", user.getRole())
     }
 
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setIssuer(APP_NAME)
+                .setSubject(username)
+                .setAudience(generateAudience())
+                .setIssuedAt(new Date())
+                .setExpiration(generateRefreshExpirationDate())
+                .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
+
+
+        // moguce je postavljanje proizvoljnih podataka u telo JWT tokena pozivom funkcije .claim("key", value), npr. .claim("role", user.getRole())
+    }
+
     /**
      * Funkcija za utvrđivanje tipa uređaja za koji se JWT kreira.
      * @return Tip uređaja.
@@ -97,6 +113,10 @@ public class TokenUtils{
      */
     private Date generateExpirationDate() {
         return new Date(new Date().getTime() + EXPIRES_IN);
+    }
+
+    private Date generateRefreshExpirationDate() {
+        return new Date(new Date().getTime() + REFRESH_EXPIRES_IN);
     }
 
     // =================================================================
@@ -241,8 +261,8 @@ public class TokenUtils{
 
         // Token je validan kada:
         return (username != null // korisnicko ime nije null
-                && username.equals(userDetails.getUsername())); // korisnicko ime iz tokena se podudara sa korisnickom imenom koje pise u bazi
-             //TODO   && !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())); // nakon kreiranja tokena korisnik nije menjao svoju lozinku
+                && username.equals(userDetails.getUsername()) // korisnicko ime iz tokena se podudara sa korisnickom imenom koje pise u bazi
+                && !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())); // nakon kreiranja tokena korisnik nije menjao svoju lozinku
     }
 
     /**

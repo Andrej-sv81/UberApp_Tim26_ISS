@@ -2,6 +2,10 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+
 @Entity
 @Table(name="users_table")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -29,6 +33,12 @@ public class User {
     private boolean blocked;
     @Column(name="active_flag", nullable = false)
     private boolean active;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
+
+    @Column(name="password_date", nullable = false)
+    private Date lastPasswordResetDate;
 
     public User() {
     }
@@ -126,6 +136,21 @@ public class User {
         this.active = active;
     }
 
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Date getLastPasswordResetDate() {
+        return lastPasswordResetDate;
+    }
+    public void setLastPasswordResetDate(Date lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -142,3 +167,5 @@ public class User {
                 '}';
     }
 }
+
+
