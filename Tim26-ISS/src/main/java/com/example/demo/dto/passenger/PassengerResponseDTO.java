@@ -1,7 +1,7 @@
 package com.example.demo.dto.passenger;
 
 public class PassengerResponseDTO {
-    private int id;
+    private Integer id;
     private String name;
     private String surname;
     private String profilePicture;
@@ -12,7 +12,7 @@ public class PassengerResponseDTO {
     public PassengerResponseDTO() {
     }
 
-    public PassengerResponseDTO(int id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
+    public PassengerResponseDTO(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -22,11 +22,11 @@ public class PassengerResponseDTO {
         this.address = address;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -14,7 +14,7 @@ public class PanicController {
 
 //    @Autowired
 //    PanicService pservice;
-
+    //ADMIN Endpoint
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MultiplePanicResponseDTO> getPanicNotifications(){
 

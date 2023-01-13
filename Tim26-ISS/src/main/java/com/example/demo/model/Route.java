@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 @Entity
 public class Route {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name="start_location", nullable = false)
     private String startLocation;
@@ -28,11 +28,11 @@ public class Route {
         this.distanceInKm = distanceInKm;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

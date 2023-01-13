@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 @Entity
 public class Warning {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "warning_id", nullable = false)
-    private Long id;
+    private Integer id;
     @Column(name="message", nullable = false)
     private String message;
     @OneToOne(cascade = CascadeType.ALL)
@@ -21,11 +21,11 @@ public class Warning {
         this.user = user;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

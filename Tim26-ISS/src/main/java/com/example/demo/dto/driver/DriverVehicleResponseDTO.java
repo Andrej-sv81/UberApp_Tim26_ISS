@@ -5,7 +5,7 @@ import com.example.demo.model.Vehicle;
 import com.example.demo.model.VehicleType;
 
 public class DriverVehicleResponseDTO {
-    private int id;
+    private Integer id;
     private int driverId;
     private VehicleType vehicleType;
     private String model;
@@ -18,7 +18,7 @@ public class DriverVehicleResponseDTO {
     public DriverVehicleResponseDTO() {
     }
 
-    public DriverVehicleResponseDTO(int id, int driverId, VehicleType vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
+    public DriverVehicleResponseDTO(Integer id, int driverId, VehicleType vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
         this.id = id;
         this.driverId = driverId;
         this.vehicleType = vehicleType;
@@ -30,11 +30,11 @@ public class DriverVehicleResponseDTO {
         this.petTransport = petTransport;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

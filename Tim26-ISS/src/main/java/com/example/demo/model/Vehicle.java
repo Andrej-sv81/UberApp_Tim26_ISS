@@ -8,9 +8,9 @@ import java.util.List;
 @Entity
 public class Vehicle {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
     @OneToOne
     private Driver driver;
     @Column(name="vehicle_model", nullable = false)
@@ -46,11 +46,11 @@ public class Vehicle {
         this.reviews = reviews;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

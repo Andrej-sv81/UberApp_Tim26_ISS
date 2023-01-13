@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 @Entity
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name="score", nullable = false)
     private int score;
@@ -15,7 +15,7 @@ public class Review {
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviews")
+    @JoinColumn(name = "ride_id")
     private Ride ride;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -31,10 +31,10 @@ public class Review {
         this.passenger = passenger;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
