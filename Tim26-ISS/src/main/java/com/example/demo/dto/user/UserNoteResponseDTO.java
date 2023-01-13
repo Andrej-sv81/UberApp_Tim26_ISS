@@ -1,5 +1,5 @@
 package com.example.demo.dto.user;
-
+//ADMIN DTO
 public class UserNoteResponseDTO {
     private Integer id;
     private String date;

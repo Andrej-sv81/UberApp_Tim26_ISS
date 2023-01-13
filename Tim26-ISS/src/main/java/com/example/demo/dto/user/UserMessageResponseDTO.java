@@ -1,5 +1,7 @@
 package com.example.demo.dto.user;
 
+import com.example.demo.model.Message;
+
 public class UserMessageResponseDTO {
     private Integer id;
     private String timeOfSending;
@@ -10,6 +12,16 @@ public class UserMessageResponseDTO {
     private Integer rideId;
 
     public UserMessageResponseDTO(){};
+
+    public UserMessageResponseDTO(Message message) {
+        this.id = message.getId();
+        this.timeOfSending = message.getSentTime().toString();
+        this.senderId = message.getSender().getId();
+        this.receiverId = message.getReceiver().getId();
+        this.message = message.getMessage();
+        this.type = message.getMessageType().toString();
+        this.rideId = message.getRideId();
+    }
     public UserMessageResponseDTO(Integer id, String timeOfSending, Integer senderId, Integer receiverId, String message, String type, Integer rideId) {
         this.id = id;
         this.timeOfSending = timeOfSending;

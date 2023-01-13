@@ -3,7 +3,7 @@ package com.example.demo.dto;
 import com.example.demo.dto.passenger.PassengerRideOverDTO;
 
 public class ReviewResponseDTO {
-    private int id;
+    private Integer id;
     private int rating;
     private String comment;
     private PassengerRideOverDTO passenger;
@@ -12,18 +12,18 @@ public class ReviewResponseDTO {
         this.passenger = new PassengerRideOverDTO();
     }
 
-    public ReviewResponseDTO(int id, int rating, String comment, PassengerRideOverDTO passenger) {
+    public ReviewResponseDTO(Integer id, int rating, String comment, PassengerRideOverDTO passenger) {
         this.id = id;
         this.rating = rating;
         this.comment = comment;
         this.passenger = passenger;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

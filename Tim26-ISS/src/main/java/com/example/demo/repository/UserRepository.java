@@ -8,16 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    User findOneById(Long id);
-
+public interface UserRepository extends JpaRepository<User, Integer> {
     User findOneByEmail(String email);
-
-    Page<User> findAll(Pageable pageable);
-
     List<User> findByNameAndSurnameAllIgnoringCase(String name, String surname);
-
     @Query("select u from User u where u.name = ?1")
     List<User> findUserByName(String name);
+    User findOneById(Integer id);
 }

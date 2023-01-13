@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RideResponseDTO {
-    private  int id;
+    private  Integer id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int totalCost;
@@ -31,7 +31,7 @@ public class RideResponseDTO {
         this.setDriver(new DriverRideOverDTO());
     }
 
-    public RideResponseDTO(int id, LocalDateTime startTime, LocalDateTime endTime, int totalCost, DriverRideOverDTO driver, List<PassengerRideOverDTO> passengers, String estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, List<RouteDTO> locations, String status) {
+    public RideResponseDTO(Integer id, LocalDateTime startTime, LocalDateTime endTime, int totalCost, DriverRideOverDTO driver, List<PassengerRideOverDTO> passengers, String estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, List<RouteDTO> locations, String status) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -47,11 +47,11 @@ public class RideResponseDTO {
         this.status = status;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

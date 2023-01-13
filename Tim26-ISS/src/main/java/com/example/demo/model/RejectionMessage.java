@@ -7,9 +7,9 @@ import java.sql.Time;
 @Entity
 public class RejectionMessage {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rmessage_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Ride ride;
@@ -30,11 +30,11 @@ public class RejectionMessage {
         this.timeOfRejection = timeOfRejection;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
