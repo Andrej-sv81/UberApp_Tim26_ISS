@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,8 +13,8 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
-    private Integer id;
+    //@Column(name = "user_id", nullable = false)
+    private Long id;
     @Column(name="name", nullable = false)
     private String name;
     @Column(name="surname", nullable = false)
@@ -34,10 +34,12 @@ public class User {
     @Column(name="active_flag", nullable = false)
     private boolean active;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    private Collection<RoleAndrej> roles = new ArrayList<>();
+    @Column(name = "role", nullable = true)
+    private String role;
 
-    @Column(name="password_date", nullable = false)
+//    @Column(name="password_date", nullable = false)
     private Date lastPasswordResetDate;
 
     public User() {
@@ -56,11 +58,11 @@ public class User {
         this.active = active;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -136,12 +138,12 @@ public class User {
         this.active = active;
     }
 
-    public Collection<Role> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Date getLastPasswordResetDate() {

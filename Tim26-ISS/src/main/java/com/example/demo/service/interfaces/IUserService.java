@@ -5,7 +5,7 @@ import com.example.demo.model.User;
 
 public interface IUserService {
     User saveUser(User user);
-    Role saveRole(Role role);
-    void addRoleToUser(String email, String role);
+    //Role saveRole(Role role);
+    //void addRoleToUser(String email, String role);
     User getUser(String email);
 }
