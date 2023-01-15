@@ -1,6 +1,4 @@
 package com.example.demo.model;
-
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +39,9 @@ public class User {
 
 //    @Column(name="password_date", nullable = false)
     private Date lastPasswordResetDate;
+
+    @Column(name="password_code", nullable = true)
+    private Integer code;
 
     public User() {
     }
@@ -151,6 +152,14 @@ public class User {
     }
     public void setLastPasswordResetDate(Date lastPasswordResetDate) {
         this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
     @Override

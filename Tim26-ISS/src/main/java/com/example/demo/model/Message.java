@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+
+import com.example.demo.dto.user.UserMessageRequestDTO;
 import javax.persistence.*;
 
 import java.sql.Time;
@@ -7,9 +9,9 @@ import java.sql.Time;
 @Entity
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @OneToOne
     private User sender;
@@ -22,12 +24,20 @@ public class Message {
     @Enumerated(EnumType.ORDINAL)
     private MessageType messageType;
     @Column(name="ride_id_for_ride_message", nullable = true)
-    private Long rideId;
+    private Integer rideId;
 
     public Message(){
         super();
     }
-    public Message(User sender, User receiver, String message, Time sentTime, MessageType messageType, Long rideId) {
+    public Message(UserMessageRequestDTO request, Time sentTime, User sender, User receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.message = request.getMessage();
+        this.sentTime = sentTime;
+        this.messageType = MessageType.getType(request.getType());
+        this.rideId = request.getRideId();
+    }
+    public Message(User sender, User receiver, String message, Time sentTime, MessageType messageType, Integer rideId) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
@@ -36,11 +46,11 @@ public class Message {
         this.rideId = rideId;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -84,11 +94,11 @@ public class Message {
         this.messageType = messageType;
     }
 
-    public Long getRideId() {
+    public Integer getRideId() {
         return rideId;
     }
 
-    public void setRideId(Long rideId) {
+    public void setRideId(Integer rideId) {
         this.rideId = rideId;
     }
 

@@ -1,7 +1,9 @@
 package com.example.demo.dto.user;
 
+import com.example.demo.model.User;
+
 public class UserResponseDTO {
-    private int id;
+    private Integer id;
     private String name;
     private String surname;
     private String profilePicture;
@@ -11,7 +13,16 @@ public class UserResponseDTO {
 
     public UserResponseDTO(){};
 
-    public UserResponseDTO(int id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
+    public UserResponseDTO(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.surname =  user.getSurname();
+        this.profilePicture = user.getProfilePicture();
+        this.telephoneNumber =user.getTelephoneNumber();
+        this.email = user.getEmail();
+        this.address = user.getAddress();
+    }
+    public UserResponseDTO(Integer id, String name, String surname, String profilePicture, String telephoneNumber, String email, String address) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -21,11 +32,11 @@ public class UserResponseDTO {
         this.address = address;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

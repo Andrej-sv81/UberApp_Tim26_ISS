@@ -5,9 +5,9 @@ import javax.persistence.*;
 @Entity
 public class Document {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "document_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -15,7 +15,7 @@ public class Document {
     @Column(name = "picture", nullable = true)
     private String picture;
     @ManyToOne
-    @JoinColumn(name = "documents")
+    @JoinColumn(name = "driver_id")
     private Driver driver;
 
     public Document(){
@@ -27,11 +27,11 @@ public class Document {
         this.driver = driver;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

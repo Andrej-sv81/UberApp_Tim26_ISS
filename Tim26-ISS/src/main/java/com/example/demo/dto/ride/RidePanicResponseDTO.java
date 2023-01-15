@@ -5,7 +5,7 @@ import com.example.demo.dto.user.UserResponseDTO;
 import java.time.LocalDateTime;
 
 public class RidePanicResponseDTO {
-   private int id;
+   private Integer id;
    private UserResponseDTO user;
    private RideDTO ride;
    private LocalDateTime time;
@@ -15,7 +15,7 @@ public class RidePanicResponseDTO {
         this.time = LocalDateTime.now();
     }
 
-    public RidePanicResponseDTO(int id, UserResponseDTO user, RideDTO ride, LocalDateTime time, String reason) {
+    public RidePanicResponseDTO(Integer id, UserResponseDTO user, RideDTO ride, LocalDateTime time, String reason) {
         this.id = id;
         this.user = user;
         this.ride = ride;
@@ -23,11 +23,11 @@ public class RidePanicResponseDTO {
         this.reason = reason;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -1,3 +1,4 @@
+
 //package com.example.demo.repository;
 //
 //import com.example.demo.model.RoleAndrej;
@@ -6,3 +7,4 @@
 //public interface RoleRepository extends JpaRepository<RoleAndrej, Long> {
 //    RoleAndrej findByName(String name);
 //}
+

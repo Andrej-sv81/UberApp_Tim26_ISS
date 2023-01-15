@@ -5,9 +5,9 @@ import javax.persistence.*;
 @Entity
 public class VehicleType {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Enumerated(EnumType.ORDINAL)
     private VehicleTypeEnum name;
@@ -24,11 +24,11 @@ public class VehicleType {
         this.price = price;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

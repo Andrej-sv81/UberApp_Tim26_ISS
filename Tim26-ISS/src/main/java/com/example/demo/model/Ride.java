@@ -8,24 +8,24 @@ import java.util.List;
 @Entity
 public class Ride {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ride_id", nullable = false)
-    private Long id;
+    private Integer id;
     @Column(name = "start_time", nullable = true)
     private Time startTime;
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time", nullable = true)
     private Time endTime;
     @Column(name = "total_cost", nullable = true)
-    private int totalCost;
+    private Integer totalCost;
     @ManyToOne
-    @JoinColumn(name = "rides")
+    @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
     @ManyToMany
     @Column(name = "passengers", nullable = false)
     private List<Passenger> passengers;
     @OneToMany
     private List<Route> routes;
-    @Column(name="estimated_time")
+    @Column(name="estimated_time", nullable = true)
     private Time estimatedTime;
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
@@ -64,11 +64,11 @@ public class Ride {
         this.vehicleType = vehicleType;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -88,11 +88,11 @@ public class Ride {
         this.endTime = endTime;
     }
 
-    public int getTotalCost() {
+    public Integer getTotalCost() {
         return totalCost;
     }
 
-    public void setTotalCost(int totalCost) {
+    public void setTotalCost(Integer totalCost) {
         this.totalCost = totalCost;
     }
 

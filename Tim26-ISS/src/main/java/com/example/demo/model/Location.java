@@ -1,13 +1,15 @@
 package com.example.demo.model;
 
+
+import com.example.demo.dto.VehicleLocationRequestDTO;
 import javax.persistence.*;
 
 @Entity
 public class Location {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id", nullable = false)
-    private Long id;
+    private Integer id;
     @Column(name = "address", nullable = false)
     private String address;
     @Column(name = "latitude", nullable = false)
@@ -26,11 +28,17 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public Long getId() {
+    public Location(VehicleLocationRequestDTO request) {
+        this.address = request.getAddress();
+        this.latitude = request.getLatitude();
+        this.longitude = request.getLongitude();
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

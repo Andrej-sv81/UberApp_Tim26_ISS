@@ -1,15 +1,13 @@
 package com.example.demo.model;
-
 import javax.persistence.*;
-
 import java.sql.Time;
 
 @Entity
 public class WorkingHour {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
     @Column(name="start_time", nullable = false)
     private Time startTime;
     @Column(name="end_time", nullable = false)
@@ -26,11 +24,11 @@ public class WorkingHour {
         this.driver = driver;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

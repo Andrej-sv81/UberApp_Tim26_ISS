@@ -7,9 +7,9 @@ import java.sql.Date;
 @Entity
 public class UserActivation {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activation_id", nullable = false)
-    private Long id;
+    private Integer id;
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
@@ -27,11 +27,11 @@ public class UserActivation {
         this.lifeTime = lifeTime;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

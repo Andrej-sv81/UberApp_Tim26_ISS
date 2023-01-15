@@ -7,9 +7,9 @@ import java.sql.Time;
 @Entity
 public class Panic {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "panic_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private User user;
@@ -33,11 +33,11 @@ public class Panic {
         this.panicMessage = panicMessage;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

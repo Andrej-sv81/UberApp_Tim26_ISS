@@ -1,11 +1,11 @@
-package com.example.demo.dto.user;
+package com.example.demo.dto;
 
-//ADMIN DTO
-public class UserNoteRequestDTO {
+public class HttpStatusMessageDTO {
+
     private String message;
 
-    public UserNoteRequestDTO(){};
-    public UserNoteRequestDTO(String message) {
+    public HttpStatusMessageDTO(){};
+    public HttpStatusMessageDTO(String message) {
         this.message = message;
     }
 
@@ -19,7 +19,7 @@ public class UserNoteRequestDTO {
 
     @Override
     public String toString() {
-        return "UserNoteRequestDTO{" +
+        return "ErrorMessageDTO{" +
                 "message='" + message + '\'' +
                 '}';
     }
