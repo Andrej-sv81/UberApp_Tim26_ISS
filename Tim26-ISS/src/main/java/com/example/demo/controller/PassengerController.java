@@ -2,13 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.MultiplePassengersDTO;
 import com.example.demo.dto.MultipleRidesDTO;
-import com.example.demo.dto.PassengerRequestDTO;
-import com.example.demo.dto.PassengerResponseDTO;
+import com.example.demo.dto.passenger.PassengerRequestDTO;
+import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class PassengerController {
     }
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     public ResponseEntity<PassengerResponseDTO> getPassenger(@PathVariable("id") int id){
         PassengerResponseDTO response = new PassengerResponseDTO();
         response.setId(id);

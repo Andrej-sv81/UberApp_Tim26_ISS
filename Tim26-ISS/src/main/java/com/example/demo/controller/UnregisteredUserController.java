@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.UnregisteredRequestDTO;
-import com.example.demo.dto.UnregisteredResponseDTO;
+import com.example.demo.dto.user.UnregisteredRequestDTO;
+import com.example.demo.dto.user.UnregisteredResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

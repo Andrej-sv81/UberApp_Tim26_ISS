@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DocumentRepository extends JpaRepository<Document, Integer> {
+public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    public List<Document> findAll();
+    List<Document> findAll();
 
-    public Document findOneById(int id);
+    Document findOneById(int id);
 }
