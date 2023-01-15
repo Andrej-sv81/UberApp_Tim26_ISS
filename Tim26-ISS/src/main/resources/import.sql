@@ -25,3 +25,8 @@ INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehic
 INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id) VALUES (4, 0, 0, 0, 0, 2);
 INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id) VALUES (4, 0, 0, 0, 0, 3);
 
+
+INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar oslobođenja 2', 45.263892, 19.830219);
+
+
+INSERT INTO  vehicle  (vehicle_model, registration_plates, number_of_seats, baby_flag, pet_flag, driver_user_id, vehicle_type_id, location_location_id) VALUES  ('Skoda Octavia', 'NS123AA', 4, 1, 0, 2, 1, 1);

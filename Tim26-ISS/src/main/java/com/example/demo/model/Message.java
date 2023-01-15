@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.user.UserMessageRequestDTO;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.sql.Time;
 

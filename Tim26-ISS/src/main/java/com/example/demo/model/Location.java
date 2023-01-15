@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.VehicleLocationRequestDTO;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 public class Location {
