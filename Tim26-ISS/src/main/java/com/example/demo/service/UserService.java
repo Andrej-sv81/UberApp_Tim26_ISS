@@ -1,33 +1,28 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.user.UserRequestDTO;
-import com.example.demo.dto.user.UserResponseDTO;
-import com.example.demo.model.Role;
 import com.example.demo.model.User;
 //import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-//import org.springframework.security.core.authority.SimpleGrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
-public class UserService implements  IUserService { //UserDetailsService
+public class UserService implements UserDetailsService, IUserService { //UserDetailsService
 
     @Autowired
     private UserRepository userRepository;
@@ -68,6 +63,11 @@ public class UserService implements  IUserService { //UserDetailsService
 ////        Role role = roleRepository.findByName(rolename);
 ////        user.getRoles().add(role);
 //    }
+
+    @Override
+    public User saveUser(User user) {
+        return null;
+    }
 
     @Override
     public User getUser(String email) {

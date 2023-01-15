@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IUserService {
 
+    User save(User user);
+
     User saveUser(User user);
     //Role saveRole(Role role);
     //void addRoleToUser(String email, String role);

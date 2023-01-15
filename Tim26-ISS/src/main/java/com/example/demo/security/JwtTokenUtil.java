@@ -47,7 +47,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     // generisi token za korisnika
-    public String generateToken(String username, String role, Long id){
+    public String generateToken(String username, String role, Integer id){
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", role);
         claims.put("id",id);
@@ -69,7 +69,7 @@ public class JwtTokenUtil implements Serializable {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateRefreshToken(String email, String role, Long id) {
+    public String generateRefreshToken(String email, String role, Integer id) {
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", role);
         claims.put("id", id);

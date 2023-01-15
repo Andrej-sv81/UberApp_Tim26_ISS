@@ -46,9 +46,8 @@ public class UserController {
     @Autowired
     private JwtTokenUtil tokenUtils;
 
-
-//    @Autowired
-//    private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     UserService userService;
