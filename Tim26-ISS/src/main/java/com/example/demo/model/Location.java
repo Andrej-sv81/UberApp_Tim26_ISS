@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+
 import com.example.demo.dto.VehicleLocationRequestDTO;
 import javax.persistence.*;
 

@@ -16,17 +16,22 @@ import com.example.demo.model.User;
 import com.example.demo.service.MessageService;
 import com.example.demo.service.RideService;
 import com.example.demo.service.UserService;
-//import com.example.demo.util.TokenUtils;
-
+import com.example.demo.security.JwtTokenUtil;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.UnsupportedEncodingException;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -38,8 +43,9 @@ import java.util.Random;
 @RequestMapping("/api/user")
 public class UserController {
 
-//    @Autowired
-//    private TokenUtils tokenUtils;
+    @Autowired
+    private JwtTokenUtil tokenUtils;
+
 
 //    @Autowired
 //    private AuthenticationManager authenticationManager;
@@ -166,17 +172,26 @@ public class UserController {
         return new ResponseEntity<MultipleDTO>(rides, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserLoginResponseDTO> logIn(@RequestBody UserLoginRequestDTO request) throws Exception {
-//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-//                request.getEmail(), request.getPassword()));
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        User user = (User) authentication.getPrincipal();
-//        User user = null;
-//        String jwt = tokenUtils.generateToken(user.getEmail());
-//        String jwt_refresh = tokenUtils.generateRefreshToken(user.getEmail());
-        return ResponseEntity.ok(new UserLoginResponseDTO("", ""));
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
+                request.getPassword());
+        Authentication auth = authenticationManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+
+        User user = userService.getUser(request.getEmail());
+
+        String token = tokenUtils.generateToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId()); // prosledjujemo email, role i id korisnika
+        String refreshToken = tokenUtils.generateRefreshToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId());
+
+        UserLoginResponseDTO jwt = new UserLoginResponseDTO();
+        jwt.setAccessToken(token);
+        jwt.setRefreshToken(refreshToken);
+
+        return new ResponseEntity<UserLoginResponseDTO>(jwt, HttpStatus.OK);
+
     }
 
     //    @PostMapping("/signup")

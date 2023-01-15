@@ -4,7 +4,7 @@ import com.example.demo.dto.user.UserRequestDTO;
 import com.example.demo.dto.user.UserResponseDTO;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
-import com.example.demo.repository.RoleRepository;
+//import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -30,24 +31,23 @@ public class UserService implements  IUserService { //UserDetailsService
 
     @Autowired
     private UserRepository userRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
     @Autowired
-    private RoleRepository roleRepository;
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoderUser() {
-//        return new BCryptPasswordEncoder();
-//    }
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        User user = userRepository.findOneByEmail(email);
-//        if(user == null){
-//            throw new UsernameNotFoundException("User not found in database");
-//        }
-//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        user.getRoles().forEach(role -> {
-//            authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        });
-//        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-//    }
+
+    public BCryptPasswordEncoder passwordEncoderUser() {
+        return new BCryptPasswordEncoder();
+    }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> result = Optional.ofNullable(userRepository.findOneByEmail(email));
+
+        if (result.isPresent()){
+            return org.springframework.security.core.userdetails.User.withUsername(email).password(result.get().getPassword()).roles(result.get().getRole().toString()).build();
+        }
+        throw  new UsernameNotFoundException("User not found with this email in database");
+    }
+
 
     @Override
     public User save(User user) {
@@ -56,18 +56,18 @@ public class UserService implements  IUserService { //UserDetailsService
         return user;
     }
 
-    @Override
-    public Role saveRole(Role role) {
-        roleRepository.save(role);
-        return role;
-    }
+//    @Override
+//    public Role saveRole(Role role) {
+//        roleRepository.save(role);
+//        return role;
+//    }
 
-    @Override
-    public void addRoleToUser(String email, String rolename) {
-        User user = userRepository.findOneByEmail(email);
-        Role role = roleRepository.findByName(rolename);
-        user.getRoles().add(role);
-    }
+//    @Override
+//    public void addRoleToUser(String email, String rolename) {
+////        User user = userRepository.findOneByEmail(email);
+////        Role role = roleRepository.findByName(rolename);
+////        user.getRoles().add(role);
+//    }
 
     @Override
     public User getUser(String email) {

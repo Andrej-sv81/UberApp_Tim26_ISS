@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+
 
 @Entity
 public class Route {
