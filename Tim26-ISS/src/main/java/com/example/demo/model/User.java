@@ -11,8 +11,8 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "user_id", nullable = false)
-    private Long id;
+    @Column(name = "user_id", nullable = false)
+    private Integer id;
     @Column(name="name", nullable = false)
     private String name;
     @Column(name="surname", nullable = false)
@@ -59,11 +59,11 @@ public class User {
         this.active = active;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
