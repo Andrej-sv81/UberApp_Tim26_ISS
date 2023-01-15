@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.VehicleLocationRequestDTO;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,6 +25,12 @@ public class Location {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Location(VehicleLocationRequestDTO request) {
+        this.address = request.getAddress();
+        this.latitude = request.getLatitude();
+        this.longitude = request.getLongitude();
     }
 
     public Integer getId() {
