@@ -20,10 +20,10 @@ public class Ride {
     @ManyToOne
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
-    @ManyToMany
-    @Column(name = "passengers", nullable = false)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Column(name = "passengers",nullable = false)
     private List<Passenger> passengers;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Route> routes;
     @Column(name="estimated_time", nullable = true)
     private Time estimatedTime;
