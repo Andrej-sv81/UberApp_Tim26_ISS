@@ -8,7 +8,7 @@ import java.util.List;
 @DiscriminatorValue("PASSENGER")
 public class Passenger extends User {
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "passenger_rides",
             joinColumns = @JoinColumn(name = "user_id"),

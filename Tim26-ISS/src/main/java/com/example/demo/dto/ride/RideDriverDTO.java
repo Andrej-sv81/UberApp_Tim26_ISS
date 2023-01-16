@@ -1,5 +1,8 @@
 package com.example.demo.dto.ride;
 
+import com.example.demo.model.Driver;
+import com.example.demo.model.User;
+
 public class RideDriverDTO {
     private Integer id;
     private String email;
@@ -8,6 +11,11 @@ public class RideDriverDTO {
     public RideDriverDTO(Integer id, String email) {
         this.id = id;
         this.email = email;
+    }
+
+    public RideDriverDTO(Driver user){
+        this.id = user.getId();
+        this.email = user.getEmail();
     }
 
     public Integer getId() {

@@ -1,6 +1,7 @@
 package com.example.demo.dto.ride;
 
 import com.example.demo.dto.RejectionDTO;
+import com.example.demo.model.Ride;
 
 import java.util.List;
 
@@ -30,6 +31,20 @@ public class RideDTO {
         this.vehicleType = vehicleType;
         this.babyTransport = babyTransport;
         this.petTransport = petTransport;
+        this.rejection = rejection;
+        this.locations = locations;
+    }
+    public RideDTO(Ride ride, RideDriverDTO rideDriverDTO, List<RidePassengerDTO> passengers, RejectionDTO rejection, List<RidePathDTO> locations){
+        this.id = ride.getId();
+        this.startTime = ride.getStartTime() == null ? "" : ride.getStartTime().toString();
+        this.endTime = ride.getEndTime() == null ? "" : ride.getEndTime().toString();
+        this.totalCost = ride.getTotalCost();
+        this.driver = rideDriverDTO;
+        this.passengers = passengers;
+        this.estimatedTimeInMinutes = ride.getEstimatedTime() != null ? Math.toIntExact(ride.getEstimatedTime().getTime()) : 0;
+        this.vehicleType = ride.getVehicleType().getName().toString();
+        this.babyTransport = ride.isBabyFlag();
+        this.petTransport = ride.isPetFlag();
         this.rejection = rejection;
         this.locations = locations;
     }
