@@ -9,12 +9,13 @@ public interface IUserService {
 
     User save(User user);
 
-    User saveUser(User user);
+    User saveEncode(User user);
+
     //Role saveRole(Role role);
     //void addRoleToUser(String email, String role);
     User getUser(String email);
     List<User> findAll();
     List<User> findAll(Integer pageNo, Integer pageSize);
     User findOneById(Integer id);
-
+    User findUserByEmail(String email);
 }

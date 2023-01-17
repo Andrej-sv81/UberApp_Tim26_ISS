@@ -6,4 +6,6 @@ public interface IVehicleService {
     Vehicle findOneById(Integer id);
 
     void save(Vehicle vehicle);
+
+
 }
