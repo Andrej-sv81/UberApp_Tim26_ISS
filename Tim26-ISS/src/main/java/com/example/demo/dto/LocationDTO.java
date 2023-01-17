@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.Location;
+
 public class LocationDTO {
     private String address;
     private double latitude;
@@ -11,6 +13,12 @@ public class LocationDTO {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public LocationDTO(Location location) {
+            this.address = location.getAddress();
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
     }
 
     public String getAddress() {

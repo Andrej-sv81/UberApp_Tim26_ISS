@@ -10,12 +10,8 @@ import com.example.demo.dto.ride.RidePathDTO;
 import com.example.demo.dto.user.*;
 import com.example.demo.email.util.EmailDetails;
 import com.example.demo.email.util.EmailService;
-import com.example.demo.model.Message;
-import com.example.demo.model.Ride;
-import com.example.demo.model.User;
-import com.example.demo.service.MessageService;
-import com.example.demo.service.RideService;
-import com.example.demo.service.UserService;
+import com.example.demo.model.*;
+import com.example.demo.service.*;
 import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +53,10 @@ public class UserController {
     RideService rideService;
     @Autowired
     EmailService emailService;
+    @Autowired
+    PassengerService passengerService;
+    @Autowired
+    DriverService driverService;
 
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
@@ -129,7 +129,6 @@ public class UserController {
     }
 
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MultipleDTO> getUsers(
             @RequestParam(required = false) Integer page,
@@ -151,8 +150,9 @@ public class UserController {
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
 
+    //TODO Test with rides data that is complete
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MultipleDTO> getRides(
+    public ResponseEntity<?> getRides(
             @PathVariable(value = "id", required = true) Integer id,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
@@ -161,14 +161,39 @@ public class UserController {
             @RequestParam(required = false) String to
 
     ) {
-        MultipleDTO rides = new MultipleDTO();
-        RideDriverDTO driver = new RideDriverDTO();
-        RejectionDTO rejection = new RejectionDTO();
-        List<RideDTO> rideList = new ArrayList<>();
-        List<RidePassengerDTO> passengerList = new ArrayList<>();
-        List<RidePathDTO> pathList = new ArrayList<>();
+        User user = userService.findOneById(id);
+        if(user == null){
+            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
+            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
+        }
 
-        return new ResponseEntity<MultipleDTO>(rides, HttpStatus.OK);
+        List<Ride> rides = null;
+        if(user.getRole().equals("PASSENGER")){
+            rides = passengerService.getRides(id);
+        }else{
+            rides = driverService.getRides(id);
+        }
+
+        MultipleDTO response = new MultipleDTO();
+        List<RideDTO> rideList = new ArrayList<>();
+
+        for(Ride ride: rides){
+            RideDriverDTO driver = new RideDriverDTO(ride.getDriver());
+            List<RidePassengerDTO> passengerList = new ArrayList<>();
+            for(Passenger passenger: ride.getPassengers()){
+                passengerList.add(new RidePassengerDTO(passenger));
+            }
+            RejectionDTO rejection = new RejectionDTO(ride.getRejectionMessage());
+            List<RidePathDTO> pathList = new ArrayList<>();
+            for(Route route: ride.getRoutes()){
+                pathList.add(new RidePathDTO(route));
+            }
+            rideList.add(new RideDTO(ride, driver, passengerList, rejection, pathList));
+
+        }
+        response.setResults(rideList);
+        response.setTotalCount(rideList.size());
+        return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
 
     @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -267,37 +292,37 @@ public class UserController {
 
     //------------------------------------------------------ADMIN-----------------------------------------------------
     //ADMIN Endpoint
-    @PutMapping(value = "/{id}/block")
-    public ResponseStatusException blockUser(@PathVariable(value = "id", required = true) Integer id) throws Exception {
-        return new ResponseStatusException(HttpStatus.NO_CONTENT);
-    }
-    //ADMIN Endpoint
-    @PutMapping(value = "/{id}/unblock")
-    public ResponseStatusException unblockUser(@PathVariable(value = "id", required = true) Integer id) throws Exception {
-        return new ResponseStatusException(HttpStatus.NO_CONTENT);
-    }
-    //ADMIN Endpoint
-    @PostMapping(value = "/{id}/note", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserNoteResponseDTO> createNote(@PathVariable(value = "id", required = true) Integer id,
-                                                          @RequestBody UserNoteRequestDTO request) throws Exception {
-        UserNoteResponseDTO response = new UserNoteResponseDTO();
-        response.setId(id);
-        return new ResponseEntity<UserNoteResponseDTO>(response, HttpStatus.OK);
-    }
-    //ADMIN Endpoint
-    @GetMapping(value = "/{id}/note", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MultipleMessagesDTO> getNotes(
-            @PathVariable(value = "id", required = true) Integer id,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
-        MultipleMessagesDTO response = new MultipleMessagesDTO();
-        List<UserNoteResponseDTO> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(new UserNoteResponseDTO());
-        }
-        response.setResults(list);
-        return new ResponseEntity<MultipleMessagesDTO>(response, HttpStatus.OK);
-    }
+//    @PutMapping(value = "/{id}/block")
+//    public ResponseStatusException blockUser(@PathVariable(value = "id", required = true) Integer id) throws Exception {
+//        return new ResponseStatusException(HttpStatus.NO_CONTENT);
+//    }
+//    //ADMIN Endpoint
+//    @PutMapping(value = "/{id}/unblock")
+//    public ResponseStatusException unblockUser(@PathVariable(value = "id", required = true) Integer id) throws Exception {
+//        return new ResponseStatusException(HttpStatus.NO_CONTENT);
+//    }
+//    //ADMIN Endpoint
+//    @PostMapping(value = "/{id}/note", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<UserNoteResponseDTO> createNote(@PathVariable(value = "id", required = true) Integer id,
+//                                                          @RequestBody UserNoteRequestDTO request) throws Exception {
+//        UserNoteResponseDTO response = new UserNoteResponseDTO();
+//        response.setId(id);
+//        return new ResponseEntity<UserNoteResponseDTO>(response, HttpStatus.OK);
+//    }
+//    //ADMIN Endpoint
+//    @GetMapping(value = "/{id}/note", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<MultipleMessagesDTO> getNotes(
+//            @PathVariable(value = "id", required = true) Integer id,
+//            @RequestParam(required = false) Integer page,
+//            @RequestParam(required = false) Integer size) {
+//        MultipleMessagesDTO response = new MultipleMessagesDTO();
+//        List<UserNoteResponseDTO> list = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            list.add(new UserNoteResponseDTO());
+//        }
+//        response.setResults(list);
+//        return new ResponseEntity<MultipleMessagesDTO>(response, HttpStatus.OK);
+//    }
 }
 
 

@@ -1,6 +1,7 @@
 package com.example.demo.dto.ride;
 
 import com.example.demo.dto.LocationDTO;
+import com.example.demo.model.Route;
 
 public class RidePathDTO {
     private LocationDTO departure;
@@ -11,6 +12,10 @@ public class RidePathDTO {
     public RidePathDTO(LocationDTO departure, LocationDTO destination) {
         this.departure = departure;
         this.destination = destination;
+    }
+    public RidePathDTO(Route route){
+        this.departure = new LocationDTO(route.getStartLocation());
+        this.destination = new LocationDTO(route.getDestination());
     }
 
     public LocationDTO getDeparture() {

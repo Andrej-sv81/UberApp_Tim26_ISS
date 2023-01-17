@@ -1,9 +1,13 @@
 package com.example.demo.service;
 
+
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.Passenger;
 import com.example.demo.model.User;
+import com.example.demo.model.Passenger;
+import com.example.demo.model.Ride;
+
 import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.interfaces.IPassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.List;
+
 @Service
 public class PassengerService implements IPassengerService{
+
 
     @Autowired
     private PassengerRepository passengerRepository;
@@ -72,5 +79,10 @@ public class PassengerService implements IPassengerService{
     public void deleteAll() {
         passengerRepository.deleteAll();
         passengerRepository.flush();
+
+
+    @Override
+    public List<Ride> getRides(Integer id) {
+        return passengerRepository.getRides(id);
     }
 }
