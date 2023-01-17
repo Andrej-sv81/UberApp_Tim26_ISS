@@ -86,7 +86,7 @@ public class PassengerService implements IPassengerService{
     public void deleteAll() {
         passengerRepository.deleteAll();
         passengerRepository.flush();
-
+    }
 
     @Override
     public List<Ride> getRides(Integer id) {
