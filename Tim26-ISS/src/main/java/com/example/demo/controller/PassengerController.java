@@ -32,6 +32,7 @@ public class PassengerController {
     @Autowired
     private PassengerRepository passengerRepository;
 
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PassengerResponseDTO> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
         PassengerResponseDTO saved = passengerService.insert(new Passenger(passenger));

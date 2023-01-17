@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Vehicle {
     private boolean babyFlag;
     @Column(name="pet_flag", nullable = false)
     private boolean petFlag;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviews;
 
     public Vehicle(){
@@ -118,6 +119,7 @@ public class Vehicle {
         this.petFlag = petFlag;
     }
 
+    @Transactional()
     public List<Review> getReviews() {
         return reviews;
     }

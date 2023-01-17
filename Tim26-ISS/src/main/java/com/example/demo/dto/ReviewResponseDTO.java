@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
 import com.example.demo.dto.passenger.PassengerRideOverDTO;
+import com.example.demo.model.Passenger;
+import com.example.demo.model.Review;
 
 public class ReviewResponseDTO {
     private Integer id;
@@ -17,6 +19,20 @@ public class ReviewResponseDTO {
         this.rating = rating;
         this.comment = comment;
         this.passenger = passenger;
+    }
+
+    public ReviewResponseDTO(Review review, Passenger passenger) {
+        this.id = review.getId();
+        this.rating = review.getScore();
+        this.comment = review.getComment();
+        this.passenger = new PassengerRideOverDTO(passenger.getId(), passenger.getEmail());
+    }
+
+    public ReviewResponseDTO(Review review) {
+        this.id = review.getId();
+        this.rating = review.getScore();
+        this.comment = review.getComment();
+        this.passenger = new PassengerRideOverDTO(review.getPassenger().getId(), review.getPassenger().getEmail());
     }
 
     public Integer getId() {
