@@ -2,7 +2,7 @@ package com.example.demo.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name="users_table")
@@ -37,12 +37,13 @@ public class User {
     @Column(name = "role", nullable = true)
     private String role;
 
-//    @Column(name="password_date", nullable = false)
-    private Date lastPasswordResetDate;
+
 
     @Column(name="password_code", nullable = true)
     private Integer code;
 
+    @Column(name="reset_expiration", nullable = true)
+    private Date expirationDAte;
     public User() {
     }
 
@@ -147,19 +148,20 @@ public class User {
         this.role = role;
     }
 
-    public Date getLastPasswordResetDate() {
-        return lastPasswordResetDate;
-    }
-    public void setLastPasswordResetDate(Date lastPasswordResetDate) {
-        this.lastPasswordResetDate = lastPasswordResetDate;
-    }
-
     public Integer getCode() {
         return code;
     }
 
     public void setCode(Integer code) {
         this.code = code;
+    }
+
+    public Date getExpirationDAte() {
+        return expirationDAte;
+    }
+
+    public void setExpirationDAte(Date expirationDAte) {
+        this.expirationDAte = expirationDAte;
     }
 
     @Override

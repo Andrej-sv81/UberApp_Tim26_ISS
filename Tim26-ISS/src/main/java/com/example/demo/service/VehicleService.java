@@ -21,4 +21,6 @@ public class VehicleService implements IVehicleService {
     public void save(Vehicle vehicle) {
         vehicleRepository.save(vehicle);
     }
+
+
 }

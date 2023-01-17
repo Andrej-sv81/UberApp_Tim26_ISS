@@ -30,6 +30,7 @@ public class WebSecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable().authorizeRequests()   // csrf -> disabled, posto JWT obradjuje zastitu od CSRF napada
                 .antMatchers("/**").permitAll()
+                .antMatchers("/api/unregisteredUser/").permitAll()
                 .antMatchers("/api/user/login").permitAll()//login mogu svi da pozovu
                 .antMatchers("/api/**").authenticated() // sve ostalo mora da bude autentifikovano
                 .and()
