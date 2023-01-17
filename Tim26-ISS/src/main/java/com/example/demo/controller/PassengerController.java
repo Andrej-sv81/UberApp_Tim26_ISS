@@ -1,11 +1,18 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MultipleDTO;
 import com.example.demo.dto.MultiplePassengersDTO;
 import com.example.demo.dto.MultipleRidesDTO;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
+import com.example.demo.dto.user.UserResponseDTO;
+import com.example.demo.model.Passenger;
+import com.example.demo.model.User;
+import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/passenger")
@@ -21,56 +29,54 @@ public class PassengerController {
 
     @Autowired
     private PassengerService passengerService;
+    @Autowired
+    private PassengerRepository passengerRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PassengerResponseDTO> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
-        //Passenger savedPassenger = passengerService.create(passenger);
-        PassengerResponseDTO savedPassengerDTO = new PassengerResponseDTO(1,passenger.getName(),passenger.getSurname(),passenger.getProfilePicture(),passenger.getTelephoneNumber(),passenger.getEmail(),passenger.getAddress());
-        return new ResponseEntity<PassengerResponseDTO>(savedPassengerDTO, HttpStatus.OK);
+        PassengerResponseDTO saved = passengerService.insert(new Passenger(passenger));
+        return new ResponseEntity<PassengerResponseDTO>(saved,HttpStatus.OK);
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MultiplePassengersDTO> getPassengers(@RequestParam(required = false)Integer page, @RequestParam(required = false)Integer size){
-        //Collection<Passenger> passengers = passengerService.findAll();
-        List<PassengerResponseDTO> passengers = new ArrayList<PassengerResponseDTO>();
-        for(int i=0;i<10;i++){
-            PassengerResponseDTO dummy = new PassengerResponseDTO();
-            dummy.setId(i);
-            passengers.add(dummy);
-        }
-        MultiplePassengersDTO response = new MultiplePassengersDTO();
-        response.setResults(passengers);
-        response.setTotalCount(passengers.size());
-        return new ResponseEntity<MultiplePassengersDTO>(response, HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
+    public ResponseEntity<MultipleDTO> getPassengers(@RequestParam Integer page, @RequestParam Integer size){
+        Pageable pageable = PageRequest.of(page,size);
+        List<User> passengers = passengerRepository.findAll(pageable).getContent();
+        List<UserResponseDTO> responseDTOS = UserResponseDTO.makeMultipleResponse(passengers);
+        return new ResponseEntity<MultipleDTO>(new MultipleDTO(responseDTOS.size(),responseDTOS),HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     public ResponseEntity<PassengerResponseDTO> getPassenger(@PathVariable("id") int id){
-        PassengerResponseDTO response = new PassengerResponseDTO();
-        response.setId(id);
+        Optional<User> found = passengerRepository.findById(id);
+        if(found.isEmpty()){
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        PassengerResponseDTO response = new PassengerResponseDTO((Passenger) found.get());
         return new ResponseEntity<PassengerResponseDTO>(response,HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PassengerResponseDTO> updatePassenger(@RequestBody PassengerRequestDTO passenger, @PathVariable int id) throws Exception{
-        PassengerResponseDTO passengerForUpdate = new PassengerResponseDTO();
-        passengerForUpdate.setName("APDEJTOVANKO");
-        passengerForUpdate.setSurname("KANTA");
-        passengerForUpdate.setEmail(passenger.getEmail());
-        passengerForUpdate.setAddress(passenger.getAddress());
-        passengerForUpdate.setProfilePicture(passenger.getProfilePicture());
-        passengerForUpdate.setTelephoneNumber(passenger.getTelephoneNumber());
-        return new ResponseEntity<>(passengerForUpdate,HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
+    public ResponseEntity<PassengerResponseDTO> updatePassenger(@RequestBody PassengerRequestDTO passenger, @PathVariable Integer id) throws Exception{
+        PassengerResponseDTO updated = passengerService.update(passenger,id);
+        return new ResponseEntity<>(updated,HttpStatus.OK);
     }
 
     @GetMapping(value = "/activate/{activationId}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpStatus> activateAccount(@PathVariable int activationId){
+    public ResponseEntity<HttpStatus> activateAccount(@PathVariable Integer activationId){
+        Optional<User> found = passengerRepository.findById(activationId);
+        if (found.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/ride",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     public ResponseEntity<MultipleRidesDTO> getAllRides(@PathVariable("id") int id,
                                                         @RequestParam(required = false) int page,
                                                         @RequestParam(required = false) int size,

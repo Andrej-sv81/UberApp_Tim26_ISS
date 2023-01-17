@@ -2,6 +2,9 @@ package com.example.demo.dto.user;
 
 import com.example.demo.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserResponseDTO {
     private Integer id;
     private String name;
@@ -30,6 +33,15 @@ public class UserResponseDTO {
         this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
+    }
+
+    public static List<UserResponseDTO> makeMultipleResponse(List<User> users){
+        List<UserResponseDTO> response = new ArrayList<>();
+        for (User u : users){
+            UserResponseDTO dto = new UserResponseDTO(u);
+            response.add(dto);
+        }
+        return response;
     }
 
     public Integer getId() {

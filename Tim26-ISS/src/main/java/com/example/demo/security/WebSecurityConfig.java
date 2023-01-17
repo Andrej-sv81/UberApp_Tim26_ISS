@@ -32,6 +32,7 @@ public class WebSecurityConfig{
                 .antMatchers("/**").permitAll()
                 .antMatchers("/api/unregisteredUser/").permitAll()
                 .antMatchers("/api/user/login").permitAll()//login mogu svi da pozovu
+                .antMatchers("/api/passenger").permitAll()
                 .antMatchers("/api/**").authenticated() // sve ostalo mora da bude autentifikovano
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // ne koristimo HttpSession i kukije
