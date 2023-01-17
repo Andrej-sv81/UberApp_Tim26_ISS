@@ -93,6 +93,15 @@ public class PassengerService implements IPassengerService{
         return passengerRepository.getRides(id);
     }
 
+    @Override
+    public Passenger findPassengerByEmail(String mail) {
+        Optional<User> found = passengerRepository.findByEmail(mail);
+        if(found.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+        }
+        return (Passenger) found.get();
+    }
+
 //    @Override
 //    public List<Ride> getRides(Integer id,Integer page, Integer size, String sort, String from, String to) {
 //        Pageable pageable;

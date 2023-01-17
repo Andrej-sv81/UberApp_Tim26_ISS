@@ -10,7 +10,7 @@ public class Driver extends User {
     private List<Document> documents;
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Ride> rides;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Vehicle vehicle;
 
     public Driver(){

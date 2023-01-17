@@ -34,4 +34,5 @@ INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar oslobođ
 
 INSERT INTO  vehicle  (vehicle_model, registration_plates, number_of_seats, baby_flag, pet_flag, driver_user_id, vehicle_type_id, location_location_id) VALUES  ('Skoda Octavia', 'NS123AA', 4, 1, 0, 2, 1, 1);
 
+UPDATE  users_table SET  vehicle_id = 1;
 
