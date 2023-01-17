@@ -1,5 +1,7 @@
 package com.example.demo.dto.passenger;
 
+import com.example.demo.model.Passenger;
+
 public class PassengerResponseDTO {
     private Integer id;
     private String name;
@@ -20,6 +22,16 @@ public class PassengerResponseDTO {
         this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
+    }
+
+    public PassengerResponseDTO(Passenger passenger){
+        this.id = passenger.getId();
+        this.name = passenger.getName();
+        this.surname = passenger.getSurname();
+        this.profilePicture = passenger.getProfilePicture();
+        this.telephoneNumber = passenger.getTelephoneNumber();
+        this.email = passenger.getEmail();
+        this.address = passenger.getAddress();
     }
 
     public Integer getId() {

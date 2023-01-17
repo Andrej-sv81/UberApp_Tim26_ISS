@@ -2,13 +2,16 @@ package com.example.demo.dto;
 
 import com.example.demo.dto.user.UserResponseDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MultipleDTO {
     private int totalCount;
     private List<?> results;
 
-    public MultipleDTO(){};
+    public MultipleDTO(){
+        this.results = new ArrayList<>();
+    };
 
     public MultipleDTO(int totalCount, List<?> results) {
         this.totalCount = totalCount;

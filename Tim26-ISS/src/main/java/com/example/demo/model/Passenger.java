@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.passenger.PassengerRequestDTO;
+
 import javax.persistence.*;
 
 import java.util.List;
@@ -26,6 +28,16 @@ public class Passenger extends User {
         super(name, surname, profilePicture, telephoneNumber, email, address, password, blocked, active);
         this.rides = rides;
         this.routes = routes;
+    }
+
+    public Passenger(PassengerRequestDTO passenger) {
+        this.setName(passenger.getName());
+        this.setSurname(passenger.getSurname());
+        this.setProfilePicture(passenger.getProfilePicture());
+        this.setEmail(passenger.getEmail());
+        this.setAddress(passenger.getAddress());
+        this.setPassword(passenger.getPassword());
+        this.setTelephoneNumber(passenger.getTelephoneNumber());
     }
 
     public List<Ride> getRides() {
@@ -64,5 +76,15 @@ public class Passenger extends User {
                 "rides=" + rides +
                 ", routes=" + routes +
                 '}';
+    }
+
+    public Passenger updatePassenger(PassengerRequestDTO edited){
+        setName(edited.getName());
+        setSurname(edited.getSurname());
+        setProfilePicture(edited.getProfilePicture());
+        setTelephoneNumber(edited.getTelephoneNumber());
+        setEmail(edited.getEmail());
+        setAddress(edited.getAddress());
+        return this;
     }
 }
