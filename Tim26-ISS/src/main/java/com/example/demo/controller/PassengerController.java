@@ -51,7 +51,7 @@ public class PassengerController {
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
-    public ResponseEntity<PassengerResponseDTO> getPassenger(@PathVariable("id") int id){
+    public ResponseEntity<PassengerResponseDTO> getPassenger(@PathVariable("id") Integer id){
         Optional<User> found = passengerRepository.findById(id);
         if(found.isEmpty()){
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -68,6 +68,7 @@ public class PassengerController {
     }
 
     @GetMapping(value = "/activate/{activationId}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     public ResponseEntity<HttpStatus> activateAccount(@PathVariable Integer activationId){
         Optional<User> found = passengerRepository.findById(activationId);
         if (found.isEmpty()){

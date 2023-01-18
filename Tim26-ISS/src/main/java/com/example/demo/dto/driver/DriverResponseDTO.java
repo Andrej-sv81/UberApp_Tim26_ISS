@@ -1,5 +1,7 @@
 package com.example.demo.dto.driver;
 
+import com.example.demo.model.Driver;
+
 public class DriverResponseDTO {
 
     private Integer id;
@@ -21,6 +23,16 @@ public class DriverResponseDTO {
         this.telephoneNumber = telephoneNumber;
         this.email = email;
         this.address = address;
+    }
+
+    public DriverResponseDTO(Driver driver) {
+        this.id = driver.getId();
+        this.name = driver.getName();
+        this.surname = driver.getSurname();
+        this.profilePicture = driver.getProfilePicture();
+        this.telephoneNumber = driver.getTelephoneNumber();
+        this.email = driver.getEmail();
+        this.address = driver.getAddress();
     }
 
     public int getId() {

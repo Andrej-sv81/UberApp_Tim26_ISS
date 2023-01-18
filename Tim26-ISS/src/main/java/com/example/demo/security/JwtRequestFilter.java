@@ -28,9 +28,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (request.getRequestURL().toString().contains("/api/")) {
             System.out.println("####" + request.getMethod() + ":" + request.getRequestURL());
             System.out.println("#### Authorization: " + request.getHeader("Authorization"));
+            System.out.println(request.getAuthType());
             String requestTokenHeader = request.getHeader("Authorization");
             String username = null;
             String jwtToken = null;
+            // PROMENJENO SA Bearer na bearer
             if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
                 jwtToken = requestTokenHeader.substring(requestTokenHeader.indexOf("Bearer ") + 7);
                 System.out.println(">>>>>JWT TOKEN: " + jwtToken);

@@ -2,25 +2,34 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.dto.driver.*;
-import com.example.demo.model.Location;
-import com.example.demo.model.WorkingHour;
+import com.example.demo.dto.passenger.PassengerResponseDTO;
+import com.example.demo.model.*;
+import com.example.demo.repository.DriverRepository;
+import com.example.demo.service.DriverService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/driver")
 public class DriverController {
 
+    @Autowired
+    private DriverService driverService;
+    @Autowired
+    private DriverRepository driverRepository;
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DriverResponseDTO> createDriver(@RequestBody DriverRequestDTO driverRequestDTO){
-        DriverResponseDTO response = new DriverResponseDTO();
-        response.setId(1);
-        return new ResponseEntity<DriverResponseDTO>(response, HttpStatus.OK);
+        DriverResponseDTO saved = driverService.insert(new Driver(driverRequestDTO));
+        return new ResponseEntity<DriverResponseDTO>(saved,HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,35 +48,38 @@ public class DriverController {
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DriverResponseDTO> getDriverInfo(@PathVariable("id") Integer id){
-        DriverResponseDTO responseDTO = new DriverResponseDTO();
-        responseDTO.setId(id);
-        return new ResponseEntity<DriverResponseDTO>(responseDTO,HttpStatus.OK);
+        Optional<User> found = driverRepository.findById(id);
+        if(found.isEmpty()){
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        DriverResponseDTO response = new DriverResponseDTO((Driver) found.get());
+        return new ResponseEntity<DriverResponseDTO>(response,HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DriverResponseDTO> updateDriver(@PathVariable("id") Integer id,@RequestBody DriverRequestDTO driver){
-        DriverResponseDTO updated = new DriverResponseDTO();
-        updated.setId(id);
-        return new ResponseEntity<DriverResponseDTO>(updated,HttpStatus.OK);
+        DriverResponseDTO updated = driverService.update(driver,id);
+        return new ResponseEntity<>(updated,HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/documents",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DriverDocumentsResponseDTO>> getDocuments(@PathVariable("id") int id){
-        List<DriverDocumentsResponseDTO> responseDTO = new ArrayList<DriverDocumentsResponseDTO>();
-        DriverDocumentsResponseDTO doc = new DriverDocumentsResponseDTO();
-        doc.setId(id);
-        doc.setDriverId(id);
-        responseDTO.add(doc);
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
+    public ResponseEntity<List<DriverDocumentsResponseDTO>> getDocuments(@PathVariable("id") Integer id){
+        Optional<User> found = driverRepository.findById(id);
+        if (found.isEmpty())
+            throw new RuntimeException();
+        Driver driver = (Driver) found.get();
+        List<Document> docs = driver.getDocuments();
+        List<DriverDocumentsResponseDTO> responseDTO = DriverDocumentsResponseDTO.returnDocs(docs);
         return new ResponseEntity<List<DriverDocumentsResponseDTO>>(responseDTO,HttpStatus.OK);
     }
 
     @PostMapping(value = "/{id}/documents",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public  ResponseEntity<DriverDocumentsResponseDTO> addDriverDocument(@PathVariable("id") int id,@RequestBody DriverDocumentsRequestDTO docs){
-        DriverDocumentsResponseDTO responseDTO = new DriverDocumentsResponseDTO();
-        responseDTO.setDriverId(id);
-        responseDTO.setId(id);
-        responseDTO.setName(docs.getName());
-        return new ResponseEntity<DriverDocumentsResponseDTO>(responseDTO,HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
+    public  ResponseEntity<DriverDocumentsResponseDTO> addDriverDocument(@PathVariable("id") Integer id,@RequestBody DriverDocumentsRequestDTO docs){
+        driverRepository.findById(id);
+        DriverDocumentsResponseDTO driverDocumentsResponseDTO = driverService.addDocument(id,docs);
+        return new ResponseEntity<DriverDocumentsResponseDTO>(driverDocumentsResponseDTO,HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/document/{document-id}")
