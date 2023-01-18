@@ -17,7 +17,7 @@ public class Ride {
     private Time endTime;
     @Column(name = "total_cost", nullable = true)
     private Integer totalCost;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
     @ManyToMany(fetch = FetchType.EAGER)

@@ -15,12 +15,14 @@ import com.example.demo.service.*;
 import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +31,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +62,9 @@ public class UserController {
     @Autowired
     DriverService driverService;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
                                             @RequestBody ChangePasswordDTO request){
@@ -66,19 +73,16 @@ public class UserController {
             HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
             return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
         }
-        //TODO Use the password encryption in the user service so the user model has a string password
-        String password = user.getPassword();
-        if(!password.equals(request.getOldPassword())){
+        if(!userService.passwordEncoderUser().matches(request.getOldPassword(),user.getPassword())){
             HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("Current password is not matching!");
             return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.BAD_REQUEST);
         }
         user.setPassword(request.getNewPassword());
-        //TODO Password encrypt inside the service
-        userService.save(user);
+        userService.saveEncode(user);
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Password successfully changed!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
-
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
     @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) Integer id) {
 
@@ -89,14 +93,16 @@ public class UserController {
         }
         Random rand = new Random();
         int code = rand.nextInt(9000000) + 1000000;
-        //TODO add expiration to code
+        Date expirationDate = Date.valueOf(LocalDate.now().plusDays(1));
         user.setCode(code);
+        user.setExpirationDAte(expirationDate);
         userService.save(user);
 
         String body = "Hello,\n"
                 + "You have requested to reset your password.\n"
                 + "Use the code below to change your password:\n"
                 + "\n" + code + "\n"
+                + "\nThe code will expire in 1 day.\n\n "
                 + "\nIgnore this email if you do remember your password,\n "
                 + "or you have not made the request.";
 
@@ -106,7 +112,7 @@ public class UserController {
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Email with reset code has been sent!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
-
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
     @PutMapping(value="/{id}/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) Integer id,
                                             @RequestBody ResetPasswordDTO request){
@@ -115,15 +121,16 @@ public class UserController {
             HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
             return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
         }
-        //TODO read expiration from code and check if its still valid
         String code = user.getCode().toString();
-        if(!code.equals(request.getCode())){
+        Date expirationDate = user.getExpirationDAte();
+        if(!code.equals(request.getCode()) || Date.valueOf(LocalDate.now()).after(expirationDate)){
             HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("Code is expired or not correct!");
             return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.BAD_REQUEST);
         }
         user.setPassword(request.getNewPassword());
         user.setCode(null);
-        userService.save(user);
+        user.setExpirationDAte(null);
+        userService.saveEncode(user);
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Password successfully changed!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
@@ -149,8 +156,8 @@ public class UserController {
         response.setTotalCount(users.size());
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-
     //TODO Test with rides data that is complete
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRides(
             @PathVariable(value = "id", required = true) Integer id,
@@ -166,7 +173,7 @@ public class UserController {
             HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
             return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
         }
-
+        //TODO Pagination
         List<Ride> rides = null;
         if(user.getRole().equals("PASSENGER")){
             rides = passengerService.getRides(id);
@@ -217,20 +224,7 @@ public class UserController {
         return new ResponseEntity<UserLoginResponseDTO>(jwt, HttpStatus.OK);
 
     }
-
-    //    @PostMapping("/signup")
-//    public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest, UriComponentsBuilder ucBuilder) {
-//        User existUser = this.userService.findOneByEmail(userRequest.getEmail());
-//
-////       if (existUser != null) {
-////            throw new ResourceConflictException(userRequest.getId(), "Username already exists");
-////        }
-////        User user = this.userService.save(userRequest);
-////        return new ResponseEntity<>(user, HttpStatus.CREATED);
-//
-//        return null;
-
-
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
     @GetMapping(value = "/{id}/message", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMessages(
             @PathVariable(value = "id", required = true) Integer id) {
@@ -251,13 +245,15 @@ public class UserController {
 
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
     @PostMapping(value = "/{id}/message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendMessage(@PathVariable(value = "id", required = true) Integer id,
-                                                              @RequestBody UserMessageRequestDTO request) throws Exception {
+                                         @RequestBody UserMessageRequestDTO request,
+                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization){
 
-        //TODO Get the sender from the JWT token provided in the request
-        User sender = userService.findOneById(1);
+        String jwtToken = authorization.substring(authorization.indexOf("Bearer ") + 7);
+        String mail = jwtTokenUtil.getUsernameFromToken(jwtToken);
+        User sender = userService.findUserByEmail(mail);
         User receiver = userService.findOneById(id);
         Ride ride  =  rideService.findOneById(request.getRideId());
         String errorMessage = "";
