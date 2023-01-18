@@ -64,7 +64,7 @@ public class UserController {
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
                                             @RequestBody ChangePasswordDTO request){
@@ -82,7 +82,7 @@ public class UserController {
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Password successfully changed!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) Integer id) {
 
@@ -112,7 +112,7 @@ public class UserController {
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Email with reset code has been sent!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) Integer id,
                                             @RequestBody ResetPasswordDTO request){
@@ -157,7 +157,7 @@ public class UserController {
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
     //TODO Test with rides data that is complete
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRides(
             @PathVariable(value = "id", required = true) Integer id,
@@ -224,7 +224,7 @@ public class UserController {
         return new ResponseEntity<UserLoginResponseDTO>(jwt, HttpStatus.OK);
 
     }
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/message", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMessages(
             @PathVariable(value = "id", required = true) Integer id) {
@@ -245,7 +245,7 @@ public class UserController {
 
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('DRIVER')")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PostMapping(value = "/{id}/message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendMessage(@PathVariable(value = "id", required = true) Integer id,
                                          @RequestBody UserMessageRequestDTO request,
