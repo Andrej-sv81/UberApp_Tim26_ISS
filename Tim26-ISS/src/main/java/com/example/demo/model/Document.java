@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.driver.DriverDocumentsRequestDTO;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,6 +27,11 @@ public class Document {
         this.name = name;
         this.picture = picture;
         this.driver = driver;
+    }
+
+    public Document(DriverDocumentsRequestDTO docs) {
+        this.name = docs.getName();
+        this.picture = docs.getDocumentImage();
     }
 
     public Integer getId() {

@@ -35,3 +35,6 @@ INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar oslobođ
 INSERT INTO  vehicle  (vehicle_model, registration_plates, number_of_seats, baby_flag, pet_flag, driver_user_id, vehicle_type_id, location_location_id) VALUES  ('Skoda Octavia', 'NS123AA', 4, 1, 0, 2, 1, 1);
 
 
+INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (2,'govno', '19.830219',8);
+INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (3,'kristijan', '19.830219',8);
+INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (4,'kita', '19.830219',1);

@@ -1,5 +1,10 @@
 package com.example.demo.dto.driver;
 
+import com.example.demo.model.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DriverDocumentsResponseDTO {
 
     private Integer id;
@@ -15,6 +20,22 @@ public class DriverDocumentsResponseDTO {
         this.name = name;
         this.documentImage = documentImage;
         this.driverId = driverId;
+    }
+
+    public DriverDocumentsResponseDTO(Document doc) {
+        this.id = doc.getId();
+        this.name = doc.getName();
+        this.documentImage = doc.getPicture();
+        this.driverId = doc.getDriver().getId();
+    }
+
+    public static List<DriverDocumentsResponseDTO> returnDocs(List<Document> documents){
+        List<DriverDocumentsResponseDTO> docs = new ArrayList<>();
+        for (Document doc : documents){
+            DriverDocumentsResponseDTO d = new DriverDocumentsResponseDTO(doc);
+            docs.add(d);
+        }
+        return docs;
     }
 
     public Integer getId() {

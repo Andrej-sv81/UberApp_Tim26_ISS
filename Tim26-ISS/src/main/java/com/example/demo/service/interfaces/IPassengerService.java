@@ -16,7 +16,7 @@ public interface IPassengerService {
     public Passenger findPassenger(Integer passengerId);
     public PassengerResponseDTO insert(Passenger passenger);
     public PassengerResponseDTO update(PassengerRequestDTO passenger, Integer id);
-    public Passenger delete(Integer studentId);
+    public Passenger delete(Integer passengerId);
     public void deleteAll();
     List<Ride> getRides(Integer id);
 

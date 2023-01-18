@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.driver.DriverRequestDTO;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -21,6 +23,9 @@ public class Driver extends User {
         this.documents = documents;
         this.rides = rides;
         this.vehicle = vehicle;
+    }
+
+    public Driver(DriverRequestDTO driverRequestDTO) {
     }
 
     public List<Document> getDocuments() {
@@ -74,5 +79,15 @@ public class Driver extends User {
                 ", rides=" + rides +
                 ", vehicle=" + vehicle +
                 '}';
+    }
+
+    public Driver updateDriver(DriverRequestDTO driver) {
+        setName(driver.getName());
+        setSurname(driver.getSurname());
+        setProfilePicture(driver.getProfilePicture());
+        setTelephoneNumber(driver.getTelephoneNumber());
+        setEmail(driver.getEmail());
+        setAddress(driver.getAddress());
+        return this;
     }
 }
