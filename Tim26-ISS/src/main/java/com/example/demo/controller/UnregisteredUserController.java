@@ -22,7 +22,9 @@ public class UnregisteredUserController {
 
     @Autowired
     VehicleTypeService vehicleTypeService;
-
+    //TODO Provjera formata JSON-a i  preuzetih polja
+    //TODO Global ERROR handler
+    //TODO API iz primjera simulacije vozila, moze da vrati informacije o duzini putanje
     @PostMapping( value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UnregisteredResponseDTO>  rideAssumption(@RequestBody UnregisteredRequestDTO request) throws Exception{
         RidePathDTO path = request.getLocations().get(0);

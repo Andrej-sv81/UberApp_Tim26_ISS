@@ -26,7 +26,6 @@ public class VehicleService implements IVehicleService {
         vehicleRepository.save(vehicle);
         vehicleRepository.flush();
     }
-
     @Override
     @Transactional
     public List<Review> getReviews(Integer id) {

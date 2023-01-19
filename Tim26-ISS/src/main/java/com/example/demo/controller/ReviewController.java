@@ -37,7 +37,8 @@ public class ReviewController {
 
     @Autowired
     PassengerService passengerService;
-
+    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(value = "/{rideId}/vehicle",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createReviewVehicle(@PathVariable("rideId") int rideId,
@@ -68,6 +69,8 @@ public class ReviewController {
         ReviewResponseDTO response = new ReviewResponseDTO(review, passenger);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(value = "/{rideId}/driver",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createReviewDriver(@PathVariable("id") int id, @PathVariable("rideId") int rideId,
@@ -92,6 +95,8 @@ public class ReviewController {
         ReviewResponseDTO response = new ReviewResponseDTO(review, passenger);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/driver/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getReviewsDriver(@PathVariable("id") int id){
@@ -111,6 +116,8 @@ public class ReviewController {
         response.setResults(responseList);
         return new ResponseEntity<MultipleDTO>(response,HttpStatus.OK);
     }
+    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/vehicle/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getReviewsVehicle(@PathVariable("id") int id){
@@ -130,7 +137,8 @@ public class ReviewController {
         response.setResults(responseList);
         return new ResponseEntity<MultipleDTO>(response,HttpStatus.OK);
     }
-
+    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
+    //TODO Global ERROR handler
     @GetMapping(value = "/{rideId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> allReviewsOneRide(@PathVariable("rideId") int rideId){
         Ride ride = rideService.findOneById(rideId);

@@ -15,23 +15,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
-public class UserService implements UserDetailsService, IUserService { //UserDetailsService
+public class UserService implements UserDetailsService, IUserService {
 
     @Autowired
     private UserRepository userRepository;
-    //    @Autowired
-//    private RoleRepository roleRepository;
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
-
-
     public BCryptPasswordEncoder passwordEncoderUser() {
         return new BCryptPasswordEncoder();
     }
@@ -46,14 +39,12 @@ public class UserService implements UserDetailsService, IUserService { //UserDet
         throw new UsernameNotFoundException("User not found with this email in database");
     }
 
-
     @Override
     public User save(User user) {
         userRepository.save(user);
         userRepository.flush();
         return user;
     }
-
     @Override
     public User saveEncode(User user) {
         user.setPassword(passwordEncoderUser().encode(user.getPassword()));
@@ -61,22 +52,6 @@ public class UserService implements UserDetailsService, IUserService { //UserDet
         userRepository.flush();
         return user;
     }
-
-
-//    @Override
-//    public Role saveRole(Role role) {
-//        roleRepository.save(role);
-//        return role;
-//    }
-
-//    @Override
-//    public void addRoleToUser(String email, String rolename) {
-////        User user = userRepository.findOneByEmail(email);
-////        Role role = roleRepository.findByName(rolename);
-////        user.getRoles().add(role);
-//    }
-
-
     @Override
     public User getUser(String email) {
         return userRepository.findOneByEmail(email);
@@ -97,7 +72,6 @@ public class UserService implements UserDetailsService, IUserService { //UserDet
             return new ArrayList<User>();
         }
     }
-
     @Override
     public User findOneById(Integer id) {
         Optional<User> found = userRepository.findById(id);

@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dto.HttpStatusMessageDTO;
 import com.example.demo.dto.VehicleLocationRequestDTO;
 import com.example.demo.model.Location;
-import com.example.demo.model.User;
 import com.example.demo.model.Vehicle;
 import com.example.demo.service.LocationService;
 import com.example.demo.service.VehicleService;
@@ -12,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
 
 @RestController
 @RequestMapping("/api/vehicle")
@@ -23,7 +22,9 @@ public class VehicleController {
 
     @Autowired
     LocationService locationService;
-
+    //TODO Provjere formata JSONA i sadrzaja polja
+    //TODO Provjere ID-a i Authorizacija
+    //TODO Global ERROR handler
     @PutMapping(value="/{id}/location", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changeLocation(@PathVariable(value = "id", required = true) Integer id,
                                                   @RequestBody VehicleLocationRequestDTO request){

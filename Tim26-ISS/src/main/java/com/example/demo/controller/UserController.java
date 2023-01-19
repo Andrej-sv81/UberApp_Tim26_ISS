@@ -6,7 +6,6 @@ import com.example.demo.dto.ride.RideDTO;
 import com.example.demo.dto.ride.RideDriverDTO;
 import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RidePathDTO;
-
 import com.example.demo.dto.user.*;
 import com.example.demo.email.util.EmailDetails;
 import com.example.demo.email.util.EmailService;
@@ -19,9 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,8 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -64,6 +58,8 @@ public class UserController {
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+    //TODO Ogranicenja duzine, postojanja i  formata JSON-a lozinke; Ogranicenje da li je ID od korisnika koji salje ogranicenje
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
@@ -82,6 +78,9 @@ public class UserController {
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Password successfully changed!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
+    //TODO Ogranicenje da li ID pripada korisniku koji salje zahtijev
+    //TODO Global ERROR handler
+    //TODO Kad formiramo front dio, link do stranice za resetovanje ukljuciti u mail
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) Integer id) {
@@ -112,6 +111,8 @@ public class UserController {
         HttpStatusMessageDTO response = new HttpStatusMessageDTO("Email with reset code has been sent!");
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
+    //TODO Ista provjjera kao i kod promjene lozinke
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) Integer id,
@@ -135,7 +136,7 @@ public class UserController {
         return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
     }
 
-
+    //TODO Vjerovatno admin endpoint
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MultipleDTO> getUsers(
             @RequestParam(required = false) Integer page,
@@ -156,7 +157,9 @@ public class UserController {
         response.setTotalCount(users.size());
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-    //TODO Test with rides data that is complete
+    //TODO Provjera svakog parametra zahtijeva i poziv funckijej na osnovu toga
+    //TODO Global ERROR handler
+    //TODO Da li ID odgovara korisniku koji je poslao zahtijev
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRides(
@@ -202,7 +205,7 @@ public class UserController {
         response.setTotalCount(rideList.size());
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-
+    //TODO Provjera foramta e-mail-a???
     @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserLoginResponseDTO> logIn(@RequestBody UserLoginRequestDTO request) throws Exception {
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
@@ -224,6 +227,8 @@ public class UserController {
         return new ResponseEntity<UserLoginResponseDTO>(jwt, HttpStatus.OK);
 
     }
+    //TODO Provjera ID-a korisnika koji salje zahtijev
+    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/message", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMessages(
@@ -245,6 +250,9 @@ public class UserController {
 
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
+    //TODO Promjena nacina dobavljanjja tokena PRINCIPAL objekat
+    //TODO Global ERROR handler
+    //TODO Provjera foramta JSON-a i  proslijedjenih polja
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PostMapping(value = "/{id}/message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendMessage(@PathVariable(value = "id", required = true) Integer id,
