@@ -16,16 +16,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/unregisteredUser")
 public class UnregisteredUserController {
 
     @Autowired
     VehicleTypeService vehicleTypeService;
-
+    //TODO Provjera formata JSON-a i  preuzetih polja
+    //TODO Global ERROR handler
+    //TODO API iz primjera simulacije vozila, moze da vrati informacije o duzini putanje
     @PostMapping( value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UnregisteredResponseDTO>  rideAssumption(@RequestBody UnregisteredRequestDTO request) throws Exception{
-        RidePathDTO path = request.getLocations().get(0);
+    public ResponseEntity<UnregisteredResponseDTO>  rideAssumption(
+            @Valid @RequestBody UnregisteredRequestDTO request){
+
+        RidePathDTO path = request.getLocations().get(0);//TODO error ako je pocetak jednak kraju
         double lat1 = path.getDeparture().getLatitude();
         double lon1 = path.getDeparture().getLongitude();
         double lat2 = path.getDestination().getLatitude();

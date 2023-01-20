@@ -22,13 +22,13 @@ public class Vehicle {
     private String registrationPlates;
     @Column(name="number_of_seats", nullable = false)
     private int numberOfSeats;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Location location;
     @Column(name="baby_flag", nullable = false)
     private boolean babyFlag;
     @Column(name="pet_flag", nullable = false)
     private boolean petFlag;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
 
     public Vehicle(){

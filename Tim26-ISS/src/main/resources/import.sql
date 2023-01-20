@@ -9,18 +9,18 @@ insert into users_table (name, surname, telephone_number, email, address, passwo
 insert into users_table (name, surname, telephone_number, email, address, password, blocked_flag, active_flag, role, type) values ('Mirko', 'Markovic', '0662322322', 'mirko@gmail.com', 'Ulica br 2', '$2a$12$ybQvZ0BWSYep7r4nRdURWOjX2wdbm1L.jstpUcclyI.j/SHeOEHYK', 0, 0, 'DRIVER','DRIVER');
 
 
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 1', current_time, 1, 2, 1);
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 2', current_time, 1, 2, 2);
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 3', current_time, 1, 3, 1);
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 4', current_time, 2, 5, 2);
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 5', current_time, 2, 4, 1);
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 6', current_time, 1, 3, 0);
-INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 7', current_time, 1, 2, 1);
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 1', current_time, 1, 2, 'RIDE');
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 2', current_time, 1, 2, 'RIDE');
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 3', current_time, 1, 3, 'RIDE');
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 4', current_time, 2, 5, 'RIDE');
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 5', current_time, 2, 4, 'RIDE');
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 6', current_time, 1, 3, 'RIDE');
+INSERT INTO  message  (message, time_sent, sender_user_id, receiver_user_id, message_type)VALUES  ('Test Poruka 7', current_time, 1, 2, 'RIDE');
 
 
-INSERT INTO vehicle_type (price_per_km, name) VALUES  (96, 0);
-INSERT INTO vehicle_type (price_per_km, name) VALUES  (200, 1);
-INSERT INTO vehicle_type (price_per_km, name) VALUES  (120, 2);
+INSERT INTO vehicle_type (price_per_km, name) VALUES  (96, 'STANDARD');
+INSERT INTO vehicle_type (price_per_km, name) VALUES  (200, 'LUXURIOUS');
+INSERT INTO vehicle_type (price_per_km, name) VALUES  (120, 'VAN');
 
 
 INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id) VALUES (2, 0, 0, 0, 0, 1);
@@ -36,6 +36,6 @@ INSERT INTO  vehicle  (vehicle_model, registration_plates, number_of_seats, baby
 
 UPDATE  users_table SET  vehicle_id = 1;
 
-INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (2,'govno', '19.830219',8);
+INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (2,'vozacka', '19.830219',8);
 INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (3,'kristijan', '19.830219',8);
-INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (4,'kita', '19.830219',1);
+INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (4,'licna', '19.830219',1);

@@ -31,17 +31,10 @@ public class User {
     private boolean blocked;
     @Column(name="active_flag", nullable = false)
     private boolean active;
-
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    private Collection<RoleAndrej> roles = new ArrayList<>();
     @Column(name = "role", nullable = true)
     private String role;
-
-
-
     @Column(name="password_code", nullable = true)
     private Integer code;
-
     @Column(name="reset_expiration", nullable = true)
     private Date expirationDAte;
     public User() {

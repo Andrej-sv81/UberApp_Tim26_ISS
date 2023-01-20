@@ -2,13 +2,19 @@ package com.example.demo.dto.user;
 
 import com.example.demo.dto.ride.RidePathDTO;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 public class UnregisteredRequestDTO {
-
+    @Valid
     private List<RidePathDTO> locations;
+    @Pattern(regexp="^(STANDARD|LUXURIOUS|VAN)$")
     private String vehicleType;
+    @NotNull
     private boolean babyTransport;
+    @NotNull
     private boolean petTransport;
 
     public UnregisteredRequestDTO(){};
