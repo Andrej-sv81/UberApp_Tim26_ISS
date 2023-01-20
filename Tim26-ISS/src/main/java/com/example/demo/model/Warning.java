@@ -10,7 +10,7 @@ public class Warning {
     private Integer id;
     @Column(name="message", nullable = false)
     private String message;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     private User user;
 
     public Warning(){

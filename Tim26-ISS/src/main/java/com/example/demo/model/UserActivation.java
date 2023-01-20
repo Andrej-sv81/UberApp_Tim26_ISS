@@ -10,7 +10,7 @@ public class UserActivation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activation_id", nullable = false)
     private Integer id;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     private User user;
 
     @Column(name="date_of_creation", nullable = false)

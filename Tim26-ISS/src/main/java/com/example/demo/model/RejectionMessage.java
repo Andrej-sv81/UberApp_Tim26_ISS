@@ -11,11 +11,11 @@ public class RejectionMessage {
     @Column(name = "rmessage_id", nullable = false)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     private Ride ride;
     @Column(name="rejection_reason", nullable = false)
     private String rejectionReason;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
     @Column(name="time_of_rejection", nullable = false)
     private Time timeOfRejection;

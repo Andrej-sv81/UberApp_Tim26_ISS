@@ -17,19 +17,19 @@ public class Ride {
     private Time endTime;
     @Column(name = "total_cost", nullable = true)
     private Integer totalCost;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Column(name = "passengers",nullable = false)
     private List<Passenger> passengers;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
     @Column(name="estimated_time", nullable = true)
     private Time estimatedTime;
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private RideState rideState;
     @OneToOne
     private RejectionMessage rejectionMessage;

@@ -37,6 +37,8 @@ public class ReviewController {
 
     @Autowired
     PassengerService passengerService;
+    //TODO testiranje i validacije svih 5 endpointova i lazy loading problema
+
     //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
     //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
@@ -139,6 +141,7 @@ public class ReviewController {
     }
     //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
     //TODO Global ERROR handler
+
     @GetMapping(value = "/{rideId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> allReviewsOneRide(@PathVariable("rideId") int rideId){
         Ride ride = rideService.findOneById(rideId);

@@ -3,8 +3,12 @@ package com.example.demo.dto.ride;
 import com.example.demo.dto.LocationDTO;
 import com.example.demo.model.Route;
 
+import javax.validation.Valid;
+
 public class RidePathDTO {
+    @Valid
     private LocationDTO departure;
+    @Valid
     private LocationDTO destination;
 
     public RidePathDTO(){};

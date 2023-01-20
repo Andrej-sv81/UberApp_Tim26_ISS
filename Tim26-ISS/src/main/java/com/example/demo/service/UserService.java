@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.interfaces.IUserService;
@@ -76,7 +77,7 @@ public class UserService implements UserDetailsService, IUserService {
     public User findOneById(Integer id) {
         Optional<User> found = userRepository.findById(id);
         if (found.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new UserDoesNotExistException();
         }
         return found.get();
     }

@@ -11,10 +11,10 @@ public class Panic {
     @Column(name = "panic_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Ride ride;
 
     @Column(name = "time", nullable = false)
