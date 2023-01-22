@@ -4,6 +4,7 @@ import com.example.demo.dto.RejectionDTO;
 import com.example.demo.dto.RouteDTO;
 import com.example.demo.dto.driver.DriverRideOverDTO;
 import com.example.demo.dto.passenger.PassengerRideOverDTO;
+import com.example.demo.model.Ride;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ public class RideResponseDTO {
         this.rejection = rejection;
         this.locations = locations;
         this.status = status;
+    }
+
+    public RideResponseDTO(Ride newRide) {
     }
 
     public Integer getId() {

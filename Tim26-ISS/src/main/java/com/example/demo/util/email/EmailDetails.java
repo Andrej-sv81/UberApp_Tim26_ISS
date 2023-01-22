@@ -1,4 +1,4 @@
-package com.example.demo.email.util;
+package com.example.demo.util.email;
 
 public class EmailDetails {
     private String recipient;

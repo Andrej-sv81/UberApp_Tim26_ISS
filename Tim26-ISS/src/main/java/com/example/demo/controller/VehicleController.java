@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
 
@@ -32,7 +33,7 @@ public class VehicleController {
     //TODO test if cascade save works
     @PreAuthorize("hasAuthority('ROLE_DRIVER') || hasAuthority('ROLE_ADMIN')")
     @PutMapping(value = "/{id}/location", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeLocation(@PathVariable(value = "id", required = true) Integer id,
+    public ResponseEntity<?> changeLocation(@PathVariable(value = "id", required = true) @NotNull Integer id,
                                             @Valid @RequestBody LocationDTO request,
                                             Principal userPrincipal) {
         Vehicle vehicle = vehicleService.findOneById(id);

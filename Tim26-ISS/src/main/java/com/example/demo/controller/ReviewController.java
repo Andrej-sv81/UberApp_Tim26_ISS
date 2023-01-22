@@ -47,7 +47,7 @@ public class ReviewController {
 
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(value = "/{rideId}/vehicle",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createReviewVehicle(@PathVariable("rideId") Integer rideId,
+    public ResponseEntity<?> createReviewVehicle(@PathVariable("rideId") @NotNull Integer rideId,
                                                  @Valid @RequestBody ReviewRequestDTO rating,
                                                  Principal userPrincipal){
         String mail = userPrincipal.getName();
@@ -125,7 +125,7 @@ public class ReviewController {
         return new ResponseEntity<MultipleDTO>(response,HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{rideId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> allReviewsOneRide(@PathVariable("rideId") @NotNull  Integer rideId){
         Ride ride = rideService.findOneById(rideId);

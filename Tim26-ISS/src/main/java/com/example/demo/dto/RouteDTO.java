@@ -1,8 +1,11 @@
 package com.example.demo.dto;
 
-public class RouteDTO {
+import javax.validation.Valid;
 
+public class RouteDTO {
+    @Valid
     private LocationDTO departure;
+    @Valid
     private LocationDTO destination;
 
     public RouteDTO() {
