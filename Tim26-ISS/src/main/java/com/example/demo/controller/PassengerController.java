@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.HttpStatusMessageDTO;
 import com.example.demo.dto.MultipleDTO;
 import com.example.demo.dto.MultiplePassengersDTO;
 import com.example.demo.dto.MultipleRidesDTO;
@@ -9,10 +10,12 @@ import com.example.demo.dto.user.UserResponseDTO;
 import com.example.demo.model.Passenger;
 import com.example.demo.model.User;
 import com.example.demo.repository.PassengerRepository;
+import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +35,16 @@ public class PassengerController {
     @Autowired
     private PassengerRepository passengerRepository;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PassengerResponseDTO> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
+    public ResponseEntity<?> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
         PassengerResponseDTO saved = passengerService.insert(new Passenger(passenger));
+        if (saved == null){
+            HttpStatusMessageDTO response = new HttpStatusMessageDTO("User already exists.");
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<PassengerResponseDTO>(saved,HttpStatus.OK);
     }
 
@@ -51,10 +60,11 @@ public class PassengerController {
 
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
-    public ResponseEntity<PassengerResponseDTO> getPassenger(@PathVariable("id") Integer id){
+    public ResponseEntity<?> getPassenger(@PathVariable("id") Integer id){
         Optional<User> found = passengerRepository.findById(id);
         if(found.isEmpty()){
-            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
+            return  new ResponseEntity<>(httpStatusMessageDTO,HttpStatus.NOT_FOUND);
         }
         PassengerResponseDTO response = new PassengerResponseDTO((Passenger) found.get());
         return new ResponseEntity<PassengerResponseDTO>(response,HttpStatus.OK);
@@ -62,9 +72,19 @@ public class PassengerController {
 
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
-    public ResponseEntity<PassengerResponseDTO> updatePassenger(@RequestBody PassengerRequestDTO passenger, @PathVariable Integer id) throws Exception{
-        PassengerResponseDTO updated = passengerService.update(passenger,id);
-        return new ResponseEntity<>(updated,HttpStatus.OK);
+    public ResponseEntity<?> updatePassenger(@RequestBody PassengerRequestDTO passenger, @PathVariable Integer id) throws Exception{
+        // TODO proveri da li uopste postoji taj putnik ako postoji proveri da li je isti kao iz tokena
+        Optional<User> check = passengerRepository.findById(id);
+        if (check.isEmpty()){
+            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
+            return new ResponseEntity<>(httpStatusMessageDTO,HttpStatus.NOT_FOUND);
+        }
+        if (check.get().getEmail()==passenger.getEmail()){
+            PassengerResponseDTO updated = passengerService.update(passenger,id);
+            return new ResponseEntity<>(updated,HttpStatus.OK);
+        }
+        HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("You can not acces this users data!");
+        return new ResponseEntity<>(httpStatusMessageDTO,HttpStatus.FORBIDDEN);
     }
 
     @GetMapping(value = "/activate/{activationId}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,6 +106,9 @@ public class PassengerController {
                                                         @RequestParam(required = false) String from,
                                                         @RequestParam(required = false) String to){
         MultipleRidesDTO response = new MultipleRidesDTO();
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort));
+
         return new ResponseEntity<MultipleRidesDTO>(response,HttpStatus.OK);
+
     }
 }
