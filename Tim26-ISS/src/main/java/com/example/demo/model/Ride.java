@@ -21,7 +21,7 @@ public class Ride {
     private Date endTime;
     @Column(name = "total_cost", nullable = true)
     private Integer totalCost;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

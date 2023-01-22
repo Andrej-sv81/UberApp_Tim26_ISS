@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
+import com.example.demo.exceptions.UserIdNotMatchingException;
+import com.example.demo.exceptions.VehicleDoesNotExistException;
 import com.example.demo.model.*;
 import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.service.*;
@@ -12,15 +14,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.max;
 
 @RestController
+@Validated
 @RequestMapping("/api/review")
 public class ReviewController {
 
@@ -37,31 +44,25 @@ public class ReviewController {
 
     @Autowired
     PassengerService passengerService;
-    //TODO testiranje i validacije svih 5 endpointova i lazy loading problema
 
-    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
-    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(value = "/{rideId}/vehicle",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createReviewVehicle(@PathVariable("rideId") int rideId,
-                                                                 @RequestBody ReviewRequestDTO rating,
-                                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization){
-        String jwtToken = authorization.substring(authorization.indexOf("Bearer ") + 7);
-        String mail = jwtTokenUtil.getUsernameFromToken(jwtToken);
+    public ResponseEntity<?> createReviewVehicle(@PathVariable("rideId") Integer rideId,
+                                                 @Valid @RequestBody ReviewRequestDTO rating,
+                                                 Principal userPrincipal){
+        String mail = userPrincipal.getName();
         Passenger passenger = passengerService.findPassengerByEmail(mail);
         Ride ride = rideService.findOneById(rideId);
-        if(ride == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("Ride does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
-        }
         Driver driver = ride.getDriver();
         Vehicle vehicle = driver.getVehicle();
+
         if(vehicle == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("Vehicle does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
+            throw new VehicleDoesNotExistException();
         }
+
         Review review = new Review(rating,ride,passenger);
         reviewService.save(review);
+
         vehicle.setReviews(vehicleService.getReviews(vehicle.getId()));
         List<Review> reviewList = vehicle.getReviews();
         reviewList.add(review);
@@ -71,63 +72,47 @@ public class ReviewController {
         ReviewResponseDTO response = new ReviewResponseDTO(review, passenger);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
-    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
-    //TODO Global ERROR handler
+
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(value = "/{rideId}/driver",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createReviewDriver(@PathVariable("id") int id, @PathVariable("rideId") int rideId,
-                                                @RequestBody ReviewRequestDTO rating,
-                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization){
-        String jwtToken = authorization.substring(authorization.indexOf("Bearer ") + 7);
-        String mail = jwtTokenUtil.getUsernameFromToken(jwtToken);
+    public ResponseEntity<?> createReviewDriver(@PathVariable("rideId") @NotNull Integer rideId,
+                                                @Valid @RequestBody ReviewRequestDTO rating,
+                                                Principal userPrincipal){
+        String mail = userPrincipal.getName();
         Passenger passenger = passengerService.findPassengerByEmail(mail);
         Ride ride = rideService.findOneById(rideId);
-        if(ride == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("Ride does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
-        }
-        Driver driver = ride.getDriver();
+
         Review review = new Review(rating,ride,passenger);
+        review.setNotVehicle(true);
         reviewService.save(review);
-        ride.setReviews(rideService.getReviews(ride.getId()));
-        List<Review> reviewList = ride.getReviews();
-        reviewList.add(review);
-        ride.setReviews(reviewList);
-        rideService.save(ride);
+
         ReviewResponseDTO response = new ReviewResponseDTO(review, passenger);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
-    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
-    //TODO Global ERROR handler
+
+
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/driver/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getReviewsDriver(@PathVariable("id") int id){
+    public ResponseEntity<?> getReviewsDriver(@PathVariable("id") @NotNull  Integer id){
         Ride ride = rideService.findOneById(id);
-        if(ride == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("Driver does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
-        }
         ride.setReviews(rideService.getReviews(ride.getId()));
         List<Review> reviews = ride.getReviews();
         List<ReviewResponseDTO> responseList = new ArrayList<ReviewResponseDTO>();
         for(Review review: reviews){
-            responseList.add(new ReviewResponseDTO(review));
+            if(review.isNotVehicle()){
+                responseList.add(new ReviewResponseDTO(review));
+            }
         }
         MultipleDTO response = new MultipleDTO();
         response.setTotalCount(responseList.size());
         response.setResults(responseList);
         return new ResponseEntity<MultipleDTO>(response,HttpStatus.OK);
     }
-    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
-    //TODO Global ERROR handler
+
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/vehicle/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getReviewsVehicle(@PathVariable("id") int id){
+    public ResponseEntity<?> getReviewsVehicle(@PathVariable("id") @NotNull  Integer id){
         Vehicle vehicle = vehicleService.findOneById(id);
-        if(vehicle == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("Vehicle does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
-        }
         vehicle.setReviews(vehicleService.getReviews(vehicle.getId()));
         List<Review> reviews = vehicle.getReviews();
         List<ReviewResponseDTO> responseList = new ArrayList<ReviewResponseDTO>();
@@ -139,33 +124,39 @@ public class ReviewController {
         response.setResults(responseList);
         return new ResponseEntity<MultipleDTO>(response,HttpStatus.OK);
     }
-    //TODO Provjera JSON-a, PRINCIPAL objekat, ID korisnika
-    //TODO Global ERROR handler
+
 
     @GetMapping(value = "/{rideId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> allReviewsOneRide(@PathVariable("rideId") int rideId){
+    public ResponseEntity<?> allReviewsOneRide(@PathVariable("rideId") @NotNull  Integer rideId){
         Ride ride = rideService.findOneById(rideId);
-        Vehicle vehicle = vehicleService.findOneById(ride.getDriver().getVehicle().getId());
-        if(ride == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("Ride does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
-        }
         ride.setReviews(rideService.getReviews(ride.getId()));
-        vehicle.setReviews(vehicleService.getReviews(vehicle.getId()));
-        List<Review> reviewsDriver = ride.getReviews();
+        List<Review> reviews = ride.getReviews();
         List<ReviewResponseDTO> responseListDriver = new ArrayList<ReviewResponseDTO>();
-        List<Review> reviewsVehicle = vehicle.getReviews();
         List<ReviewResponseDTO> responseListVehicle = new ArrayList<ReviewResponseDTO>();
-        for(Review review: reviewsDriver){
-            responseListDriver.add(new ReviewResponseDTO(review));
-        }
-        for(Review review: reviewsVehicle){
-            responseListVehicle.add(new ReviewResponseDTO(review));
+
+        for(Review review: reviews){
+            if(review.isNotVehicle()){
+                responseListDriver.add(new ReviewResponseDTO(review));
+            }else{
+                responseListVehicle.add(new ReviewResponseDTO(review));
+            }
         }
         List<OneRideAllReviewsDTO> response = new ArrayList<OneRideAllReviewsDTO>();
         int to = max(responseListDriver.size(), responseListVehicle.size());
         for(int i = 0; i<to; i++){
-            response.add(new OneRideAllReviewsDTO(responseListDriver.get(i), responseListVehicle.get(i)));
+            ReviewResponseDTO driver;
+            ReviewResponseDTO vehicle;
+            try{
+               driver = responseListDriver.get(i);
+            }catch(IndexOutOfBoundsException e){
+                driver = null;
+            }
+            try{
+                vehicle = responseListVehicle.get(i);
+            }catch(IndexOutOfBoundsException e){
+                vehicle = null;
+            }
+            response.add(new OneRideAllReviewsDTO(vehicle, driver));
         }
         return new ResponseEntity<List<OneRideAllReviewsDTO>>(response,HttpStatus.OK);
     }

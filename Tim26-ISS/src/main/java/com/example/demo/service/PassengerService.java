@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.exceptions.UserDoesNotExistException;
 import org.springframework.data.domain.Page;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
@@ -98,7 +99,7 @@ public class PassengerService implements IPassengerService{
     public Passenger findPassengerByEmail(String mail) {
         Optional<User> found = passengerRepository.findByEmail(mail);
         if(found.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+            throw new UserDoesNotExistException();
         }
         return (Passenger) found.get();
     }

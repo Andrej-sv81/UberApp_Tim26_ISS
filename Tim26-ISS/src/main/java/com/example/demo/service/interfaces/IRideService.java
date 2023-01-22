@@ -19,4 +19,5 @@ public interface IRideService {
     List<Ride> getRides(Integer id, Integer page, Integer size, String sort, String from, String to);
 
     List<Ride> getRidesPassenger(Integer id, Integer page, Integer size, String sort, String from, String to);
+
 }

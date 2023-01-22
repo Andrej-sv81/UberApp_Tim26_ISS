@@ -1,7 +1,15 @@
 package com.example.demo.dto;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 public class ReviewRequestDTO {
+    @Min(0)
+    @Max(5)
     private int rating;
+    @Length(max = 255)
     private String comment;
 
     public ReviewRequestDTO() {

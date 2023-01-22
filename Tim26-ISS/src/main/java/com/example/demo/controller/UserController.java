@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
@@ -78,7 +79,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
+    public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) @NotNull Integer id,
                                             @Valid @RequestBody ChangePasswordDTO request,
                                             Principal userPrincipal){
         User user = userService.findOneById(id);
@@ -95,7 +96,7 @@ public class UserController {
     //TODO Kad formiramo front dio, link do stranice za resetovanje ukljuciti u mail
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) Integer id,
+    public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) @NotNull  Integer id,
                                                         Principal userPrincipal) {
         User user = userService.findOneById(id);
         if(!userPrincipal.getName().equals(user.getEmail())){
@@ -123,7 +124,7 @@ public class UserController {
     }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) Integer id,
+    public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) @NotNull  Integer id,
                                            @Valid @RequestBody ResetPasswordDTO request,
                                            Principal userPrincipal){
         User user = userService.findOneById(id);
@@ -166,7 +167,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRides(
-            @PathVariable(value = "id", required = true) Integer id,
+            @PathVariable(value = "id", required = true) @NotNull  Integer id,
             @RequestParam(required = false) @Min(0) Integer page,
             @RequestParam(required = false) @Min(0) Integer size,
             @RequestParam(required = false) String sort,
@@ -238,7 +239,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/message", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMessages(
-            @PathVariable(value = "id", required = true) Integer id,
+            @PathVariable(value = "id", required = true) @NotNull  Integer id,
             Principal userPrincipal) {
         User user = userService.findOneById(id);
         if(!userPrincipal.getName().equals(user.getEmail())){
@@ -258,7 +259,7 @@ public class UserController {
     }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PostMapping(value = "/{id}/message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendMessage(@PathVariable(value = "id", required = true) Integer id,
+    public ResponseEntity<?> sendMessage(@PathVariable(value = "id", required = true) @NotNull  Integer id,
                                          @Valid @RequestBody UserMessageRequestDTO request,
                                          Principal userPrincipal){
         String mail = userPrincipal.getName();
