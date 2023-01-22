@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class ExplanationDTO {
+    @NotBlank
     private String reason;
 
     public ExplanationDTO() {

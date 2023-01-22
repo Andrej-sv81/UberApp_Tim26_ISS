@@ -1,7 +1,14 @@
 package com.example.demo.dto.passenger;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class PassengerRideOverDTO {
+    @NotNull
+    @Min(1)
     private Integer id;
+    @Email
     private String email;
 
     public PassengerRideOverDTO() {

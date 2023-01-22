@@ -24,7 +24,7 @@ public class Route {
         super();
     }
 
-    public Route(Location startLocation, Location destination, int distanceInKm) {
+    public Route(Location startLocation, Location destination, double distanceInKm) {
         this.startLocation = startLocation;
         this.destination = destination;
         this.distanceInKm = distanceInKm;

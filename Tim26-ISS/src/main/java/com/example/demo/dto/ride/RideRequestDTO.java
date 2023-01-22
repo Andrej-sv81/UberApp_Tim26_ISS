@@ -3,14 +3,22 @@ package com.example.demo.dto.ride;
 import com.example.demo.dto.RouteDTO;
 import com.example.demo.dto.passenger.PassengerRideOverDTO;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 public class RideRequestDTO
 {
+    @Valid
     private List<RouteDTO> locations;
+    @Valid
     private List<PassengerRideOverDTO> passengers;
+    @Pattern(regexp="^(STANDARD|LUXURIOUS|VAN)$")
     private String vehicleType;
+    @NotNull
     private boolean babyTransport;
+    @NotNull
     private boolean petTransport;
 
     public RideRequestDTO() {

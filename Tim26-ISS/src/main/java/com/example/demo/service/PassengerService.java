@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-
+import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.security.JwtTokenUtil;
 import org.springframework.data.domain.Page;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
@@ -106,8 +106,9 @@ public class PassengerService implements IPassengerService {
     @Override
     public Passenger findPassengerByEmail(String mail) {
         Optional<User> found = passengerRepository.findByEmail(mail);
-        if (found.isEmpty()) {
-            return null;
+        
+        if(found.isEmpty()){
+            throw new UserDoesNotExistException();
         }
         return (Passenger) found.get();
     }

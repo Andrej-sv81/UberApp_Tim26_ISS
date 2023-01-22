@@ -21,7 +21,7 @@ public class Ride {
     private Date endTime;
     @Column(name = "total_cost", nullable = true)
     private Integer totalCost;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -30,7 +30,7 @@ public class Ride {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
     @Column(name="estimated_time", nullable = true)
-    private Time estimatedTime;
+    private int estimatedTime;
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
     @Enumerated(EnumType.STRING)
@@ -50,7 +50,7 @@ public class Ride {
         super();
     }
     public Ride(Date startTime, Date endTime, int totalCost, Driver driver, List<Passenger> passengers, List<Route> routes,
-                Time estimatedTime, List<Review> reviews, RideState rideState, RejectionMessage rejectionMessage,
+                int estimatedTime, List<Review> reviews, RideState rideState, RejectionMessage rejectionMessage,
                 boolean panicFlag, boolean babyFlag, boolean petFlag, VehicleType vehicleType) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -131,11 +131,11 @@ public class Ride {
         this.routes = routes;
     }
 
-    public Time getEstimatedTime() {
+    public int getEstimatedTime() {
         return estimatedTime;
     }
 
-    public void setEstimatedTime(Time estimatedTime) {
+    public void setEstimatedTime(int estimatedTime) {
         this.estimatedTime = estimatedTime;
     }
 

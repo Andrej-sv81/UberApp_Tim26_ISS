@@ -20,8 +20,11 @@ public class Review {
     @JoinColumn(name = "ride_id")
     private Ride ride;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private Passenger passenger;
+
+    @Column(name="driver_review")
+    boolean notVehicle =  false;
 
     public Review() {
         super();
@@ -79,6 +82,14 @@ public class Review {
 
     public void setPassenger(Passenger passenger) {
         this.passenger = passenger;
+    }
+
+    public boolean isNotVehicle() {
+        return notVehicle;
+    }
+
+    public void setNotVehicle(boolean notVehicle) {
+        this.notVehicle = notVehicle;
     }
 
     @Override
