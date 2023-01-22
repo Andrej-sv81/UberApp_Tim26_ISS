@@ -1,6 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.exceptions.UserDoesNotExistException;
+import com.example.demo.exceptions.VehicleDoesNotExistException;
 import com.example.demo.model.Review;
+import com.example.demo.model.User;
 import com.example.demo.model.Vehicle;
 import com.example.demo.repository.VehicleRepository;
 import com.example.demo.service.interfaces.IVehicleService;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleService implements IVehicleService {
@@ -18,7 +22,11 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public Vehicle findOneById(Integer id) {
-        return vehicleRepository.findOneById(id);
+        Optional<Vehicle> found = vehicleRepository.findOneById(id);
+        if (found.isEmpty()) {
+            throw new VehicleDoesNotExistException();
+        }
+        return found.get();
     }
 
     @Override

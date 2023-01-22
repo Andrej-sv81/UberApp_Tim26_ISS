@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.HttpStatusMessageDTO;
-import com.example.demo.dto.VehicleLocationRequestDTO;
+import com.example.demo.dto.LocationDTO;
+import com.example.demo.exceptions.UserIdNotMatchingException;
 import com.example.demo.model.Location;
 import com.example.demo.model.Vehicle;
 import com.example.demo.service.LocationService;
@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 
 @RestController
@@ -25,27 +26,30 @@ public class VehicleController {
 
     @Autowired
     LocationService locationService;
-    //TODO Provjere formata JSONA i sadrzaja polja: za sada samo not null
-    //TODO Global ERROR handler
-    //TODO test if cascade save works
-    //TODO LocationDTO koristiti
-    @PreAuthorize("hasAuthority('ROLE_DRIVER') || hasAuthority('ROLE_ADMIN')")
-    @PutMapping(value="/{id}/location", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> changeLocation(@PathVariable(value = "id", required = true) Integer id,
-                                            @Valid @RequestBody VehicleLocationRequestDTO request){
-        Vehicle vehicle = vehicleService.findOneById(id); //TODO throw does not exist
-        Location locationOld = vehicle.getLocation();
 
-        if(locationOld!=null){
+
+
+    //TODO test if cascade save works
+    @PreAuthorize("hasAuthority('ROLE_DRIVER') || hasAuthority('ROLE_ADMIN')")
+    @PutMapping(value = "/{id}/location", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeLocation(@PathVariable(value = "id", required = true) Integer id,
+                                            @Valid @RequestBody LocationDTO request,
+                                            Principal userPrincipal) {
+        Vehicle vehicle = vehicleService.findOneById(id);
+        if(!userPrincipal.getName().equals(vehicle.getDriver().getEmail())){
+            throw new UserIdNotMatchingException();
+        }
+        Location locationOld = vehicle.getLocation();
+        if (locationOld != null) {
             locationOld.setAddress(request.getAddress());
             locationOld.setLatitude(request.getLatitude());
             locationOld.setLongitude(request.getLongitude());
             vehicle.setLocation(locationOld);
-        }else{
+        } else {
             Location location = new Location(request);
             vehicle.setLocation(location);
         }
         vehicleService.save(vehicle);
-        return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

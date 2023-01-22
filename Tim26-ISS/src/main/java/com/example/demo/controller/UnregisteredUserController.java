@@ -24,14 +24,13 @@ public class UnregisteredUserController {
 
     @Autowired
     VehicleTypeService vehicleTypeService;
-    //TODO Provjera formata JSON-a i  preuzetih polja
-    //TODO Global ERROR handler
+
     //TODO API iz primjera simulacije vozila, moze da vrati informacije o duzini putanje
     @PostMapping( value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UnregisteredResponseDTO>  rideAssumption(
             @Valid @RequestBody UnregisteredRequestDTO request){
 
-        RidePathDTO path = request.getLocations().get(0);//TODO error ako je pocetak jednak kraju
+        RidePathDTO path = request.getLocations().get(0);
         double lat1 = path.getDeparture().getLatitude();
         double lon1 = path.getDeparture().getLongitude();
         double lat2 = path.getDestination().getLatitude();
@@ -48,7 +47,6 @@ public class UnregisteredUserController {
         UnregisteredResponseDTO responseDTO = new UnregisteredResponseDTO( Math.round(minutes), Math.round(price));
         return  new ResponseEntity<UnregisteredResponseDTO>(responseDTO, HttpStatus.OK);
     }
-
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2){
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -58,16 +56,9 @@ public class UnregisteredUserController {
         dist = dist * 1.609344;
         return dist;
     }
-
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts decimal degrees to radians             :*/
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts radians to decimal degrees             :*/
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }

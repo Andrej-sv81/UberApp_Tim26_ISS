@@ -14,6 +14,8 @@ import com.example.demo.exceptions.PasswordNotMatchingException;
 import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.exceptions.UserIdNotMatchingException;
 import com.example.demo.model.*;
+import com.example.demo.repository.DriverRepository;
+import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.*;
 import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.service.UserService;
@@ -28,9 +30,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
@@ -41,6 +45,7 @@ import java.util.List;
 import java.util.Random;
 
 @RestController
+@Validated
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
@@ -59,9 +64,18 @@ public class UserController {
     PassengerService passengerService;
     @Autowired
     DriverService driverService;
+    @Autowired
+    RejectionMessageService rejectionMessageService;
+    @Autowired
+    RouteService routeService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private DriverRepository driverRepository;
+    @Autowired
+    private PassengerRepository passengerRepository;
+
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
@@ -149,14 +163,12 @@ public class UserController {
         response.setTotalCount(users.size());
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-    //TODO Provjera svakog parametra zahtijeva i poziv funckijej na osnovu toga
-    //TODO Global ERROR handler
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRides(
             @PathVariable(value = "id", required = true) Integer id,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) @Min(0) Integer page,
+            @RequestParam(required = false) @Min(0) Integer size,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String from,
             @RequestParam(required = false) String to,
@@ -166,32 +178,35 @@ public class UserController {
         if(!userPrincipal.getName().equals(user.getEmail())){
             throw new UserIdNotMatchingException();
         }
-        //TODO Pagination
+
         List<Ride> rides = null;
-        if(user.getRole().equals("PASSENGER")){
-            rides = passengerService.getRides(id);//TODO baci error unutra
+        if(user.getRole().equals("DRIVER")){
+            rides = rideService.getRides(id, page, size, sort, from, to);
         }else{
-            rides = driverService.getRides(id); //TODO baci error unutra
+            rides = rideService.getRidesPassenger(id, page, size, sort, from, to);
         }
+
         MultipleDTO response = new MultipleDTO();
         List<RideDTO> rideList = new ArrayList<>();
-        //TODO lazy loading obekte inicijalizirati jednom funkcijjom iz servica ^^
+
         for(Ride ride: rides){
             RideDriverDTO driver = new RideDriverDTO(ride.getDriver());
 
-            List<RidePassengerDTO> passengerList = new ArrayList<>();
-            for(Passenger passenger: ride.getPassengers()){
-                passengerList.add(new RidePassengerDTO(passenger));
+            List<RidePassengerDTO> passengerListDTO = new ArrayList<>();
+            List<Passenger> passengerList = passengerService.getPassengersOfRide(ride.getId());
+            for(Passenger passenger: passengerList){
+                passengerListDTO.add(new RidePassengerDTO(passenger));
+            }
+            RejectionMessage message = rejectionMessageService.getMessageFromRide(ride.getId());
+            RejectionDTO rejection = new RejectionDTO(message);
+
+            List<RidePathDTO> pathListDTO = new ArrayList<>();
+            List<Route> pathList = routeService.getRoutesFromRide(ride.getId());
+            for(Route route: pathList){
+                pathListDTO.add(new RidePathDTO(route));
             }
 
-            RejectionDTO rejection = new RejectionDTO(ride.getRejectionMessage());
-
-            List<RidePathDTO> pathList = new ArrayList<>();
-            for(Route route: ride.getRoutes()){
-                pathList.add(new RidePathDTO(route));
-            }
-
-            rideList.add(new RideDTO(ride, driver, passengerList, rejection, pathList));
+            rideList.add(new RideDTO(ride, driver, passengerListDTO, rejection, pathListDTO));
         }
 
         response.setResults(rideList);
@@ -231,9 +246,11 @@ public class UserController {
         }
         MultipleDTO response = new MultipleDTO();
         List<UserMessageResponseDTO> messageDTOS = new ArrayList<>();
-        List<Message> messages = messageService.findAllBySenderId(id); //TODO baciti erorr iz servisa; vratiti primljene poruke>>??
-        for(Message m : messages){
-            messageDTOS.add(new UserMessageResponseDTO(m));
+        List<Message> messages = messageService.findAllById(id);
+        if(messages != null) {
+            for (Message m : messages) {
+                messageDTOS.add(new UserMessageResponseDTO(m));
+            }
         }
         response.setResults(messageDTOS);
         response.setTotalCount(messageDTOS.size());
@@ -245,10 +262,12 @@ public class UserController {
                                          @Valid @RequestBody UserMessageRequestDTO request,
                                          Principal userPrincipal){
         String mail = userPrincipal.getName();
-        User sender = userService.findUserByEmail(mail);  //TODO DOesnt not exist
-        User receiver = userService.findOneById(id);      //TODO does not exist different message
-        Ride ride  =  rideService.findOneById(request.getRideId());   //tODO does not exist
-
+        User sender = userService.findUserByEmail(mail);
+        if(!userPrincipal.getName().equals(sender.getEmail())){
+            throw new UserIdNotMatchingException();
+        }
+        User receiver = userService.findReceiverById(id);
+        Ride ride  =  rideService.findOneById(request.getRideId());
         Message message = new Message(request, Time.valueOf(LocalTime.now()),sender, receiver);
         messageService.save(message);
         UserMessageResponseDTO response = new UserMessageResponseDTO(message);
