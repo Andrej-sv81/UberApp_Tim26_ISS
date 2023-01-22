@@ -21,7 +21,7 @@ public class Message {
     private String message;
     @Column(name="time_sent", nullable = false)
     private Time sentTime;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private MessageType messageType;
     @Column(name="ride_id_for_ride_message", nullable = true)
     private Integer rideId;

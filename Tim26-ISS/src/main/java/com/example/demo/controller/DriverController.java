@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.dto.driver.*;
-import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
 import com.example.demo.service.DriverService;

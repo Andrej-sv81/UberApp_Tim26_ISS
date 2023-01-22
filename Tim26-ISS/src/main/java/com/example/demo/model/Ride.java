@@ -2,7 +2,9 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 
+import java.util.Date;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,25 +13,27 @@ public class Ride {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ride_id", nullable = false)
     private Integer id;
-    @Column(name = "start_time", nullable = true)
-    private Time startTime;
-    @Column(name = "end_time", nullable = true)
-    private Time endTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endTime;
     @Column(name = "total_cost", nullable = true)
     private Integer totalCost;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Column(name = "passengers",nullable = false)
     private List<Passenger> passengers;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
     @Column(name="estimated_time", nullable = true)
     private Time estimatedTime;
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private RideState rideState;
     @OneToOne
     private RejectionMessage rejectionMessage;
@@ -45,7 +49,7 @@ public class Ride {
     public Ride(){
         super();
     }
-    public Ride(Time startTime, Time endTime, int totalCost, Driver driver, List<Passenger> passengers, List<Route> routes,
+    public Ride(Date startTime, Date endTime, int totalCost, Driver driver, List<Passenger> passengers, List<Route> routes,
                 Time estimatedTime, List<Review> reviews, RideState rideState, RejectionMessage rejectionMessage,
                 boolean panicFlag, boolean babyFlag, boolean petFlag, VehicleType vehicleType) {
         this.startTime = startTime;
@@ -72,19 +76,19 @@ public class Ride {
         this.id = id;
     }
 
-    public Time getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -104,6 +108,13 @@ public class Ride {
         this.driver = driver;
     }
 
+    public List<Integer> getPassengerIds(){
+        List<Integer> result = new ArrayList<Integer>();
+        for(Passenger p: passengers){
+            result.add(p.getId());
+        }
+        return result;
+    }
     public List<Passenger> getPassengers() {
         return passengers;
     }

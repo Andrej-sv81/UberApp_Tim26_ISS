@@ -3,6 +3,7 @@ package com.example.demo.model;
 import javax.persistence.*;
 
 import java.sql.Time;
+import java.util.Date;
 
 @Entity
 public class RejectionMessage {
@@ -11,14 +12,14 @@ public class RejectionMessage {
     @Column(name = "rmessage_id", nullable = false)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     private Ride ride;
     @Column(name="rejection_reason", nullable = false)
     private String rejectionReason;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
-    @Column(name="time_of_rejection", nullable = false)
-    private Time timeOfRejection;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timeOfRejection;
 
     public RejectionMessage(){
         super();
@@ -62,11 +63,11 @@ public class RejectionMessage {
         this.user = user;
     }
 
-    public Time getTimeOfRejection() {
+    public Date getTimeOfRejection() {
         return timeOfRejection;
     }
 
-    public void setTimeOfRejection(Time timeOfRejection) {
+    public void setTimeOfRejection(Date timeOfRejection) {
         this.timeOfRejection = timeOfRejection;
     }
 

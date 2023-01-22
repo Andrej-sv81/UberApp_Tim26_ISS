@@ -2,9 +2,14 @@ package com.example.demo.dto;
 
 import com.example.demo.model.Location;
 
+import javax.validation.constraints.NotNull;
+
 public class LocationDTO {
+    @NotNull
     private String address;
+    @NotNull
     private double latitude;
+    @NotNull
     private double longitude;
 
     public LocationDTO(){};

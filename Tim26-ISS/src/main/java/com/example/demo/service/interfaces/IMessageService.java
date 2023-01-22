@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IMessageService {
 
-    List<Message> findAllBySenderId(Integer id);
+    List<Message> findAllById(Integer id);
 
     void save(Message message);
 }

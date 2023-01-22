@@ -20,7 +20,7 @@ public class Review {
     @JoinColumn(name = "ride_id")
     private Ride ride;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private Passenger passenger;
 
     public Review() {

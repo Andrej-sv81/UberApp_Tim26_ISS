@@ -1,7 +1,12 @@
 package com.example.demo.dto.user;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class UserLoginRequestDTO {
+    @Email(message = "Email needs to be in the correct format!")
     private String email;
+    @NotBlank(message = "Password field can't be empty!")
     private String password;
 
     public UserLoginRequestDTO(){};

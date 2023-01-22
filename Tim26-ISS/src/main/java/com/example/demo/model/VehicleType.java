@@ -9,7 +9,7 @@ public class VehicleType {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private VehicleTypeEnum name;
 
     @Column(name="price_per_km", nullable = false)

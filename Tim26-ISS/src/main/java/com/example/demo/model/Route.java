@@ -8,17 +8,17 @@ import javax.persistence.GeneratedValue;
 public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "route_id", nullable = false)
     private Integer id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Location startLocation;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Location destination;
 
     @Column(name="distance_in_km", nullable = false)
-    private int distanceInKm;
+    private double distanceInKm;
 
     public Route(){
         super();
@@ -54,11 +54,11 @@ public class Route {
         this.destination = destination;
     }
 
-    public int getDistanceInKm() {
+    public double getDistanceInKm() {
         return distanceInKm;
     }
 
-    public void setDistanceInKm(int distanceInKm) {
+    public void setDistanceInKm(double distanceInKm) {
         this.distanceInKm = distanceInKm;
     }
 

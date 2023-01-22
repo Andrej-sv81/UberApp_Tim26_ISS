@@ -1,9 +1,11 @@
 package com.example.demo.dto.user;
 
+import javax.validation.constraints.Pattern;
+
 public class ResetPasswordDTO {
-
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$", message = "Password must be at least 6 characters long and contain 1 letter and 1 digit!")
     private String newPassword;
-
+    @Pattern(regexp = "^\\d{7}$", message = "Reset code must be 7 digits long!")
     private String code;
 
     public ResetPasswordDTO(){};

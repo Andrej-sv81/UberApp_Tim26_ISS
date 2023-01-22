@@ -20,4 +20,6 @@ public interface IUserService {
     List<User> findAll(Integer pageNo, Integer pageSize);
     User findOneById(Integer id);
     User findUserByEmail(String email);
+
+    User findReceiverById(Integer id);
 }

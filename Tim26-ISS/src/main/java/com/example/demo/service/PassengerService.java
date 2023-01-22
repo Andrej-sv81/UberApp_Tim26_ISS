@@ -13,6 +13,7 @@ import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.interfaces.IPassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,6 +113,7 @@ public class PassengerService implements IPassengerService{
     }
 
 
+
 //    @Override
 //    public List<Ride> getRides(Integer id,Integer page, Integer size, String sort, String from, String to) {
 //        Pageable pageable;
@@ -142,4 +144,9 @@ public class PassengerService implements IPassengerService{
 //        }
 //        return ridesSorted;
 //    }
+
+    @Override
+    public List<Passenger> getPassengersOfRide(Integer id) {
+        return passengerRepository.getPassengerOfRide(id);
+
 }

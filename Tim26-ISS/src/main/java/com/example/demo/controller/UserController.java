@@ -6,11 +6,16 @@ import com.example.demo.dto.ride.RideDTO;
 import com.example.demo.dto.ride.RideDriverDTO;
 import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RidePathDTO;
-
 import com.example.demo.dto.user.*;
 import com.example.demo.email.util.EmailDetails;
 import com.example.demo.email.util.EmailService;
+import com.example.demo.exceptions.FailedPasswordResetException;
+import com.example.demo.exceptions.PasswordNotMatchingException;
+import com.example.demo.exceptions.UserDoesNotExistException;
+import com.example.demo.exceptions.UserIdNotMatchingException;
 import com.example.demo.model.*;
+import com.example.demo.repository.DriverRepository;
+import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.*;
 import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.service.UserService;
@@ -19,18 +24,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import java.io.UnsupportedEncodingException;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -40,15 +45,13 @@ import java.util.List;
 import java.util.Random;
 
 @RestController
+@Validated
 @RequestMapping("/api/user")
 public class UserController {
-
     @Autowired
     private JwtTokenUtil tokenUtils;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     UserService userService;
     @Autowired
@@ -61,35 +64,42 @@ public class UserController {
     PassengerService passengerService;
     @Autowired
     DriverService driverService;
+    @Autowired
+    RejectionMessageService rejectionMessageService;
+    @Autowired
+    RouteService routeService;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private DriverRepository driverRepository;
+    @Autowired
+    private PassengerRepository passengerRepository;
+
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/changePassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(@PathVariable(value = "id", required = true) Integer id,
-                                            @RequestBody ChangePasswordDTO request){
+                                            @Valid @RequestBody ChangePasswordDTO request,
+                                            Principal userPrincipal){
         User user = userService.findOneById(id);
-        if(user == null){
-            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
+        if(!userPrincipal.getName().equals(user.getEmail())){
+            throw new UserIdNotMatchingException();
         }
         if(!userService.passwordEncoderUser().matches(request.getOldPassword(),user.getPassword())){
-            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("Current password is not matching!");
-            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.BAD_REQUEST);
+            throw new PasswordNotMatchingException();
         }
         user.setPassword(request.getNewPassword());
         userService.saveEncode(user);
-        HttpStatusMessageDTO response = new HttpStatusMessageDTO("Password successfully changed!");
-        return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    //TODO Kad formiramo front dio, link do stranice za resetovanje ukljuciti u mail
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) Integer id) {
-
+    public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) Integer id,
+                                                        Principal userPrincipal) {
         User user = userService.findOneById(id);
-        if(user == null){
-            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
+        if(!userPrincipal.getName().equals(user.getEmail())){
+            throw new UserIdNotMatchingException();
         }
         Random rand = new Random();
         int code = rand.nextInt(9000000) + 1000000;
@@ -109,33 +119,30 @@ public class UserController {
         String subject = "Password reset request";
         EmailDetails emailDetails = new EmailDetails(user.getEmail(),body, subject);
         emailService.sendSimpleMail(emailDetails);
-        HttpStatusMessageDTO response = new HttpStatusMessageDTO("Email with reset code has been sent!");
-        return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value="/{id}/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) Integer id,
-                                            @RequestBody ResetPasswordDTO request){
+                                           @Valid @RequestBody ResetPasswordDTO request,
+                                           Principal userPrincipal){
         User user = userService.findOneById(id);
-        if(user == null){
-            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
+        if(!userPrincipal.getName().equals(user.getEmail())){
+            throw new UserIdNotMatchingException();
         }
         String code = user.getCode().toString();
         Date expirationDate = user.getExpirationDAte();
         if(!code.equals(request.getCode()) || Date.valueOf(LocalDate.now()).after(expirationDate)){
-            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("Code is expired or not correct!");
-            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.BAD_REQUEST);
+            throw new FailedPasswordResetException();
         }
         user.setPassword(request.getNewPassword());
         user.setCode(null);
         user.setExpirationDAte(null);
         userService.saveEncode(user);
-        HttpStatusMessageDTO response = new HttpStatusMessageDTO("Password successfully changed!");
-        return new ResponseEntity<HttpStatusMessageDTO>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
+    //TODO Vjerovatno admin endpoint
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MultipleDTO> getUsers(
             @RequestParam(required = false) Integer page,
@@ -156,29 +163,27 @@ public class UserController {
         response.setTotalCount(users.size());
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-    //TODO Test with rides data that is complete
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/ride", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRides(
             @PathVariable(value = "id", required = true) Integer id,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) @Min(0) Integer page,
+            @RequestParam(required = false) @Min(0) Integer size,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String from,
-            @RequestParam(required = false) String to
+            @RequestParam(required = false) String to,
+            Principal userPrincipal) {
 
-    ) {
         User user = userService.findOneById(id);
-        if(user == null){
-            HttpStatusMessageDTO httpStatusMessageDTO = new HttpStatusMessageDTO("User does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(httpStatusMessageDTO, HttpStatus.NOT_FOUND);
+        if(!userPrincipal.getName().equals(user.getEmail())){
+            throw new UserIdNotMatchingException();
         }
-        //TODO Pagination
+
         List<Ride> rides = null;
-        if(user.getRole().equals("PASSENGER")){
-            rides = passengerService.getRides(id);
+        if(user.getRole().equals("DRIVER")){
+            rides = rideService.getRides(id, page, size, sort, from, to);
         }else{
-            rides = driverService.getRides(id);
+            rides = rideService.getRidesPassenger(id, page, size, sort, from, to);
         }
 
         MultipleDTO response = new MultipleDTO();
@@ -186,26 +191,32 @@ public class UserController {
 
         for(Ride ride: rides){
             RideDriverDTO driver = new RideDriverDTO(ride.getDriver());
-            List<RidePassengerDTO> passengerList = new ArrayList<>();
-            for(Passenger passenger: ride.getPassengers()){
-                passengerList.add(new RidePassengerDTO(passenger));
-            }
-            RejectionDTO rejection = new RejectionDTO(ride.getRejectionMessage());
-            List<RidePathDTO> pathList = new ArrayList<>();
-            for(Route route: ride.getRoutes()){
-                pathList.add(new RidePathDTO(route));
-            }
-            rideList.add(new RideDTO(ride, driver, passengerList, rejection, pathList));
 
+            List<RidePassengerDTO> passengerListDTO = new ArrayList<>();
+            List<Passenger> passengerList = passengerService.getPassengersOfRide(ride.getId());
+            for(Passenger passenger: passengerList){
+                passengerListDTO.add(new RidePassengerDTO(passenger));
+            }
+            RejectionMessage message = rejectionMessageService.getMessageFromRide(ride.getId());
+            RejectionDTO rejection = new RejectionDTO(message);
+
+            List<RidePathDTO> pathListDTO = new ArrayList<>();
+            List<Route> pathList = routeService.getRoutesFromRide(ride.getId());
+            for(Route route: pathList){
+                pathListDTO.add(new RidePathDTO(route));
+            }
+
+            rideList.add(new RideDTO(ride, driver, passengerListDTO, rejection, pathListDTO));
         }
+
         response.setResults(rideList);
         response.setTotalCount(rideList.size());
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
-
     @PostMapping(value="/login",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserLoginResponseDTO> logIn(@RequestBody UserLoginRequestDTO request) throws Exception {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
+    public ResponseEntity<UserLoginResponseDTO> logIn(@Valid @RequestBody UserLoginRequestDTO request){
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
                 request.getPassword());
         Authentication auth = authenticationManager.authenticate(authReq);
 
@@ -227,54 +238,36 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}/message", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getMessages(
-            @PathVariable(value = "id", required = true) Integer id) {
-
-        if(userService.findOneById(id) == null) {
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO("User does not exist!");
-            return new ResponseEntity<HttpStatusMessageDTO>(errorResponse, HttpStatus.NOT_FOUND);
+            @PathVariable(value = "id", required = true) Integer id,
+            Principal userPrincipal) {
+        User user = userService.findOneById(id);
+        if(!userPrincipal.getName().equals(user.getEmail())){
+            throw new UserIdNotMatchingException();
         }
-
         MultipleDTO response = new MultipleDTO();
         List<UserMessageResponseDTO> messageDTOS = new ArrayList<>();
-        List<Message> messages = messageService.findAllBySenderId(id);
-        for(Message m : messages){
-            messageDTOS.add(new UserMessageResponseDTO(m));
+        List<Message> messages = messageService.findAllById(id);
+        if(messages != null) {
+            for (Message m : messages) {
+                messageDTOS.add(new UserMessageResponseDTO(m));
+            }
         }
         response.setResults(messageDTOS);
         response.setTotalCount(messageDTOS.size());
-
         return new ResponseEntity<MultipleDTO>(response, HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PostMapping(value = "/{id}/message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendMessage(@PathVariable(value = "id", required = true) Integer id,
-                                         @RequestBody UserMessageRequestDTO request,
-                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization){
-
-        String jwtToken = authorization.substring(authorization.indexOf("Bearer ") + 7);
-        String mail = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                                         @Valid @RequestBody UserMessageRequestDTO request,
+                                         Principal userPrincipal){
+        String mail = userPrincipal.getName();
         User sender = userService.findUserByEmail(mail);
-        User receiver = userService.findOneById(id);
+        if(!userPrincipal.getName().equals(sender.getEmail())){
+            throw new UserIdNotMatchingException();
+        }
+        User receiver = userService.findReceiverById(id);
         Ride ride  =  rideService.findOneById(request.getRideId());
-        String errorMessage = "";
-        boolean errorOccurred = false;
-        if(sender == null) {
-            errorMessage += "User does not exist! ";
-            errorOccurred = true;
-        }
-        if(receiver == null) {
-            errorMessage += "Receiver does not exist! ";
-            errorOccurred = true;
-        }
-        if(ride == null) {
-            errorMessage += "Ride does not exist! ";
-            errorOccurred = true;
-        }
-        if(errorOccurred){
-            HttpStatusMessageDTO errorResponse = new HttpStatusMessageDTO(errorMessage);
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-        }
-
         Message message = new Message(request, Time.valueOf(LocalTime.now()),sender, receiver);
         messageService.save(message);
         UserMessageResponseDTO response = new UserMessageResponseDTO(message);
