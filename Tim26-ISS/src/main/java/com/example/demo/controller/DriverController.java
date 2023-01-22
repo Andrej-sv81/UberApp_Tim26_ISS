@@ -69,6 +69,7 @@ public class DriverController {
         if (found.isEmpty())
             throw new RuntimeException();
         Driver driver = (Driver) found.get();
+        driver.setDocuments(driverService.getDocuments(driver.getId()));
         List<Document> docs = driver.getDocuments();
         List<DriverDocumentsResponseDTO> responseDTO = DriverDocumentsResponseDTO.returnDocs(docs);
         return new ResponseEntity<List<DriverDocumentsResponseDTO>>(responseDTO,HttpStatus.OK);
@@ -76,10 +77,18 @@ public class DriverController {
 
     @PostMapping(value = "/{id}/documents",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
-    public  ResponseEntity<DriverDocumentsResponseDTO> addDriverDocument(@PathVariable("id") Integer id,@RequestBody DriverDocumentsRequestDTO docs){
-        driverRepository.findById(id);
-        DriverDocumentsResponseDTO driverDocumentsResponseDTO = driverService.addDocument(id,docs);
-        return new ResponseEntity<DriverDocumentsResponseDTO>(driverDocumentsResponseDTO,HttpStatus.OK);
+    public  ResponseEntity<DriverDocumentsResponseDTO> addDriverDocument(@PathVariable("id") Integer id,@RequestBody DriverDocumentsRequestDTO document){
+        Optional<User> found = driverRepository.findById(id);
+        if (found.isEmpty())
+            throw new RuntimeException();
+        Driver driver = (Driver) found.get();
+        driver.setDocuments(driverService.getDocuments(driver.getId()));
+        List<Document> docs = driver.getDocuments();
+        Document added = new Document(document);
+        added.setDriver(driver);
+        docs.add(added);
+        driver.setDocuments(docs);
+        return new ResponseEntity<DriverDocumentsResponseDTO>(new DriverDocumentsResponseDTO(added),HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/document/{document-id}")

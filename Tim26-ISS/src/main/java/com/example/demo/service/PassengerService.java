@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.security.JwtTokenUtil;
 import org.springframework.data.domain.Page;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +38,9 @@ public class PassengerService implements IPassengerService{
     @Autowired
     private PassengerRepository passengerRepository;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
     @Override
     public List<User> getAll() {
         return passengerRepository.findAll();
@@ -53,6 +58,10 @@ public class PassengerService implements IPassengerService{
     @Override
     public PassengerResponseDTO insert(Passenger passenger) {
         Passenger saved;
+        Passenger check = findPassengerByEmail(passenger.getEmail()); // checking if we already have passenger with that email
+        if (check != null){
+            return null;
+        }
         saved = passengerRepository.save(passenger);
         passengerRepository.flush();
         return new PassengerResponseDTO(saved);
@@ -97,10 +106,11 @@ public class PassengerService implements IPassengerService{
     public Passenger findPassengerByEmail(String mail) {
         Optional<User> found = passengerRepository.findByEmail(mail);
         if(found.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+            return null;
         }
         return (Passenger) found.get();
     }
+
 
 //    @Override
 //    public List<Ride> getRides(Integer id,Integer page, Integer size, String sort, String from, String to) {
