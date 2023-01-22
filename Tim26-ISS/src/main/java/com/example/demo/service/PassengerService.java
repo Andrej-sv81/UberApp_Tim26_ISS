@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class PassengerService implements IPassengerService{
+public class PassengerService implements IPassengerService {
 
 
     @Autowired
@@ -50,8 +50,8 @@ public class PassengerService implements IPassengerService{
     @Override
     public Passenger findPassenger(Integer passengerId) {
         Optional<User> found = passengerRepository.findById(passengerId);
-        if(found.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+        if (found.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found in database.");
         }
         return (Passenger) found.get();
     }
@@ -60,7 +60,7 @@ public class PassengerService implements IPassengerService{
     public PassengerResponseDTO insert(Passenger passenger) {
         Passenger saved;
         Passenger check = findPassengerByEmail(passenger.getEmail()); // checking if we already have passenger with that email
-        if (check != null){
+        if (check != null) {
             return null;
         }
         saved = passengerRepository.save(passenger);
@@ -70,8 +70,8 @@ public class PassengerService implements IPassengerService{
 
     @Override
     public PassengerResponseDTO update(PassengerRequestDTO edited, Integer id) {
-        try{
-            Passenger passenger  = findPassenger(id); //thiss will throw exception if passenger not found
+        try {
+            Passenger passenger = findPassenger(id); //thiss will throw exception if passenger not found
             passenger.updatePassenger(edited);
             passengerRepository.save(passenger);
             passengerRepository.flush();
@@ -84,8 +84,8 @@ public class PassengerService implements IPassengerService{
     @Override
     public Passenger delete(Integer passengerId) {
         Optional<User> found = passengerRepository.findById(passengerId);
-        if (found.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+        if (found.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found in database.");
         }
         passengerRepository.delete(found.get());
         passengerRepository.flush();
@@ -106,12 +106,11 @@ public class PassengerService implements IPassengerService{
     @Override
     public Passenger findPassengerByEmail(String mail) {
         Optional<User> found = passengerRepository.findByEmail(mail);
-        if(found.isEmpty()){
+        if (found.isEmpty()) {
             return null;
         }
         return (Passenger) found.get();
     }
-
 
 
 //    @Override
@@ -149,4 +148,5 @@ public class PassengerService implements IPassengerService{
     public List<Passenger> getPassengersOfRide(Integer id) {
         return passengerRepository.getPassengerOfRide(id);
 
+    }
 }
