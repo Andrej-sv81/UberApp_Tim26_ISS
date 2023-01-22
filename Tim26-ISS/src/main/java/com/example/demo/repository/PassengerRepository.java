@@ -17,6 +17,6 @@ public interface PassengerRepository extends UserRepository{
     List<Ride> getRides(Integer id);
 
     Optional<User> findByEmail(String mail);
-
-    // Page<Ride> getRides(Pageable pageable);
+    @Query(value = "SELECT * FROM USERS_TABLE WHERE USER_ID IN (SELECT USER_ID FROM PASSENGER_RIDES WHERE RIDE_ID = ?1)", nativeQuery = true)
+    List<Passenger> getPassengerOfRide(Integer id);
 }

@@ -4,15 +4,22 @@ import com.example.demo.dto.driver.DriverDocumentsRequestDTO;
 import com.example.demo.dto.driver.DriverDocumentsResponseDTO;
 import com.example.demo.dto.driver.DriverRequestDTO;
 import com.example.demo.dto.driver.DriverResponseDTO;
-import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
 import com.example.demo.service.interfaces.IDriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

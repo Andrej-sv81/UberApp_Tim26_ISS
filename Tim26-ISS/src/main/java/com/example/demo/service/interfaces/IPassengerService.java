@@ -24,7 +24,5 @@ public interface IPassengerService {
 
     Passenger findPassengerByEmail(String mail);
 
-
-    // List<Ride> getRides(Integer id,Integer page, Integer size, String sort, String from, String to);
-
+    List<Passenger> getPassengersOfRide(Integer id);
 }

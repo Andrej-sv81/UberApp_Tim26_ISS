@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.exceptions.ReceiverDoesNotExistException;
+import com.example.demo.exceptions.SenderDoesNotExistException;
 import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -9,13 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +84,19 @@ public class UserService implements UserDetailsService, IUserService {
     }
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findOneByEmail(email);
+        Optional<User> found = Optional.ofNullable(userRepository.findOneByEmail(email));
+        if (found.isEmpty()) {
+            throw new SenderDoesNotExistException();
+        }
+        return found.get();
+    }
+    @Override
+    public User findReceiverById(Integer id) {
+        Optional<User> found = userRepository.findById(id);
+        if (found.isEmpty()) {
+            throw new ReceiverDoesNotExistException();
+        }
+        return found.get();
     }
 
 

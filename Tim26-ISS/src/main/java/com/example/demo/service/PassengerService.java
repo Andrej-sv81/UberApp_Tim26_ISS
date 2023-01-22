@@ -12,6 +12,7 @@ import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.interfaces.IPassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -102,34 +103,8 @@ public class PassengerService implements IPassengerService{
         return (Passenger) found.get();
     }
 
-//    @Override
-//    public List<Ride> getRides(Integer id,Integer page, Integer size, String sort, String from, String to) {
-//        Pageable pageable;
-//        Page<Ride> pageResult;
-//        if (page != null && size != null) {
-//            if (sort != null) {
-//                pageable = PageRequest.of(page, size, Sort.by(sort));
-//            } else {
-//                pageable = PageRequest.of(page, size, Sort.by("ride_id"));
-//            }
-//           // TODO NATIVE QUERRY WITH PAGEING pageResult = passengerRepository.findAll(pageable);
-//            pageResult = null;
-//            if (pageResult.hasContent()) {
-//                return pageResult.getContent();
-//            }
-//        }
-//
-//        return passengerRepository.getRides(id);
-//    }
-//
-//    private List<Ride> sortRides(String from, String to, List<Ride> rides) throws ParseException {
-//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-//        List<Ride> ridesSorted = new ArrayList<Ride>();
-//        for(Ride r: rides){
-//            if(r.getStartTime().after(formatter.parse(from)) && r.getEndTime().before(formatter.parse(to))){
-//                ridesSorted.add(r);
-//            }
-//        }
-//        return ridesSorted;
-//    }
+    @Override
+    public List<Passenger> getPassengersOfRide(Integer id) {
+        return passengerRepository.getPassengerOfRide(id);
+    }
 }
