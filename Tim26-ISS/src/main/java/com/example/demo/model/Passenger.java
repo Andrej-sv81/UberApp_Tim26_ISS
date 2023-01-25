@@ -17,14 +17,18 @@ public class Passenger extends User {
             inverseJoinColumns = @JoinColumn(name = "ride_id"))
     private List<Ride> rides;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Route> routes;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "passenger_favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "fav_ride_id"))
+    private List<FavoriteRide> routes;
 
     public Passenger() {
         super();
     }
 
-    public Passenger(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password, boolean blocked, boolean active, List<Ride> rides, List<Route> routes) {
+    public Passenger(String name, String surname, String profilePicture, String telephoneNumber, String email, String address, String password, boolean blocked, boolean active, List<Ride> rides, List<FavoriteRide> routes) {
         super(name, surname, profilePicture, telephoneNumber, email, address, password, blocked, active);
         this.rides = rides;
         this.routes = routes;
@@ -48,11 +52,11 @@ public class Passenger extends User {
         this.rides = rides;
     }
 
-    public List<Route> getRoutes() {
+    public List<FavoriteRide> getRoutes() {
         return routes;
     }
 
-    public void setRoutes(List<Route> routes) {
+    public void setRoutes(List<FavoriteRide> routes) {
         this.routes = routes;
     }
 

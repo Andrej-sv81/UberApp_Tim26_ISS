@@ -261,7 +261,7 @@ public class UserController {
                                          @Valid @RequestBody UserMessageRequestDTO request,
                                          Principal userPrincipal){
         String mail = userPrincipal.getName();
-        User sender = userService.findUserByEmail(mail);
+        User sender = userService.findSenderByEmail(mail);
         if(!userPrincipal.getName().equals(sender.getEmail())){
             throw new UserIdNotMatchingException();
         }

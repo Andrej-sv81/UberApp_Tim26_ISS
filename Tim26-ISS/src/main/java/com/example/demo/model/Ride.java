@@ -22,20 +22,20 @@ public class Ride {
     @Column(name = "total_cost", nullable = true)
     private Integer totalCost;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "driver_id", nullable = false)
+    @JoinColumn(name = "driver_id")
     private Driver driver;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @Column(name = "passengers",nullable = false)
     private List<Passenger> passengers;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
-    @Column(name="estimated_time", nullable = true)
-    private int estimatedTime;
+    @Column(name="estimated_time")
+    private Integer estimatedTime;
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews;
     @Enumerated(EnumType.STRING)
     private RideState rideState;
-    @OneToOne
+    @OneToOne(cascade =  CascadeType.ALL)
     private RejectionMessage rejectionMessage;
 
     @Column(name="panic_flag", nullable = false)
@@ -46,12 +46,16 @@ public class Ride {
     private boolean petFlag;
     @OneToOne
     private VehicleType vehicleType;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date scheduledTime;
+
     public Ride(){
         super();
     }
     public Ride(Date startTime, Date endTime, int totalCost, Driver driver, List<Passenger> passengers, List<Route> routes,
-                int estimatedTime, List<Review> reviews, RideState rideState, RejectionMessage rejectionMessage,
-                boolean panicFlag, boolean babyFlag, boolean petFlag, VehicleType vehicleType) {
+                Integer estimatedTime, List<Review> reviews, RideState rideState, RejectionMessage rejectionMessage,
+                boolean panicFlag, boolean babyFlag, boolean petFlag, VehicleType vehicleType, Date scheduledTime) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalCost = totalCost;
@@ -66,6 +70,7 @@ public class Ride {
         this.babyFlag = babyFlag;
         this.petFlag = petFlag;
         this.vehicleType = vehicleType;
+        this.scheduledTime = scheduledTime;
     }
 
     public Integer getId() {
@@ -131,11 +136,11 @@ public class Ride {
         this.routes = routes;
     }
 
-    public int getEstimatedTime() {
+    public Integer getEstimatedTime() {
         return estimatedTime;
     }
 
-    public void setEstimatedTime(int estimatedTime) {
+    public void setEstimatedTime(Integer estimatedTime) {
         this.estimatedTime = estimatedTime;
     }
 
@@ -195,6 +200,14 @@ public class Ride {
         this.vehicleType = vehicleType;
     }
 
+    public Date getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(Date scheduledTime) {
+        this.scheduledTime = scheduledTime;
+    }
+
     public void addReview(Review review) {
         reviews.add(review);
         review.setRide(this);
@@ -204,6 +217,7 @@ public class Ride {
         reviews.remove(review);
         review.setRide(null);
     }
+
 
     @Override
     public String toString() {
@@ -223,6 +237,7 @@ public class Ride {
                 ", babyFlag=" + babyFlag +
                 ", petFlag=" + petFlag +
                 ", vehicleType=" + vehicleType +
+                ", scheduledTime=" + scheduledTime +
                 '}';
     }
 }

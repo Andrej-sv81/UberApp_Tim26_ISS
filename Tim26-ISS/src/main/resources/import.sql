@@ -23,7 +23,7 @@ INSERT INTO vehicle_type (price_per_km, name) VALUES  (200, 'LUXURIOUS');
 INSERT INTO vehicle_type (price_per_km, name) VALUES  (120, 'VAN');
 
 
-INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id, total_cost, start_time, end_time) VALUES (2, 0, 0, 0, 'ACCEPTED', 1, 250, '2022-1-20 12:23:20', '2022-1-20 12:35:23');
+INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id, total_cost, start_time, end_time) VALUES (2, 0, 0, 0, 'STARTED', 1, 250, '2022-1-20 12:23:20', '2022-1-20 12:35:23');
 INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id, total_cost, start_time, end_time) VALUES (2, 0, 0, 0, 'ACCEPTED', 1, 250, '2022-2-20 12:23:20', '2022-2-20 12:35:23');
 INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id, total_cost, start_time, end_time) VALUES (2, 0, 0, 0, 'ACCEPTED', 1, 350, '2022-12-20 12:23:20', '2022-12-20 12:35:23');
 INSERT INTO ride  (driver_id, panic_flag, baby_flag, pet_flag, ride_state, vehicle_type_id, total_cost, start_time, end_time) VALUES (2, 0, 0, 0, 'ACCEPTED', 1, 550, '2022-11-20 12:23:20', '2022-11-20 12:35:23');
@@ -64,6 +64,27 @@ INSERT INTO  passenger_rides  (ride_id, user_id) VALUES (2,1);
 INSERT INTO  passenger_rides  (ride_id, user_id) VALUES (3,1);
 
 
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (1,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (2,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (3,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (4,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (5,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (6,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (7,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (8,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (9,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (10,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (11,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (12,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (13,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (14,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (15,6);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (1,1);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (2,1);
+INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (3,1);
+
+
+
 INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar oslobođenja 2', 45.263892, 19.830219);
 INSERT INTO  location  (address, latitude, longitude) VALUES  ('Kisačka 66', 45.265725, 19.835957);
 
@@ -71,7 +92,7 @@ INSERT INTO  location  (address, latitude, longitude) VALUES  ('Kisačka 66', 45
 INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.5, 1, 2);
 
 
-INSERT INTO ride_routes (ride_ride_id, routes_route_id) VALUES (14,1);
+INSERT INTO ride_routes (ride_ride_id, routes_route_id) VALUES (1,1);
 
 
 INSERT INTO  vehicle  (vehicle_model, registration_plates, number_of_seats, baby_flag, pet_flag, driver_user_id, vehicle_type_id, location_location_id) VALUES  ('Skoda Octavia', 'NS123AA', 4, 1, 0, 2, 1, 1);

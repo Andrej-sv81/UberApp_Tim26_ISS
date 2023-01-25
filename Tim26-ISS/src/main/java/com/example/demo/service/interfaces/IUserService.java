@@ -19,5 +19,7 @@ public interface IUserService {
     User findOneById(Integer id);
     User findUserByEmail(String email);
 
+    User findSenderByEmail(String email);
+
     User findReceiverById(Integer id);
 }

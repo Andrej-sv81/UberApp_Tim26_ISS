@@ -3,6 +3,7 @@ package com.example.demo.model;
 import javax.persistence.*;
 
 import java.sql.Time;
+import java.util.Date;
 
 @Entity
 public class Panic {
@@ -17,8 +18,8 @@ public class Panic {
     @ManyToOne(fetch = FetchType.LAZY)
     private Ride ride;
 
-    @Column(name = "time", nullable = false)
-    private Time time;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date time;
 
     @Column(name="panic_message", nullable = false)
     private String panicMessage;
@@ -26,7 +27,7 @@ public class Panic {
     public Panic(){
         super();
     }
-    public Panic(User user, Ride ride, Time time, String panicMessage) {
+    public Panic(User user, Ride ride, Date time, String panicMessage) {
         this.user = user;
         this.ride = ride;
         this.time = time;
@@ -57,11 +58,11 @@ public class Panic {
         this.ride = ride;
     }
 
-    public Time getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 

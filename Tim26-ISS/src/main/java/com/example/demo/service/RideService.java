@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.exceptions.ActiveRideDoesNotExistException;
+import com.example.demo.exceptions.HasPendingRideException;
 import com.example.demo.exceptions.RideDoesNotExistException;
 import com.example.demo.model.Driver;
 import com.example.demo.model.Review;
@@ -143,6 +145,34 @@ public class RideService implements IRideService {
             System.out.println(r.getId() + "  " + r.getStartTime() + "  " + r.getTotalCost());
         }
         return rides;
+    }
+
+    @Override
+    public List<Ride> findPendingRides(Integer id) {
+        List<Ride> pendingRides =  rideRepository.findPendingRides(id);
+        if(pendingRides.size() != 0){
+            throw new HasPendingRideException();
+        }else{
+            return pendingRides;
+        }
+    }
+
+    @Override
+    public Ride findActiveRideForDriver(Integer driverId) {
+        Ride ride = rideRepository.findActiveRideForDriver(driverId);
+        if(ride == null){
+            throw new ActiveRideDoesNotExistException();
+        }
+        return ride;
+    }
+
+    @Override
+    public Ride findActiveRideForPassenger(Integer passengerId) {
+        Ride ride = rideRepository.findActiveRideForPassenger(passengerId);
+        if(ride == null){
+            throw new ActiveRideDoesNotExistException();
+        }
+        return ride;
     }
 
 }
