@@ -23,9 +23,18 @@ public class Driver extends User {
         this.documents = documents;
         this.rides = rides;
         this.vehicle = vehicle;
+        this.setRole("DRIVER");
     }
 
     public Driver(DriverRequestDTO driverRequestDTO) {
+        this.setName(driverRequestDTO.getName());
+        this.setSurname(driverRequestDTO.getSurname());
+        this.setProfilePicture(driverRequestDTO.getProfilePicture());
+        this.setTelephoneNumber(driverRequestDTO.getTelephoneNumber());
+        this.setEmail(driverRequestDTO.getEmail());
+        this.setAddress(driverRequestDTO.getAddress());
+        this.setPassword(driverRequestDTO.getPassword());
+        this.setRole("DRIVER");
     }
 
     public List<Document> getDocuments() {
@@ -88,6 +97,7 @@ public class Driver extends User {
         setTelephoneNumber(driver.getTelephoneNumber());
         setEmail(driver.getEmail());
         setAddress(driver.getAddress());
+        this.setRole("DRIVER");
         return this;
     }
 }

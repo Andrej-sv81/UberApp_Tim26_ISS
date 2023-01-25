@@ -1,9 +1,12 @@
 package com.example.demo.model;
 
 
+import com.example.demo.dto.driver.DriverVehicleRequestDTO;
+
 import javax.persistence.*;
 import javax.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,6 +48,16 @@ public class Vehicle {
         this.babyFlag = babyFlag;
         this.petFlag = petFlag;
         this.reviews = reviews;
+    }
+
+    public Vehicle(DriverVehicleRequestDTO addVehicle) {
+        this.vehicleModel = addVehicle.getModel();
+        //this.vehicleType = addVehicle.getVehicleType();
+        this.registrationPlates = addVehicle.getLicenseNumber();
+        this.numberOfSeats = addVehicle.getPassengerSeats();
+        this.location = addVehicle.getCurrentLocation();
+        this.babyFlag = addVehicle.isBabyTransport();
+        this.petFlag = addVehicle.isPetTransport();
     }
 
     public Integer getId() {
@@ -142,5 +155,14 @@ public class Vehicle {
                 ", petFlag=" + petFlag +
                 ", reviews=" + reviews +
                 '}';
+    }
+
+    public void updateVehicle(DriverVehicleRequestDTO newData) {
+        this.setVehicleModel(newData.getModel());
+        this.setRegistrationPlates(newData.getLicenseNumber());
+        this.setLocation(newData.getCurrentLocation());
+        this.setNumberOfSeats(newData.getPassengerSeats());
+        this.setBabyFlag(newData.isBabyTransport());
+        this.setPetFlag(newData.isPetTransport());
     }
 }

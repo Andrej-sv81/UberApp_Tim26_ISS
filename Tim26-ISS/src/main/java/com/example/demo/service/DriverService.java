@@ -1,12 +1,17 @@
 package com.example.demo.service;
 
+
 import com.example.demo.dto.driver.DriverDocumentsRequestDTO;
 import com.example.demo.dto.driver.DriverDocumentsResponseDTO;
 import com.example.demo.dto.driver.DriverRequestDTO;
 import com.example.demo.dto.driver.DriverResponseDTO;
 import com.example.demo.exceptions.UserDoesNotExistException;
+import com.example.demo.dto.driver.*;
+import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
+import com.example.demo.repository.VehicleRepository;
+import com.example.demo.repository.VehicleTypeRepository;
 import com.example.demo.service.interfaces.IDriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +33,10 @@ public class DriverService implements IDriverService {
 
     @Autowired
     private DriverRepository driverRepository;
+    @Autowired
+    private VehicleRepository vehicleRepository;
+    @Autowired
+    private VehicleTypeRepository vehicleTypeRepository;
 
 
     @Override
@@ -122,6 +131,17 @@ public class DriverService implements IDriverService {
     @Override
     public List<Document> getDocuments(Integer id) {
         return driverRepository.getDocuments(id);
+    }
+
+    @Override
+    public DriverVehicleResponseDTO updateVehicle(Integer id, DriverVehicleRequestDTO newData) {
+        Optional<Vehicle> found = vehicleRepository.findOneById(id); //thiss will throw exception if passenger not found
+        Vehicle vehicle = found.get();
+        vehicle.updateVehicle(newData);
+        vehicle.setVehicleType(vehicleTypeRepository.findOneByName(VehicleTypeEnum.valueOf(newData.getVehicleType())));
+        vehicleRepository.save(vehicle);
+        vehicleRepository.flush();
+        return new DriverVehicleResponseDTO(vehicle);
     }
 
 }

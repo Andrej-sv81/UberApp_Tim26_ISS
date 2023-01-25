@@ -101,6 +101,6 @@ INSERT INTO  vehicle  (vehicle_model, registration_plates, number_of_seats, baby
 UPDATE  users_table SET  vehicle_id = 1 WHERE user_id = 2;
 
 
-INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (2,'vozacka', '19.830219',8);
-INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (3,'kristijan', '19.830219',8);
-INSERT INTO  document  (document_id, name, picture,driver_id) VALUES  (4,'licna', '19.830219',1);
+INSERT INTO  document  (name, picture,driver_id) VALUES  ('vozacka', '19.830219',8);
+INSERT INTO  document  (name, picture,driver_id) VALUES  ('kristijan', '19.830219',8);
+INSERT INTO  document  (name, picture,driver_id) VALUES  ('licna', '19.830219',1);
