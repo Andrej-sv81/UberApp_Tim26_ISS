@@ -40,5 +40,10 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
     Page<Ride> getRidesPassenger(Integer id, Date from, Pageable pageable);
     @Query(value = "SELECT * FROM RIDE WHERE RIDE_ID IN (SELECT RIDE_ID FROM PASSENGER_RIDES WHERE USER_ID= ?1) AND START_TIME BETWEEN ?2 AND ?3", nativeQuery = true)
     Page<Ride> getRidesPassenger(Integer id, Date from, Date to, Pageable pageable);
-
+    @Query(value = "SELECT * FROM RIDE WHERE RIDE_STATE='PENDING' AND RIDE_ID IN (SELECT RIDE_ID FROM PASSENGER_RIDES WHERE USER_ID= ?1)", nativeQuery = true)
+    List<Ride> findPendingRides(Integer id);
+    @Query(value = "SELECT * FROM RIDE WHERE RIDE_STATE='STARTED' AND DRIVER_ID =?", nativeQuery = true)
+    Ride findActiveRideForDriver(Integer driverId);
+    @Query(value = "SELECT * FROM RIDE WHERE RIDE_STATE='STARTED' AND RIDE_ID IN (SELECT RIDE_ID FROM PASSENGER_RIDES WHERE USER_ID= ?1)", nativeQuery = true)
+    Ride findActiveRideForPassenger(Integer passengerId);
 }

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IRouteService {
     List<Route> getRoutesFromRide(Integer id);
+
+    List<Route> getRoutesFromFavoriteRide(Integer id);
 }

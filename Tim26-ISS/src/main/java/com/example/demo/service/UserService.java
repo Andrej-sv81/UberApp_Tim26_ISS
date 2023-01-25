@@ -87,8 +87,18 @@ public class UserService implements UserDetailsService, IUserService {
         }
         return found.get();
     }
+
     @Override
     public User findUserByEmail(String email) {
+        Optional<User> found = Optional.ofNullable(userRepository.findOneByEmail(email));
+        if (found.isEmpty()) {
+            throw new UserDoesNotExistException();
+        }
+        return found.get();
+    }
+
+    @Override
+    public User findSenderByEmail(String email) {
         Optional<User> found = Optional.ofNullable(userRepository.findOneByEmail(email));
         if (found.isEmpty()) {
             throw new SenderDoesNotExistException();

@@ -20,4 +20,9 @@ public interface IRideService {
 
     List<Ride> getRidesPassenger(Integer id, Integer page, Integer size, String sort, String from, String to);
 
+    List<Ride> findPendingRides(Integer id);
+
+    Ride findActiveRideForDriver(Integer driverId);
+
+    Ride findActiveRideForPassenger(Integer passengerId);
 }

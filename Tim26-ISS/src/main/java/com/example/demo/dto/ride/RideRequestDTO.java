@@ -21,15 +21,17 @@ public class RideRequestDTO
     @NotNull
     private boolean petTransport;
 
+    private String scheduledTime;
     public RideRequestDTO() {
     }
 
-    public RideRequestDTO(List<RouteDTO> locations, List<PassengerRideOverDTO> passengers, String vehicleType, boolean babyTransport, boolean petTransport) {
+    public RideRequestDTO(List<RouteDTO> locations, List<PassengerRideOverDTO> passengers, String vehicleType, boolean babyTransport, boolean petTransport, String scheduledTime) {
         this.locations = locations;
         this.passengers = passengers;
         this.vehicleType = vehicleType;
         this.babyTransport = babyTransport;
         this.petTransport = petTransport;
+        this.scheduledTime = scheduledTime;
     }
 
     public List<RouteDTO> getLocations() {
@@ -72,6 +74,14 @@ public class RideRequestDTO
         this.petTransport = petTransport;
     }
 
+    public String getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(String scheduledTime) {
+        this.scheduledTime = scheduledTime;
+    }
+
     @Override
     public String toString() {
         return "RideRequestDTO{" +
@@ -80,6 +90,7 @@ public class RideRequestDTO
                 ", vehicleType='" + vehicleType + '\'' +
                 ", babyTransport=" + babyTransport +
                 ", petTransport=" + petTransport +
+                ", scheduledTime='" + scheduledTime + '\'' +
                 '}';
     }
 }

@@ -24,7 +24,7 @@ public class RejectionMessage {
     public RejectionMessage(){
         super();
     }
-    public RejectionMessage(Ride ride, String rejectionReason, User user, Time timeOfRejection) {
+    public RejectionMessage(Ride ride, String rejectionReason, User user, Date timeOfRejection) {
         this.ride = ride;
         this.rejectionReason = rejectionReason;
         this.user = user;
