@@ -29,6 +29,7 @@ public class Ride {
     private List<Passenger> passengers;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
+
     @Column(name="estimated_time")
     private Integer estimatedTime;
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -53,8 +54,11 @@ public class Ride {
     public Ride(){
         super();
     }
-    public Ride(Date startTime, Date endTime, int totalCost, Driver driver, List<Passenger> passengers, List<Route> routes,
-                Integer estimatedTime, List<Review> reviews, RideState rideState, RejectionMessage rejectionMessage,
+    public Ride(Date startTime, Date endTime,
+                int totalCost, Driver driver,
+                List<Passenger> passengers, List<Route> routes,
+                Integer estimatedTime, List<Review> reviews,
+                RideState rideState, RejectionMessage rejectionMessage,
                 boolean panicFlag, boolean babyFlag, boolean petFlag, VehicleType vehicleType, Date scheduledTime) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -241,3 +245,4 @@ public class Ride {
                 '}';
     }
 }
+

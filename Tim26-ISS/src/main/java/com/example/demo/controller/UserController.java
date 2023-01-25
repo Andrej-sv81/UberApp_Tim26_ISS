@@ -70,8 +70,10 @@ public class UserController {
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+
     @Autowired
     private DriverRepository driverRepository;
+
     @Autowired
     private PassengerRepository passengerRepository;
 

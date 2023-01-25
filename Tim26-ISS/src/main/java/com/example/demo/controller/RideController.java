@@ -10,6 +10,11 @@ import com.example.demo.dto.ride.RideResponseDTO;
 import com.example.demo.exceptions.*;
 import com.example.demo.model.*;
 import com.example.demo.service.*;
+import com.example.demo.service.AssignRideService;
+import com.example.demo.service.PassengerService;
+import com.example.demo.service.RideService;
+import com.example.demo.service.VehicleTypeService;
+
 import com.example.demo.util.cost.EstimatedCost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,6 +60,9 @@ public class RideController {
     @Autowired
     FavoriteRidesService favoriteRidesService;
 
+    @Autowired
+    AssignRideService assignRideService;
+
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> createRide(@Valid @RequestBody RideRequestDTO ride,
@@ -99,6 +107,9 @@ public class RideController {
                                 passengerList, routeList, estimated_time, reviews,
                                 RideState.PENDING, null, false,
                                 ride.isBabyTransport(), ride.isPetTransport(), vehicleType, scheduledTime);
+        //TODO assign ride to driver import assing service
+        Driver proba = assignRideService.assignDriver(newRide);
+        System.out.println(proba);
         rideService.save(newRide);
 
         for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity
