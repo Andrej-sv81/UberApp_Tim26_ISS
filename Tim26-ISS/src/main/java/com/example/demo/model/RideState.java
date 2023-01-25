@@ -1,5 +1,5 @@
 package com.example.demo.model;
 
 public enum RideState {
-    PENDING, ACCEPTED, REJECTED, ACTIVE, FINISHED
+    PENDING, ACCEPTED, REJECTED, FINISHED, CANCELED, STARTED
 }

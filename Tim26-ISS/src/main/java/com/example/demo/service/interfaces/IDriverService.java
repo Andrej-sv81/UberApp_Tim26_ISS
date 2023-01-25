@@ -17,6 +17,10 @@ public interface IDriverService {
     public void deleteAll();
     List<Ride> getRides(Integer id);
     DriverDocumentsResponseDTO addDocument(Integer id, DriverDocumentsRequestDTO docs);
+
+    Driver getDriverOfRide(Integer id);
+
+    Driver findByEmail(String name);
     List<Document> getDocuments(Integer id);
     public DriverVehicleResponseDTO updateVehicle(Integer id,DriverVehicleRequestDTO newData);
 

@@ -3,6 +3,7 @@ package com.example.demo.dto.ride;
 import com.example.demo.dto.RejectionDTO;
 import com.example.demo.model.Ride;
 
+import java.util.Date;
 import java.util.List;
 
 public class RideDTO {
@@ -18,9 +19,10 @@ public class RideDTO {
     private boolean petTransport;
     private RejectionDTO rejection;
     private List<RidePathDTO> locations;
+    private String scheduledTime;
 
     public RideDTO(){};
-    public RideDTO(Integer id, String startTime, String endTime, Integer totalCost, RideDriverDTO driver, List<RidePassengerDTO> passengers, Integer estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, List<RidePathDTO> locations) {
+    public RideDTO(Integer id, String startTime, String endTime, Integer totalCost, RideDriverDTO driver, List<RidePassengerDTO> passengers, Integer estimatedTimeInMinutes, String vehicleType, boolean babyTransport, boolean petTransport, RejectionDTO rejection, List<RidePathDTO> locations, Date scheduledTime) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -33,6 +35,7 @@ public class RideDTO {
         this.petTransport = petTransport;
         this.rejection = rejection;
         this.locations = locations;
+        this.scheduledTime = scheduledTime.toString();
     }
     public RideDTO(Ride ride, RideDriverDTO rideDriverDTO, List<RidePassengerDTO> passengers, RejectionDTO rejection, List<RidePathDTO> locations){
         this.id = ride.getId();
@@ -41,13 +44,15 @@ public class RideDTO {
         this.totalCost = ride.getTotalCost();
         this.driver = rideDriverDTO;
         this.passengers = passengers;
-        this.estimatedTimeInMinutes = ride.getEstimatedTime() != null ? Math.toIntExact(ride.getEstimatedTime().getTime()) : 0;
+        this.estimatedTimeInMinutes = ride.getEstimatedTime();
         this.vehicleType = ride.getVehicleType().getName().toString();
         this.babyTransport = ride.isBabyFlag();
         this.petTransport = ride.isPetFlag();
         this.rejection = rejection;
         this.locations = locations;
+        this.scheduledTime = ride.getScheduledTime() == null ? "" : ride.getScheduledTime().toString();
     }
+
 
     public Integer getId() {
         return id;
@@ -143,6 +148,14 @@ public class RideDTO {
 
     public void setLocations(List<RidePathDTO> locations) {
         this.locations = locations;
+    }
+
+    public String getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(String scheduledTime) {
+        this.scheduledTime = scheduledTime;
     }
 
     @Override

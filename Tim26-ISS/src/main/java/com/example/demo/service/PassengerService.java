@@ -150,4 +150,9 @@ public class PassengerService implements IPassengerService {
         return passengerRepository.getPassengerOfRide(id);
 
     }
+
+    @Override
+    public List<Passenger> getPassengersOfFavoriteRide(Integer id) {
+        return passengerRepository.getPassengerOfFavoriteRide(id);
+    }
 }

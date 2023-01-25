@@ -18,4 +18,9 @@ public class RouteService implements IRouteService {
     public List<Route> getRoutesFromRide(Integer id) {
         return routeRepository.getRoutesFromRide(id);
     }
+
+    @Override
+    public List<Route> getRoutesFromFavoriteRide(Integer id) {
+        return routeRepository.getRoutesFromFavoriteRide(id);
+    }
 }

@@ -1,5 +1,11 @@
 package com.example.demo.service;
 
+
+import com.example.demo.dto.driver.DriverDocumentsRequestDTO;
+import com.example.demo.dto.driver.DriverDocumentsResponseDTO;
+import com.example.demo.dto.driver.DriverRequestDTO;
+import com.example.demo.dto.driver.DriverResponseDTO;
+import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.dto.driver.*;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
@@ -8,17 +14,12 @@ import com.example.demo.repository.VehicleRepository;
 import com.example.demo.repository.VehicleTypeRepository;
 import com.example.demo.service.interfaces.IDriverService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.transaction.Transactional;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -108,6 +109,24 @@ public class DriverService implements IDriverService {
         return new DriverDocumentsResponseDTO(newDoc);
     }
 
+
+    @Override
+    public Driver getDriverOfRide(Integer id) {
+        Optional<Driver> found = Optional.ofNullable(driverRepository.getDriverOfRide(id));
+        if(found.isEmpty()){
+            throw new UserDoesNotExistException();
+        }
+        return  found.get();
+    }
+
+    @Override
+    public Driver findByEmail(String mail) {
+        Optional<Driver> found = driverRepository.findByEmail(mail);
+        if(found.isEmpty()){
+            throw new UserDoesNotExistException();
+        }
+        return found.get();
+    }
     @Transactional
     @Override
     public List<Document> getDocuments(Integer id) {

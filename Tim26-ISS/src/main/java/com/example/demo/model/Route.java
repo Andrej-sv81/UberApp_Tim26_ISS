@@ -1,5 +1,8 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.RouteDTO;
+import com.example.demo.util.cost.EstimatedCost;
+
 import javax.persistence.*;
 import javax.persistence.GeneratedValue;
 
@@ -11,10 +14,10 @@ public class Route {
     @Column(name = "route_id", nullable = false)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Location startLocation;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Location destination;
 
     @Column(name="distance_in_km", nullable = false)
@@ -28,6 +31,12 @@ public class Route {
         this.startLocation = startLocation;
         this.destination = destination;
         this.distanceInKm = distanceInKm;
+    }
+    public Route(RouteDTO routeDTO){
+        this.startLocation = new Location(routeDTO.getDeparture());
+        this.destination = new Location(routeDTO.getDestination());
+        this.distanceInKm = EstimatedCost.calculateDistance(startLocation.getLatitude(), startLocation.getLongitude(),
+                                                            destination.getLatitude(), destination.getLongitude());
     }
 
     public Integer getId() {
