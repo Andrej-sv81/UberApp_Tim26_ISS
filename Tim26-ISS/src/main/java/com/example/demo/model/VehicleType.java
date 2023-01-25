@@ -24,6 +24,10 @@ public class VehicleType {
         this.price = price;
     }
 
+    public VehicleType(String type){
+        this.name = VehicleTypeEnum.valueOf(type);
+    }
+
     public Integer getId() {
         return id;
     }

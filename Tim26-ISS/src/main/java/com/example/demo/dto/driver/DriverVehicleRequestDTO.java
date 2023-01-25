@@ -5,7 +5,7 @@ import com.example.demo.model.Vehicle;
 import com.example.demo.model.VehicleType;
 
 public class DriverVehicleRequestDTO {
-    private VehicleType vehicleType;
+    private String vehicleType;
     private String model;
     private String licenseNumber;
     private Location currentLocation;
@@ -13,10 +13,18 @@ public class DriverVehicleRequestDTO {
     private boolean babyTransport;
     private boolean petTransport;
 
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
     public DriverVehicleRequestDTO() {
     }
 
-    public DriverVehicleRequestDTO(VehicleType type, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
+    public DriverVehicleRequestDTO(String type, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
         this.vehicleType = type;
         this.model = model;
         this.licenseNumber = licenseNumber;
