@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
+
 import com.example.demo.model.Driver;
+import com.example.demo.model.Document;
 import com.example.demo.model.Ride;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +20,9 @@ public interface DriverRepository  extends  UserRepository{
     Driver getDriverOfRide(Integer id);
     @Query("select d from Driver d where d.email = ?1")
     Optional<Driver> findByEmail(String mail);
+
+
+    @Query("select d.documents from Driver d where d.id=?1")
+    List<Document> getDocuments(Integer id);
+
 }

@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-
 import com.example.demo.exceptions.UserDoesNotExistException;
+import com.example.demo.security.JwtTokenUtil;
 import org.springframework.data.domain.Page;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,11 +33,14 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class PassengerService implements IPassengerService{
+public class PassengerService implements IPassengerService {
 
 
     @Autowired
     private PassengerRepository passengerRepository;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @Override
     public List<User> getAll() {
@@ -46,8 +50,8 @@ public class PassengerService implements IPassengerService{
     @Override
     public Passenger findPassenger(Integer passengerId) {
         Optional<User> found = passengerRepository.findById(passengerId);
-        if(found.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+        if (found.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found in database.");
         }
         return (Passenger) found.get();
     }
@@ -55,6 +59,10 @@ public class PassengerService implements IPassengerService{
     @Override
     public PassengerResponseDTO insert(Passenger passenger) {
         Passenger saved;
+        Passenger check = findPassengerByEmail(passenger.getEmail()); // checking if we already have passenger with that email
+        if (check != null) {
+            return null;
+        }
         saved = passengerRepository.save(passenger);
         passengerRepository.flush();
         return new PassengerResponseDTO(saved);
@@ -62,8 +70,8 @@ public class PassengerService implements IPassengerService{
 
     @Override
     public PassengerResponseDTO update(PassengerRequestDTO edited, Integer id) {
-        try{
-            Passenger passenger  = findPassenger(id); //thiss will throw exception if passenger not found
+        try {
+            Passenger passenger = findPassenger(id); //thiss will throw exception if passenger not found
             passenger.updatePassenger(edited);
             passengerRepository.save(passenger);
             passengerRepository.flush();
@@ -76,8 +84,8 @@ public class PassengerService implements IPassengerService{
     @Override
     public Passenger delete(Integer passengerId) {
         Optional<User> found = passengerRepository.findById(passengerId);
-        if (found.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Passenger not found in database.");
+        if (found.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Passenger not found in database.");
         }
         passengerRepository.delete(found.get());
         passengerRepository.flush();
@@ -98,15 +106,49 @@ public class PassengerService implements IPassengerService{
     @Override
     public Passenger findPassengerByEmail(String mail) {
         Optional<User> found = passengerRepository.findByEmail(mail);
+        
         if(found.isEmpty()){
             throw new UserDoesNotExistException();
         }
         return (Passenger) found.get();
     }
 
+
+//    @Override
+//    public List<Ride> getRides(Integer id,Integer page, Integer size, String sort, String from, String to) {
+//        Pageable pageable;
+//        Page<Ride> pageResult;
+//        if (page != null && size != null) {
+//            if (sort != null) {
+//                pageable = PageRequest.of(page, size, Sort.by(sort));
+//            } else {
+//                pageable = PageRequest.of(page, size, Sort.by("ride_id"));
+//            }
+//           // TODO NATIVE QUERRY WITH PAGEING pageResult = passengerRepository.findAll(pageable);
+//            pageResult = null;
+//            if (pageResult.hasContent()) {
+//                return pageResult.getContent();
+//            }
+//        }
+//
+//        return passengerRepository.getRides(id);
+//    }
+//
+//    private List<Ride> sortRides(String from, String to, List<Ride> rides) throws ParseException {
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+//        List<Ride> ridesSorted = new ArrayList<Ride>();
+//        for(Ride r: rides){
+//            if(r.getStartTime().after(formatter.parse(from)) && r.getEndTime().before(formatter.parse(to))){
+//                ridesSorted.add(r);
+//            }
+//        }
+//        return ridesSorted;
+//    }
+
     @Override
     public List<Passenger> getPassengersOfRide(Integer id) {
         return passengerRepository.getPassengerOfRide(id);
+
     }
 
     @Override

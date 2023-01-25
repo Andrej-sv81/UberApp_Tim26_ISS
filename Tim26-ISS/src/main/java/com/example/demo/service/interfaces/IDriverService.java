@@ -4,6 +4,7 @@ import com.example.demo.dto.driver.DriverDocumentsRequestDTO;
 import com.example.demo.dto.driver.DriverDocumentsResponseDTO;
 import com.example.demo.dto.driver.DriverRequestDTO;
 import com.example.demo.dto.driver.DriverResponseDTO;
+import com.example.demo.model.Document;
 import com.example.demo.model.Driver;
 import com.example.demo.model.Ride;
 import com.example.demo.model.User;
@@ -23,4 +24,6 @@ public interface IDriverService {
     Driver getDriverOfRide(Integer id);
 
     Driver findByEmail(String name);
+    List<Document> getDocuments(Integer id);
+
 }
