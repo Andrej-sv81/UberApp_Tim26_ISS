@@ -7,7 +7,7 @@ import com.example.demo.model.VehicleType;
 public class DriverVehicleResponseDTO {
     private Integer id;
     private int driverId;
-    private VehicleType vehicleType;
+    private String vehicleType;
     private String model;
     private String licenseNumber;
     private Location currentLocation;
@@ -18,7 +18,7 @@ public class DriverVehicleResponseDTO {
     public DriverVehicleResponseDTO() {
     }
 
-    public DriverVehicleResponseDTO(Integer id, int driverId, VehicleType vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
+    public DriverVehicleResponseDTO(Integer id, int driverId, String vehicleType, String model, String licenseNumber, Location currentLocation, int passengerSeats, boolean babyTransport, boolean petTransport) {
         this.id = id;
         this.driverId = driverId;
         this.vehicleType = vehicleType;
@@ -28,6 +28,18 @@ public class DriverVehicleResponseDTO {
         this.passengerSeats = passengerSeats;
         this.babyTransport = babyTransport;
         this.petTransport = petTransport;
+    }
+
+    public DriverVehicleResponseDTO(Vehicle vehicle) {
+        this.id = vehicle.getId();
+        this.driverId = vehicle.getDriver().getId();
+        this.vehicleType = String.valueOf(vehicle.getVehicleType().getName());
+        this.model = vehicle.getVehicleModel();
+        this.licenseNumber = vehicle.getRegistrationPlates();
+        this.currentLocation = vehicle.getLocation();
+        this.passengerSeats = vehicle.getNumberOfSeats();
+        this.babyTransport = vehicle.isBabyFlag();
+        this.petTransport = vehicle.isPetFlag();
     }
 
     public Integer getId() {
@@ -46,11 +58,11 @@ public class DriverVehicleResponseDTO {
         this.driverId = driverId;
     }
 
-    public VehicleType getVehicleType() {
+    public String getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(VehicleType vehicleType) {
+    public void setVehicleType(String vehicleType) {
         this.vehicleType = vehicleType;
     }
 
