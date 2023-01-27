@@ -3,6 +3,7 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Driver;
 import com.example.demo.model.Document;
+import com.example.demo.model.Driver;
 import com.example.demo.model.Ride;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,6 @@ public interface DriverRepository  extends  UserRepository{
     @Query("select d.documents from Driver d where d.id=?1")
     List<Document> getDocuments(Integer id);
 
+    @Query("select d from Driver d where d.active=true")
+    List<Driver> getActiveDrivers();
 }
