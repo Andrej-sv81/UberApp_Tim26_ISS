@@ -7,6 +7,7 @@ import com.example.demo.dto.ride.RideDriverDTO;
 import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RidePathDTO;
 import com.example.demo.dto.user.*;
+import com.example.demo.exceptions.AccountNotActivatedException;
 import com.example.demo.util.email.EmailDetails;
 import com.example.demo.util.email.EmailService;
 import com.example.demo.exceptions.FailedPasswordResetException;
@@ -223,7 +224,9 @@ public class UserController {
         sc.setAuthentication(auth);
 
         User user = userService.getUser(request.getEmail());
-
+        if(!user.isActive()){
+            throw new AccountNotActivatedException();
+        }
         String token = tokenUtils.generateToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId()); // prosledjujemo email, role i id korisnika
         String refreshToken = tokenUtils.generateRefreshToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId());
 

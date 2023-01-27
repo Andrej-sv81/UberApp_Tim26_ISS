@@ -2,35 +2,20 @@ package com.example.demo.service;
 
 import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.security.JwtTokenUtil;
-import org.springframework.data.domain.Page;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.Passenger;
 import com.example.demo.model.User;
-import com.example.demo.model.Passenger;
 import com.example.demo.model.Ride;
 import com.example.demo.repository.PassengerRepository;
 import com.example.demo.service.interfaces.IPassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 @Service
 public class PassengerService implements IPassengerService {
@@ -59,7 +44,7 @@ public class PassengerService implements IPassengerService {
     @Override
     public PassengerResponseDTO insert(Passenger passenger) {
         Passenger saved;
-        Passenger check = findPassengerByEmail(passenger.getEmail()); // checking if we already have passenger with that email
+        Passenger check = findPassengerByEmailNoException(passenger.getEmail()); // checking if we already have passenger with that email
         if (check != null) {
             return null;
         }
@@ -109,6 +94,15 @@ public class PassengerService implements IPassengerService {
         
         if(found.isEmpty()){
             throw new UserDoesNotExistException();
+        }
+        return (Passenger) found.get();
+    }
+
+    @Override
+    public Passenger findPassengerByEmailNoException(String mail) {
+        Optional<User> found = passengerRepository.findByEmail(mail);
+        if(found.isEmpty()){
+            return null;
         }
         return (Passenger) found.get();
     }

@@ -42,6 +42,7 @@ public class Passenger extends User {
         this.setAddress(passenger.getAddress());
         this.setPassword(passenger.getPassword());
         this.setTelephoneNumber(passenger.getTelephoneNumber());
+        this.setActive(false);
     }
 
     public List<Ride> getRides() {
