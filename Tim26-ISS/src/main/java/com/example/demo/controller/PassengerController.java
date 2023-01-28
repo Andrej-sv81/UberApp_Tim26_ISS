@@ -75,13 +75,15 @@ public class PassengerController {
         UserActivation activation = new UserActivation(user, dateCreated, dateToExpire );
         userActivationService.save(activation);
 
+        String url = "http://localhost:4200/activate";
+
         String body = "Hello,\n"
                 + "Before you can use your GariGO account\n"
                 + "you need to activate it using the activation code bellow.\n"
                 + "\n" + activation.getId() + "\n"
                 + "\nThe code will expire in 1 day.\n\n "
                 + "\nEnter the activation code at the following page: \n"
-                + "\n  [placeholder for angular page link]";
+                + "\n  " + url;
 
         String subject = "Account activation request";
         EmailDetails emailDetails = new EmailDetails(user.getEmail(),body, subject);

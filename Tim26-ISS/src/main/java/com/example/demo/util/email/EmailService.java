@@ -22,7 +22,6 @@ public class EmailService implements IEmailService {
             mailMessage.setTo(details.getRecipient());
             mailMessage.setText(details.getMsgBody());
             mailMessage.setSubject(details.getSubject());
-
             javaMailSender.send(mailMessage);
             return "Mail Sent Successfully...";
         }
