@@ -33,9 +33,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @Validated
@@ -59,9 +57,11 @@ public class RideController {
     PanicService panicService;
     @Autowired
     FavoriteRidesService favoriteRidesService;
-
     @Autowired
     AssignRideService assignRideService;
+
+    //TODO add map for rejected rides by drivers
+    public Map<Integer,List<Driver>> rejectedRides = new HashMap<Integer,List<Driver>>();
 
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -107,9 +107,9 @@ public class RideController {
                                 passengerList, routeList, estimated_time, reviews,
                                 RideState.PENDING, null, false,
                                 ride.isBabyTransport(), ride.isPetTransport(), vehicleType, scheduledTime);
-        //TODO assign ride to driver import assing service
-        Driver proba = assignRideService.assignDriver(newRide);
-        System.out.println(proba);
+        //TODO assign ride to driver import assign service
+        //Driver proba = assignRideService.assignDriver(newRide);
+        //System.out.println(proba);
         rideService.save(newRide);
 
         for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity

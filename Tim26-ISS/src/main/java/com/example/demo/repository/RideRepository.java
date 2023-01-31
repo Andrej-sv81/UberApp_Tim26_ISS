@@ -46,4 +46,6 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
     Ride findActiveRideForDriver(Integer driverId);
     @Query(value = "SELECT * FROM RIDE WHERE RIDE_STATE='STARTED' AND RIDE_ID IN (SELECT RIDE_ID FROM PASSENGER_RIDES WHERE USER_ID= ?1)", nativeQuery = true)
     Ride findActiveRideForPassenger(Integer passengerId);
+    @Query(value = "SELECT * FROM RIDE WHERE RIDE_STATE='ACCEPTED' AND DRIVER_ID=?",nativeQuery = true)
+    List<Ride> acceptedRidesForDriver(Integer driverId);
 }

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface IAssignRideService {
     public Driver assignDriver(Ride ride);
+    public Driver pickDriver(List<Driver> drivers);
 }
