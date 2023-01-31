@@ -10,6 +10,7 @@ import com.example.demo.dto.driver.*;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
+import com.example.demo.repository.RideRepository;
 import com.example.demo.repository.VehicleRepository;
 import com.example.demo.repository.VehicleTypeRepository;
 import com.example.demo.service.interfaces.IDriverService;
@@ -23,6 +24,8 @@ import javax.transaction.Transactional;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.List;
@@ -37,6 +40,8 @@ public class DriverService implements IDriverService {
     private VehicleRepository vehicleRepository;
     @Autowired
     private VehicleTypeRepository vehicleTypeRepository;
+    @Autowired
+    private RideRepository rideRepository;
 
 
     @Override
@@ -142,6 +147,69 @@ public class DriverService implements IDriverService {
         vehicleRepository.save(vehicle);
         vehicleRepository.flush();
         return new DriverVehicleResponseDTO(vehicle);
+    }
+
+    @Override
+    public List<Driver> driversMatchingCriteria(Ride ride) {
+        List<Driver> fitsCriteria = driverRepository.getActiveDrivers();
+        for (Driver d :fitsCriteria){
+            if ((d.getVehicle().isPetFlag() & ride.isPetFlag() & d.getVehicle().isBabyFlag() & ride.isBabyFlag() & d.getVehicle().getVehicleType().equals(ride.getVehicleType())))
+                fitsCriteria.remove(d);
+        }
+        List<Driver> availableFitsCriteria = removeReservedDrivers(fitsCriteria, ride);
+        return availableFitsCriteria;
+    }
+
+    //Cheking drivers working hours in last 24h TO JE WORKING HOUR SERVICE FUNKCIJA
+
+    @Override
+    public boolean checkFutureRides(Integer driverId, Ride ride) {
+        List<Ride> futureRides = rideRepository.acceptedRidesForDriver(driverId);
+        if (futureRides.isEmpty())
+            return false;
+        for (Ride booked:futureRides){
+            if (overLappingRides(ride,booked))
+                return true;
+        }
+        return false;
+    }   // check if reserved + estimatedTime is before  ride start or after ride end
+
+    @Override
+    public List<Driver> findFreeDrivers(Ride ride) {
+        List<Driver> activeAvailableDrivers = driversMatchingCriteria(ride);
+        for (Driver driver:activeAvailableDrivers){
+            //TODO proveri da li je trenutno dostupan NEMA NIJEDNU VOZNJU TRENUTNO - FOR EACH DRIVER CALL CHECKFUTURERIDES
+            if (rideRepository.findActiveRideForDriver(driver.getId()) != null){
+                activeAvailableDrivers.remove(driver);   // driver currently not available
+            }
+        }
+        return activeAvailableDrivers;
+    }
+
+    @Override
+    public List<Driver> removeReservedDrivers(List<Driver> drivers,Ride ride) {
+        if (drivers.isEmpty())
+            return new ArrayList<Driver>();
+        for (Driver driver:drivers){
+            if (checkFutureRides(driver.getId(),ride)){
+                drivers.remove(driver);
+            }
+        }
+        return drivers;
+    }
+
+    // provera za dve voznje da li se preklapaju da li jedna pocinje,traje ili zavrsava u vreme druge -> VRACA TRUE AKO SE PREKLAPAJU
+    @Override
+    public boolean overLappingRides(Ride request, Ride booked) {
+        Date endRequest = Date.from(request.getScheduledTime().toInstant().plus(Duration.ofMinutes(request.getEstimatedTime())));
+        Date endBooked = Date.from(booked.getScheduledTime().toInstant().plus(Duration.ofMinutes(booked.getEstimatedTime())));
+        if (request.getScheduledTime().after(booked.getScheduledTime()) && request.getScheduledTime().before(endBooked))
+            return true;
+        else if (endRequest.after(booked.getScheduledTime()) && endRequest.before(endBooked))
+            return true;
+        else if (request.getScheduledTime().before(booked.getScheduledTime()) && endRequest.after(endBooked))
+            return true;
+        return false;
     }
 
 }

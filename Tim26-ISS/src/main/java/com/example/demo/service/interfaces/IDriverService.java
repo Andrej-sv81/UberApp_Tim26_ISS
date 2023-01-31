@@ -23,5 +23,9 @@ public interface IDriverService {
     Driver findByEmail(String name);
     List<Document> getDocuments(Integer id);
     public DriverVehicleResponseDTO updateVehicle(Integer id,DriverVehicleRequestDTO newData);
-
+    public List<Driver> driversMatchingCriteria(Ride ride);
+    public boolean checkFutureRides(Integer driverId,Ride ride);
+    public List<Driver> findFreeDrivers(Ride ride);
+    public List<Driver> removeReservedDrivers(List<Driver> drivers,Ride ride);
+    public boolean overLappingRides(Ride ride1,Ride ride2);
 }

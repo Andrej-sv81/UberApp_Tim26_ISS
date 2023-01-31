@@ -39,6 +39,10 @@ public class WorkingHour {
         this.setEndTime(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(start));
     }
 
+    public WorkingHour(Date startTime, Date endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     public Integer getId() {
         return id;
@@ -48,7 +52,7 @@ public class WorkingHour {
         this.id = id;
     }
 
-    public java.util.Date getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
