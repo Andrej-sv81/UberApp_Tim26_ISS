@@ -30,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -64,6 +65,9 @@ public class PassengerController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createPassenger(@RequestBody PassengerRequestDTO passenger) throws Exception{
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        passenger.setPassword(encoder.encode(passenger.getPassword()));
+
         PassengerResponseDTO saved = passengerService.insert(new Passenger(passenger));
         if (saved == null){
             HttpStatusMessageDTO response = new HttpStatusMessageDTO("User already exists.");

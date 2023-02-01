@@ -226,7 +226,7 @@ public class UserController {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
 
-        User user = userService.getUser(request.getEmail());
+        User user = userService.findUserByEmail(request.getEmail());
         if(!user.isActive()){
             throw new AccountNotActivatedException();
         }
