@@ -24,6 +24,8 @@ public interface IPassengerService {
 
     Passenger findPassengerByEmail(String mail);
 
+    Passenger findPassengerByEmailNoException(String mail);
+
     List<Passenger> getPassengersOfRide(Integer id);
 
     List<Passenger> getPassengersOfFavoriteRide(Integer id);

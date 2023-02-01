@@ -7,6 +7,7 @@ import com.example.demo.dto.ride.RideDriverDTO;
 import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RidePathDTO;
 import com.example.demo.dto.user.*;
+import com.example.demo.exceptions.AccountNotActivatedException;
 import com.example.demo.util.email.EmailDetails;
 import com.example.demo.util.email.EmailService;
 import com.example.demo.exceptions.FailedPasswordResetException;
@@ -94,7 +95,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     //TODO Kad formiramo front dio, link do stranice za resetovanje ukljuciti u mail
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
+
     @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) @NotNull  Integer id,
                                                         Principal userPrincipal) {
@@ -108,13 +109,14 @@ public class UserController {
         user.setCode(code);
         user.setExpirationDAte(expirationDate);
         userService.save(user);
-
+        String url = "";
         String body = "Hello,\n"
                 + "You have requested to reset your password.\n"
                 + "Use the code below to change your password:\n"
                 + "\n" + code + "\n"
-                + "\nThe code will expire in 1 day.\n\n "
-                + "\nIgnore this email if you do remember your password,\n "
+                + "\nThe code will expire in 1 day.\n"
+                + "Enter the code on the following page: " + url
+                + "\n\n\nIgnore this email if you do remember your password,\n "
                 + "or you have not made the request.";
 
         String subject = "Password reset request";
@@ -224,8 +226,10 @@ public class UserController {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
 
-        User user = userService.getUser(request.getEmail());
-
+        User user = userService.findUserByEmail(request.getEmail());
+        if(!user.isActive()){
+            throw new AccountNotActivatedException();
+        }
         String token = tokenUtils.generateToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId()); // prosledjujemo email, role i id korisnika
         String refreshToken = tokenUtils.generateRefreshToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId());
 

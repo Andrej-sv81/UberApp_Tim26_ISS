@@ -2,7 +2,7 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 public class UserActivation {
@@ -10,12 +10,11 @@ public class UserActivation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activation_id", nullable = false)
     private Integer id;
-    @OneToOne()
+    @OneToOne(fetch = FetchType.EAGER)
     private User user;
-
-    @Column(name="date_of_creation", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    @Column(name="lifetime", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date lifeTime;
 
     public UserActivation(){

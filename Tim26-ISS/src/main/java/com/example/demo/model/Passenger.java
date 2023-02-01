@@ -37,11 +37,13 @@ public class Passenger extends User {
     public Passenger(PassengerRequestDTO passenger) {
         this.setName(passenger.getName());
         this.setSurname(passenger.getSurname());
-        this.setProfilePicture(passenger.getProfilePicture());
+        this.setProfilePicture(passenger.getProfilePicture().equals("") ? null: passenger.getProfilePicture());
         this.setEmail(passenger.getEmail());
         this.setAddress(passenger.getAddress());
         this.setPassword(passenger.getPassword());
         this.setTelephoneNumber(passenger.getTelephoneNumber());
+        this.setActive(false);
+        this.setRole(Role.PASSENGER.toString());
     }
 
     public List<Ride> getRides() {
