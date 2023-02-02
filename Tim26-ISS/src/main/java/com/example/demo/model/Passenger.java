@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.dto.passenger.PassengerRequestDTO;
+import com.example.demo.dto.passenger.PassengerUpdateRequestDTO;
 
 import javax.persistence.*;
 
@@ -84,13 +85,25 @@ public class Passenger extends User {
                 '}';
     }
 
-    public Passenger updatePassenger(PassengerRequestDTO edited){
-        setName(edited.getName());
-        setSurname(edited.getSurname());
-        setProfilePicture(edited.getProfilePicture());
-        setTelephoneNumber(edited.getTelephoneNumber());
-        setEmail(edited.getEmail());
-        setAddress(edited.getAddress());
+    public Passenger updatePassenger(PassengerUpdateRequestDTO edited){
+        if(!edited.getName().equals("")){
+            setName(edited.getName());
+        }
+        if(!edited.getSurname().equals("")){
+            setSurname(edited.getSurname());
+        }
+        if(!edited.getProfilePicture().equals("")){
+            setProfilePicture(edited.getProfilePicture());
+        }
+        if(!edited.getTelephoneNumber().equals("")){
+            setTelephoneNumber(edited.getTelephoneNumber());
+        }
+        if(!edited.getEmail().equals("")){
+            setEmail(edited.getEmail());
+        }
+        if(!edited.getAddress().equals("")){
+            setAddress(edited.getAddress());
+        }
         return this;
     }
 }

@@ -6,6 +6,7 @@ import com.example.demo.dto.MultiplePassengersDTO;
 import com.example.demo.dto.MultipleRidesDTO;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
+import com.example.demo.dto.passenger.PassengerUpdateRequestDTO;
 import com.example.demo.dto.user.UserResponseDTO;
 import com.example.demo.exceptions.ActivationExpiredException;
 import com.example.demo.exceptions.ForbiddenDataUpdateException;
@@ -121,7 +122,7 @@ public class PassengerController {
 
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
-    public ResponseEntity<?> updatePassenger(@RequestBody PassengerRequestDTO passenger, @PathVariable Integer id, Principal userPrincipal) throws Exception{
+    public ResponseEntity<?> updatePassenger(@RequestBody PassengerUpdateRequestDTO passenger, @PathVariable Integer id, Principal userPrincipal) throws Exception{
         Optional<User> check = passengerRepository.findById(id);
         if (check.isEmpty()){
             throw new UserDoesNotExistException();
@@ -129,9 +130,7 @@ public class PassengerController {
         if(!userPrincipal.getName().equals(check.get().getEmail())){
             throw new UserIdNotMatchingException();
         }
-        if(!passenger.getEmail().equals(userPrincipal.getName())){
-            throw new ForbiddenDataUpdateException();
-        }
+
         PassengerResponseDTO updated = passengerService.update(passenger,id);
         return new ResponseEntity<>(updated,HttpStatus.OK);
     }

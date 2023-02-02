@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.passenger.PassengerUpdateRequestDTO;
 import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.security.JwtTokenUtil;
 import com.example.demo.dto.passenger.PassengerRequestDTO;
@@ -54,7 +55,7 @@ public class PassengerService implements IPassengerService {
     }
 
     @Override
-    public PassengerResponseDTO update(PassengerRequestDTO edited, Integer id) {
+    public PassengerResponseDTO update(PassengerUpdateRequestDTO edited, Integer id) {
         try {
             Passenger passenger = findPassenger(id); //thiss will throw exception if passenger not found
             passenger.updatePassenger(edited);
