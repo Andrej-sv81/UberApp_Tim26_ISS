@@ -32,8 +32,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
+@Validated
 @RestController
 @RequestMapping("/api/passenger")
 public class PassengerController {
@@ -122,7 +124,7 @@ public class PassengerController {
 
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
-    public ResponseEntity<?> updatePassenger(@RequestBody PassengerUpdateRequestDTO passenger, @PathVariable Integer id, Principal userPrincipal) throws Exception{
+    public ResponseEntity<?> updatePassenger(@Valid @RequestBody PassengerUpdateRequestDTO passenger, @PathVariable Integer id, Principal userPrincipal) throws Exception{
         Optional<User> check = passengerRepository.findById(id);
         if (check.isEmpty()){
             throw new UserDoesNotExistException();

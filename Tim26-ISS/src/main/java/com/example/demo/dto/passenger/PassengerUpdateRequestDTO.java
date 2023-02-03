@@ -1,10 +1,13 @@
 package com.example.demo.dto.passenger;
 
+import javax.validation.constraints.Email;
+
 public class PassengerUpdateRequestDTO {
         private String name;
         private String surname;
         private String profilePicture;
         private String telephoneNumber;
+        @Email
         private String email;
         private String address;
 
