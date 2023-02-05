@@ -172,7 +172,7 @@ public class DriverService implements IDriverService {
                 return true;
         }
         return false;
-    }   // check if reserved + estimatedTime is before  ride start or after ride end
+    }
 
     @Override
     public List<Driver> findFreeDrivers(Ride ride) {

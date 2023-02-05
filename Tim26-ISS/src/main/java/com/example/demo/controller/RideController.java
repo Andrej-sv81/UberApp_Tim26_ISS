@@ -108,7 +108,7 @@ public class RideController {
                                 RideState.PENDING, null, false,
                                 ride.isBabyTransport(), ride.isPetTransport(), vehicleType, scheduledTime);
         //TODO assign ride to driver import assign service
-        //Driver proba = assignRideService.assignDriver(newRide);
+        Driver proba = assignRideService.assignDriver(newRide);
         //System.out.println(proba);
         rideService.save(newRide);
 
