@@ -162,8 +162,8 @@ public class DriverController {
         if (!found.get().getEmail().equals(userPrincipal.getName()))
             throw new UserIdNotMatchingException();
         Driver driver = (Driver) found.get();
-        driver.setDocuments(driverService.getDocuments(driver.getId()));
         WorkingHour workingHour = new WorkingHour(driver,start.getStart());
+
         return new ResponseEntity<>(workingHour,HttpStatus.OK);
     }
 
