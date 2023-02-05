@@ -8,8 +8,11 @@ import com.example.demo.util.cost.EstimatedCost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +21,7 @@ public class AssignRideService implements IAssignRideService {
     private DriverRepository driverRepository;
     @Autowired
     private DriverService driverService;
+    private Map<Integer,ArrayList<Driver>> rejectedRides= new HashMap<Integer,ArrayList<Driver>>();   // vozaci koji su odbili zadatu voznju
 
     @Override
     public Driver assignDriver(Ride ride) {
