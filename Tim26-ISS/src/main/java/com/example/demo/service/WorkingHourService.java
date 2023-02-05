@@ -5,13 +5,14 @@ import com.example.demo.model.WorkingHour;
 import com.example.demo.repository.WorkingHourRepository;
 import com.example.demo.service.interfaces.IWorkingHourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+@Service
 public class WorkingHourService implements IWorkingHourService {
 
     @Autowired
