@@ -6,6 +6,7 @@ import com.example.demo.exceptions.*;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.DriverService;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -162,9 +163,11 @@ public class DriverController {
         if (!found.get().getEmail().equals(userPrincipal.getName()))
             throw new UserIdNotMatchingException();
         Driver driver = (Driver) found.get();
+        Hibernate.initialize(driver);
         WorkingHour workingHour = new WorkingHour(driver,start.getStart());
-
-        return new ResponseEntity<>(workingHour,HttpStatus.OK);
+        workingHourRepository.save(workingHour);
+        DriverWorkingHourResponse response = new DriverWorkingHourResponse(workingHour);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping(value = "/working-hour/{working-hour-id}",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -175,23 +178,24 @@ public class DriverController {
             throw new WorkingHourDoesNotExistException();
         if (!userPrincipal.getName().equals(check.get().getDriver().getEmail()))
             throw new UserIdNotMatchingException();
-        return new ResponseEntity<>(check.get(),HttpStatus.OK);
+        Hibernate.initialize(check.get());
+        DriverWorkingHourResponse response = new DriverWorkingHourResponse(check.get());
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @PutMapping(value = "/working-hour/{working-hour-id}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
-    public ResponseEntity<WorkingHour> updateWorkingHour(@PathVariable("working-hour-id") Integer hourId,@RequestBody String end,Principal userPrincipal){
+    public ResponseEntity<?> updateWorkingHour(@PathVariable("working-hour-id") Integer hourId,@RequestBody DriverEndWorkingHourDTO end,Principal userPrincipal) throws ParseException {
         Optional<WorkingHour> check = workingHourRepository.findById(hourId);
         if (check.isEmpty())
             throw new WorkingHourDoesNotExistException();
         if (!userPrincipal.getName().equals(check.get().getDriver().getEmail()))
             throw new UserIdNotMatchingException();
-        try {
-            check.get().setEndTime((Date) new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(end));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(check.get(),HttpStatus.OK);
+        Hibernate.initialize(check.get());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        check.get().setEndTime(formatter.parse(end.getEnd()));
+        DriverWorkingHourResponse response = new DriverWorkingHourResponse(check.get());
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/vehicle",produces = MediaType.APPLICATION_JSON_VALUE)

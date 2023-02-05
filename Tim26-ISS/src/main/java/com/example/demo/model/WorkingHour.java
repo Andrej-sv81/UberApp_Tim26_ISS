@@ -35,7 +35,7 @@ public class WorkingHour {
 
     public  WorkingHour(Driver driver, String start) throws ParseException {
         this.driver = driver;
-        this.setStartTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(start));
+        this.setStartTime(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(start));
         this.setEndTime(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(start));
     }
 
