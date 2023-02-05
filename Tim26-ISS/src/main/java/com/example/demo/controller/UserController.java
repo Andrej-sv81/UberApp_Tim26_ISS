@@ -183,6 +183,12 @@ public class UserController {
         }
 
         List<Ride> rides = null;
+        if(from == null){
+            from = "";
+        }
+        if(to == null){
+            to = "";
+        }
         if(user.getRole().equals("DRIVER")){
             rides = rideService.getRides(id, page, size, sort, from, to);
         }else{

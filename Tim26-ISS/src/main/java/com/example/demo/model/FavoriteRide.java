@@ -25,7 +25,7 @@ public class FavoriteRide {
     @ManyToMany(fetch = FetchType.LAZY)
     @Column(name = "passengers",nullable = false)
     private List<Passenger> passengers;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Route> routes;
     @Column(name="baby_flag", nullable = false)
     private boolean babyFlag;

@@ -85,11 +85,24 @@ INSERT INTO  ride_passengers  (ride_ride_id, passengers_user_id) VALUES (3,1);
 
 
 
-INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar oslobođenja 2', 45.263892, 19.830219);
+INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar Oslobođenja 2', 45.263892, 19.830219);
 INSERT INTO  location  (address, latitude, longitude) VALUES  ('Kisačka 66', 45.265725, 19.835957);
+INSERT INTO  location  (address, latitude, longitude) VALUES  ('Pozorišni Trg', 45.254368, 19.842607);
+INSERT INTO  location  (address, latitude, longitude) VALUES  ('Arse Teodorovića 16', 45.256421, 19.839991);
+INSERT INTO  location  (address, latitude, longitude) VALUES  ('Bulevar Kralja Petra I 50', 45.259223, 19.825414);
+INSERT INTO  location  (address, latitude, longitude) VALUES  ('Rumenačka 49', 45.263640, 19.817468);
+
 
 
 INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.5, 1, 2);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.7, 1, 3);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.4, 1, 4);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.0, 1, 5);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.1, 1, 6);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.7, 3, 1);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.6, 3, 2);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.4, 4, 1);
+INSERT INTO  route  (distance_in_km, start_location_location_id, destination_location_id) VALUES  (1.3, 4, 2);
 
 
 INSERT INTO ride_routes (ride_ride_id, routes_route_id) VALUES (1,1);
@@ -104,3 +117,34 @@ UPDATE  users_table SET  vehicle_id = 1 WHERE user_id = 2;
 INSERT INTO  document  (name, picture,driver_id) VALUES  ('vozacka', '19.830219',8);
 INSERT INTO  document  (name, picture,driver_id) VALUES  ('kristijan', '19.830219',8);
 INSERT INTO  document  (name, picture,driver_id) VALUES  ('licna', '19.830219',1);
+
+
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Home To Work', 1, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Home To Jenna', 1, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Home To School', 1, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (0, 'Home To Mike', 0, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Work To Gym', 0, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (0, 'Gym To Home', 1, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Home To Grandma', 0, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Home To Shop', 1, 1);
+INSERT INTO favorite_ride (baby_flag, name, pet_flag, vehicle_type_id) VALUES (1, 'Home To Dentist', 1, 1);
+
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (1, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (2, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (3, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (4, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (5, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (6, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (7, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (8, 6);
+INSERT INTO favorite_ride_passengers (favorite_ride_fav_ride_id, passengers_user_id) VALUES (9, 6);
+
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (1,1);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (2,2);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (3,3);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (4,4);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (5,6);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (6,7);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (7,9);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (8,8);
+INSERT INTO favorite_ride_routes (favorite_ride_fav_ride_id, routes_route_id) VALUES (9,5);
