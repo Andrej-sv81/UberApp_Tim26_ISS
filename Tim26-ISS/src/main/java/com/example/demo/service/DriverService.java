@@ -9,11 +9,9 @@ import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.dto.driver.*;
 import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
-import com.example.demo.repository.DriverRepository;
-import com.example.demo.repository.RideRepository;
-import com.example.demo.repository.VehicleRepository;
-import com.example.demo.repository.VehicleTypeRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.interfaces.IDriverService;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,6 +40,8 @@ public class DriverService implements IDriverService {
     private VehicleTypeRepository vehicleTypeRepository;
     @Autowired
     private RideRepository rideRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
 
 
     @Override
@@ -152,8 +152,15 @@ public class DriverService implements IDriverService {
     @Override
     public List<Driver> driversMatchingCriteria(Ride ride) {
         List<Driver> fitsCriteria = driverRepository.getActiveDrivers();
+        if (fitsCriteria.isEmpty())
+            return null;
         for (Driver d :fitsCriteria){
-            if ((d.getVehicle().isPetFlag() & ride.isPetFlag() & d.getVehicle().isBabyFlag() & ride.isBabyFlag() & d.getVehicle().getVehicleType().equals(ride.getVehicleType())))
+            Hibernate.initialize(d);
+            if (d.getVehicle()==null){
+                fitsCriteria.remove(d);
+                continue;
+            }
+            if ((d.getVehicle().isPetFlag() && ride.isPetFlag() && d.getVehicle().isBabyFlag() && ride.isBabyFlag() && d.getVehicle().getVehicleType().equals(ride.getVehicleType())))
                 fitsCriteria.remove(d);
         }
         List<Driver> availableFitsCriteria = removeReservedDrivers(fitsCriteria, ride);
@@ -168,6 +175,7 @@ public class DriverService implements IDriverService {
         if (futureRides.isEmpty())
             return false;
         for (Ride booked:futureRides){
+            Hibernate.initialize(booked);
             if (overLappingRides(ride,booked))
                 return true;
         }
@@ -201,6 +209,7 @@ public class DriverService implements IDriverService {
     // provera za dve voznje da li se preklapaju da li jedna pocinje,traje ili zavrsava u vreme druge -> VRACA TRUE AKO SE PREKLAPAJU
     @Override
     public boolean overLappingRides(Ride request, Ride booked) {
+        Hibernate.initialize(booked);
         Date endRequest = Date.from(request.getScheduledTime().toInstant().plus(Duration.ofMinutes(request.getEstimatedTime())));
         Date endBooked = Date.from(booked.getScheduledTime().toInstant().plus(Duration.ofMinutes(booked.getEstimatedTime())));
         if (request.getScheduledTime().after(booked.getScheduledTime()) && request.getScheduledTime().before(endBooked))
