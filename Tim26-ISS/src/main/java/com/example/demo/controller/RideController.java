@@ -329,9 +329,15 @@ public class RideController {
     public ResponseEntity<?> deleteFavoriteRide(@PathVariable("id")@NotNull Integer id,
                                                 Principal userPrincipal){
         FavoriteRide ride = favoriteRidesService.findOneById(id);
-        Integer user_id  =  favoriteRidesService.getUserOfRide(id);
+        Integer[] user_ids  =  favoriteRidesService.getUserOfRide(id);
         User user = userService.findUserByEmail(userPrincipal.getName());
-        if(user.getId() != user_id){
+        boolean found = false;
+        for(Integer user_id : user_ids){
+            if(user.getId() == user_id){
+                found = true;
+            }
+        }
+        if(!found){
             throw new UserIdNotMatchingException();
         }
         favoriteRidesService.delete(ride);

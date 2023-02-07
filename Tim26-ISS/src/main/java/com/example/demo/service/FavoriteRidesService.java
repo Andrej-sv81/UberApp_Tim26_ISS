@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.exceptions.FavoriteRideDoesNotExistException;
 import com.example.demo.model.FavoriteRide;
-import com.example.demo.model.User;
 import com.example.demo.repository.FavoriteRideRepository;
 import com.example.demo.service.interfaces.IFavoriteRideService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class FavoriteRidesService implements IFavoriteRideService {
     }
 
     @Override
-    public Integer getUserOfRide(Integer id) {
+    public Integer[] getUserOfRide(Integer id) {
         return favoriteRideRepository.getUserOfRide(id);
     }
 

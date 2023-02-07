@@ -14,5 +14,5 @@ public interface FavoriteRideRepository extends JpaRepository<FavoriteRide, Inte
     List<FavoriteRide> getRidesOfUser(Integer id);
 
     @Query(value = "SELECT PASSENGERS_USER_ID FROM FAVORITE_RIDE_PASSENGERS WHERE FAVORITE_RIDE_FAV_RIDE_ID = ?1", nativeQuery = true)
-    Integer getUserOfRide(Integer id);
+    Integer[] getUserOfRide(Integer id);
 }
