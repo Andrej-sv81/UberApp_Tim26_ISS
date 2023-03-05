@@ -9,6 +9,7 @@ import com.example.demo.dto.ride.RideRequestDTO;
 import com.example.demo.dto.ride.RideResponseDTO;
 import com.example.demo.exceptions.*;
 import com.example.demo.model.*;
+import com.example.demo.repository.DriverRepository;
 import com.example.demo.service.*;
 import com.example.demo.service.AssignRideService;
 import com.example.demo.service.PassengerService;
@@ -16,10 +17,14 @@ import com.example.demo.service.RideService;
 import com.example.demo.service.VehicleTypeService;
 
 import com.example.demo.util.cost.EstimatedCost;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,15 +64,20 @@ public class RideController {
     FavoriteRidesService favoriteRidesService;
     @Autowired
     AssignRideService assignRideService;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     //TODO add map for rejected rides by drivers
     public Map<Integer,List<Driver>> rejectedRides = new HashMap<Integer,List<Driver>>();
+    @Autowired
+    private DriverRepository driverRepository;
 
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> createRide(@Valid @RequestBody RideRequestDTO ride,
-                                                      Principal userPrincipal){
-
+                                                      Principal userPrincipal) throws JsonProcessingException {
 
         Passenger passenger = passengerService.findPassengerByEmail(userPrincipal.getName());
         List<Ride> pendingRides = rideService.findPendingRides(passenger.getId()); //checks for pending rides
@@ -110,11 +120,8 @@ public class RideController {
                                 RideState.PENDING, null, false,
                                 ride.isBabyTransport(), ride.isPetTransport(), vehicleType, scheduledTime);
         //TODO assign ride to driver import assign service
-        System.out.println("DEBAGOVANJE LISTA SVIH AKTIVNIH");
-        System.out.println(driverService.driversMatchingCriteria(newRide));
-        System.out.println("KRAJ LISTE++++");
-        Driver proba = assignRideService.assignDriver(newRide);
-        //System.out.println(proba);
+        Optional<User> proba = driverRepository.findById(2);
+        newRide.setDriver((Driver) proba.get());
         rideService.save(newRide);
 
         for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity
@@ -124,6 +131,9 @@ public class RideController {
             passengerService.insert(p);
         }
         RideResponseDTO response = new RideResponseDTO(newRide, ride.getPassengers(), ride.getLocations());
+        DriverRideOverDTO probaResponse = new DriverRideOverDTO(proba.get().getId(),proba.get().getEmail());
+        response.setDriver(probaResponse);
+        simpMessagingTemplate.convertAndSend("/rideOut/" + proba.get().getId(),objectMapper.writeValueAsString(response));
         return new ResponseEntity<RideResponseDTO>(response, HttpStatus.OK);
     }
 

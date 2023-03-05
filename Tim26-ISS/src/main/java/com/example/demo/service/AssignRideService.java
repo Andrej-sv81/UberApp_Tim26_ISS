@@ -6,6 +6,7 @@ import com.example.demo.repository.DriverRepository;
 import com.example.demo.repository.WorkingHourRepository;
 import com.example.demo.service.interfaces.IAssignRideService;
 import com.example.demo.util.cost.EstimatedCost;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,23 +32,26 @@ public class AssignRideService implements IAssignRideService {
     @Override
     public Driver assignDriver(Ride ride) {
         Driver selectedDriver = null;
-        List<Driver> driverSelection = driverService.driversMatchingCriteria(ride); // aktivni sa odgovarajucim zahtevima, i slobodni i zauzeti ako nema slobodnih bice samo zauzeti
-        List<Driver> freeDrivers = driverService.findFreeDrivers(ride);  // ovde su trenutno slobodni, ostali vozaci ce biti u driverSelection
-        if (driverSelection.isEmpty())
-            return selectedDriver;    // ne postoji aktivni vozac sa odgovarajucim zahtevima
-        driverSelection = removeNonValidDrivers(driverSelection);
-        freeDrivers = removeNonValidDrivers(freeDrivers);
-        List<Driver> sortedBusy = new ArrayList<Driver>();
-        if (freeDrivers.isEmpty()){
-            sortedBusy = sortBusyDrivers(driverSelection,ride);
-            return pickDriver(sortedBusy,ride);
-        }
-        List<Driver> sortedFree = sortFreeDrivers(freeDrivers,ride);
-        selectedDriver = pickDriver(sortedFree,ride);
-        if (selectedDriver==null){
-            sortedBusy = sortBusyDrivers(driverSelection,ride);
-            return pickDriver(sortedBusy,ride);
-        }
+        List<Driver> activeDrivers = driverRepository.getActiveDrivers();
+        selectedDriver = activeDrivers.get(0);
+        //List<Driver> driverSelection = driverService.driversMatchingCriteria(ride); // aktivni sa odgovarajucim zahtevima, i slobodni i zauzeti ako nema slobodnih bice samo zauzeti
+        //List<Driver> freeDrivers = driverService.findFreeDrivers(ride);  // ovde su trenutno slobodni, ostali vozaci ce biti u driverSelection
+//        if (driverSelection.isEmpty())
+//            return selectedDriver;    // ne postoji aktivni vozac sa odgovarajucim zahtevima
+//        driverSelection = removeNonValidDrivers(driverSelection);
+//        freeDrivers = removeNonValidDrivers(freeDrivers);
+//        List<Driver> sortedBusy = new ArrayList<Driver>();
+//        if (freeDrivers.isEmpty()){
+//            sortedBusy = sortBusyDrivers(driverSelection,ride);
+//            return pickDriver(sortedBusy,ride);
+//        }
+//        List<Driver> sortedFree = sortFreeDrivers(freeDrivers,ride);
+//        selectedDriver = pickDriver(sortedFree,ride);
+//        if (selectedDriver==null){
+//            sortedBusy = sortBusyDrivers(driverSelection,ride);
+//            return pickDriver(sortedBusy,ride);
+//        }
+        //Hibernate.initialize(selectedDriver);
         return selectedDriver;
     }
 
