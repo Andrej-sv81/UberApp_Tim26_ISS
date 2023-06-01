@@ -17,6 +17,7 @@ public class User {
     private String name;
     @Column(name="surname", nullable = false)
     private String surname;
+    @Lob
     @Column(name="profilePicture", nullable = true)
     private String profilePicture;
     @Column(name="telephoneNumber", nullable = false)
