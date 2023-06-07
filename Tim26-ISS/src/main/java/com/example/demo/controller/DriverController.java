@@ -90,10 +90,26 @@ public class DriverController {
         }
         if (!userPrincipal.getName().equals(found.get().getEmail()))
             throw new UserIdNotMatchingException();
-        if (!userPrincipal.getName().equals(driver.getEmail()))
-            throw new ForbiddenDataUpdateException();
+//        if (!userPrincipal.getName().equals(driver.getEmail()))
+//            throw new ForbiddenDataUpdateException();
         DriverResponseDTO updated = driverService.update(driver,id);
         return new ResponseEntity<>(updated,HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
+    @PutMapping(value = "/{id}/activity",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateDriverActivity(@PathVariable("id") Integer id,@RequestParam(required = true) boolean status, Principal userPrincipal){
+        Optional<User> found = driverRepository.findById(id);
+        if(found.isEmpty()){
+            throw new UserDoesNotExistException();
+        }
+        if (!userPrincipal.getName().equals(found.get().getEmail()))
+            throw new UserIdNotMatchingException();
+        User user = found.get();
+        user.setActive(status);
+        userRepository.save(user);
+        userRepository.flush();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/documents",produces = MediaType.APPLICATION_JSON_VALUE)

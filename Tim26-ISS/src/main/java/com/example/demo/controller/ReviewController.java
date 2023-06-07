@@ -45,6 +45,9 @@ public class ReviewController {
     @Autowired
     PassengerService passengerService;
 
+    @Autowired
+    DriverService driverService;
+
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(value = "/{rideId}/vehicle",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createReviewVehicle(@PathVariable("rideId") @NotNull Integer rideId,
@@ -53,8 +56,8 @@ public class ReviewController {
         String mail = userPrincipal.getName();
         Passenger passenger = passengerService.findPassengerByEmail(mail);
         Ride ride = rideService.findOneById(rideId);
-        Driver driver = ride.getDriver();
-        Vehicle vehicle = driver.getVehicle();
+        Driver driver = driverService.findDriver(ride.getDriver().getId());
+        Vehicle vehicle = vehicleService.findOneById(driver.getVehicle().getId());
 
         if(vehicle == null) {
             throw new VehicleDoesNotExistException();

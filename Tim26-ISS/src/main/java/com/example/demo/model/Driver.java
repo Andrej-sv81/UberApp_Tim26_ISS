@@ -90,14 +90,25 @@ public class Driver extends User {
                 '}';
     }
 
-    public Driver updateDriver(DriverRequestDTO driver) {
-        setName(driver.getName());
-        setSurname(driver.getSurname());
-        setProfilePicture(driver.getProfilePicture());
-        setTelephoneNumber(driver.getTelephoneNumber());
-        setEmail(driver.getEmail());
-        setAddress(driver.getAddress());
-        this.setRole("DRIVER");
+    public Driver updateDriver(DriverRequestDTO edited) {
+        if(!edited.getName().equals("")){
+            setName(edited.getName());
+        }
+        if(!edited.getSurname().equals("")){
+            setSurname(edited.getSurname());
+        }
+        if(!edited.getProfilePicture().equals("")){
+            setProfilePicture(edited.getProfilePicture());
+        }
+        if(!edited.getTelephoneNumber().equals("")){
+            setTelephoneNumber(edited.getTelephoneNumber());
+        }
+        if(!edited.getEmail().equals("")){
+            setEmail(edited.getEmail());
+        }
+        if(!edited.getAddress().equals("")){
+            setAddress(edited.getAddress());
+        }
         return this;
     }
 }
