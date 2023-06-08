@@ -7,12 +7,9 @@ import com.example.demo.dto.ride.RideDriverDTO;
 import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RidePathDTO;
 import com.example.demo.dto.user.*;
-import com.example.demo.exceptions.AccountNotActivatedException;
+import com.example.demo.exceptions.*;
 import com.example.demo.util.email.EmailDetails;
 import com.example.demo.util.email.EmailService;
-import com.example.demo.exceptions.FailedPasswordResetException;
-import com.example.demo.exceptions.PasswordNotMatchingException;
-import com.example.demo.exceptions.UserIdNotMatchingException;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
 import com.example.demo.repository.PassengerRepository;
@@ -96,12 +93,11 @@ public class UserController {
     }
     //TODO Kad formiramo front dio, link do stranice za resetovanje ukljuciti u mail
 
-    @GetMapping(value="/{id}/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendEmailForPasswordChange(@PathVariable(value = "id", required = true) @NotNull  Integer id,
-                                                        Principal userPrincipal) {
-        User user = userService.findOneById(id);
-        if(!userPrincipal.getName().equals(user.getEmail())){
-            throw new UserIdNotMatchingException();
+    @GetMapping(value="/resetPassword")
+    public ResponseEntity<?> sendEmailForPasswordChange(@RequestParam String email) {
+        User user = userService.findUserByEmail(email);
+        if(user == null){
+            throw new UserDoesNotExistException();
         }
         Random rand = new Random();
         int code = rand.nextInt(9000000) + 1000000;
@@ -109,13 +105,11 @@ public class UserController {
         user.setCode(code);
         user.setExpirationDAte(expirationDate);
         userService.save(user);
-        String url = "";
         String body = "Hello,\n"
                 + "You have requested to reset your password.\n"
                 + "Use the code below to change your password:\n"
                 + "\n" + code + "\n"
                 + "\nThe code will expire in 1 day.\n"
-                + "Enter the code on the following page: " + url
                 + "\n\n\nIgnore this email if you do remember your password,\n "
                 + "or you have not made the request.";
 
@@ -124,14 +118,13 @@ public class UserController {
         emailService.sendSimpleMail(emailDetails);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
-    @PutMapping(value="/{id}/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> resetPassword(@PathVariable(value = "id", required = true) @NotNull  Integer id,
-                                           @Valid @RequestBody ResetPasswordDTO request,
-                                           Principal userPrincipal){
-        User user = userService.findOneById(id);
-        if(!userPrincipal.getName().equals(user.getEmail())){
-            throw new UserIdNotMatchingException();
+
+    @PutMapping(value="/resetPassword",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> resetPassword(@RequestParam String email,
+                                           @Valid @RequestBody ResetPasswordDTO request){
+        User user = userService.findUserByEmail(email);
+        if(user == null){
+            throw new UserDoesNotExistException();
         }
         String code = user.getCode().toString();
         Date expirationDate = user.getExpirationDAte();
