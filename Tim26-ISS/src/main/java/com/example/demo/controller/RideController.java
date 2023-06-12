@@ -74,6 +74,53 @@ public class RideController {
     @Autowired
     private DriverRepository driverRepository;
 
+
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
+    @PostMapping(path = "/sim",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RideResponseDTO> createRideSim(@Valid @RequestBody RideRequestDTO ride,
+                                                      Principal userPrincipal) throws JsonProcessingException {
+
+        Passenger passenger = passengerService.findPassengerByEmail(userPrincipal.getName());
+        VehicleType vehicleType = vehicleTypeService.findOneByName(
+                VehicleTypeEnum.getType(ride.getVehicleType()));
+        double[] timeCostAndDistance = caclculateTimeAndCost(ride.getLocations().get(0), vehicleType);
+        int estimated_time = (int)timeCostAndDistance[0];
+        int total_cost = (int)timeCostAndDistance[1];
+        double distance = timeCostAndDistance[2];
+
+        List<Passenger> passengerList = new ArrayList<Passenger>();
+        for(PassengerRideOverDTO p: ride.getPassengers()){
+            Passenger newP = passengerService.findPassengerByEmail(p.getEmail());
+            passengerList.add(newP);
+        }
+
+        List<Route> routeList = new ArrayList<Route>();
+        Location start = new Location(ride.getLocations().get(0).getDeparture());
+        Location end = new Location(ride.getLocations().get(0).getDestination());
+        Route route = new Route(start, end, distance);
+        routeList.add(route);
+
+        Ride newRide = new Ride(null, null, total_cost, null,
+                passengerList, routeList, estimated_time, null,
+                RideState.PENDING, null, false,
+                ride.isBabyTransport(), ride.isPetTransport(), vehicleType, null);
+
+        rideService.save(newRide);
+
+        for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity
+            List<Ride> rides = p.getRides();
+            rides.add(newRide);
+            p.setRides(rides);
+            passengerService.insert(p);
+        }
+        RideResponseDTO response = new RideResponseDTO(newRide, ride.getPassengers(), ride.getLocations());
+
+//        DriverRideOverDTO probaResponse = new DriverRideOverDTO(proba.get().getId(),proba.get().getEmail());
+//        response.setDriver(probaResponse);
+//        simpMessagingTemplate.convertAndSend("/rideOut/" + proba.get().getId(),objectMapper.writeValueAsString(response));
+
+        return new ResponseEntity<RideResponseDTO>(response, HttpStatus.OK);
+    }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> createRide(@Valid @RequestBody RideRequestDTO ride,
