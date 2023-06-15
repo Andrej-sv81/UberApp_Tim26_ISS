@@ -1,5 +1,6 @@
 package com.example.demo.service.interfaces;
 
+import com.example.demo.dto.LocationDTO;
 import com.example.demo.model.Review;
 import com.example.demo.model.Vehicle;
 
@@ -12,4 +13,8 @@ public interface IVehicleService {
 
 
     List<Review> getReviews(Integer id);
+
+    void simulateVehicle(Integer id);
+
+    List<LocationDTO> getRouteFromOpenRoute(String start, String end);
 }
