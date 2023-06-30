@@ -21,13 +21,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -60,6 +59,10 @@ public class RideController {
     DriverService driverService;
     @Autowired
     PanicService panicService;
+
+    @Autowired
+    VehicleService vehicleService;
+
     @Autowired
     FavoriteRidesService favoriteRidesService;
     @Autowired
@@ -295,8 +298,46 @@ public class RideController {
             throw new CannotAcceptRideException();
         }
         rideService.save(ride);
+        // socket do passengera da je prihvacena vvoznja
+        vehicleService.simulateVehicle(ride.getId());
         RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/acceptSim",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TestDTO> acceptRideSim(@PathVariable("id") @NotNull Integer id,
+                                                      Principal userPrincipal){
+        Driver driver = driverService.findByEmail(userPrincipal.getName());
+        Ride ride = rideService.findOneById(id);
+        if(ride.getRideState() == RideState.PENDING){
+            ride.setRideState(RideState.ACCEPTED);
+            ride.setDriver(driver);
+        }else{
+            throw new CannotAcceptRideException();
+        }
+        rideService.save(ride);
+        // socket do passengera da je prihvacena vvoznja
+        Vehicle v = vehicleService.findOneById(driver.getVehicle().getId());
+
+        Route route = ride.getRoutes().get(0);
+        String start = route.getStartLocation().getLongitude() + "," + route.getStartLocation().getLatitude();
+        String end = route.getDestination().getLongitude() + "," + route.getDestination().getLatitude();
+
+        String base = "https://api.openrouteservice.org/v2/directions/driving-car";
+        String key = "5b3ce3597851110001cf624826198d29de4c4c5d96dd61fd55b585bd";
+        String url = base + "?api_key=" + key + "&start="+start+"&end="+end;
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                url, HttpMethod.GET, request, String.class);
+        String responseString = response.getBody();
+
+
+        TestVehicleDTO vehicle = new TestVehicleDTO(v.getId(), v.getLocation().getLatitude(), v.getLocation().getLongitude());
+        TestDTO test = new TestDTO(ride.getId(), vehicle, responseString);
+        vehicleService.simulateVehicle(ride.getId());
+        return new ResponseEntity<TestDTO>(test,HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/end",produces = MediaType.APPLICATION_JSON_VALUE)

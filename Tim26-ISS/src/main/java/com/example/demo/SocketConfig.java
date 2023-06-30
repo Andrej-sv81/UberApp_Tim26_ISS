@@ -52,14 +52,19 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer, WebSocket
         return WebSocketMessageBrokerConfigurer.super.configureMessageConverters(messageConverters);
     }
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        WebSocketMessageBrokerConfigurer.super.configureMessageBroker(registry);
-        registry.setApplicationDestinationPrefixes("/rideIn").enableSimpleBroker("/rideOut");
-    }
+//    @Override
+//    public void configureMessageBroker(MessageBrokerRegistry registry) {
+//        WebSocketMessageBrokerConfigurer.super.configureMessageBroker(registry);
+//        registry.setApplicationDestinationPrefixes("/rideIn").enableSimpleBroker("/rideOut");
+//    }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/map-updates");
     }
 }
