@@ -15,17 +15,19 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.REFRESH}, mappedBy = "vehicle", fetch = FetchType.LAZY)
     private Driver driver;
     @Column(name="vehicle_model", nullable = false)
     private String vehicleModel;
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "vehicleTypeId")
     private VehicleType vehicleType;
     @Column(name="registration_plates", nullable = false)
     private String registrationPlates;
     @Column(name="number_of_seats", nullable = false)
     private int numberOfSeats;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "currentLocationId")
     private Location location;
     @Column(name="baby_flag", nullable = false)
     private boolean babyFlag;

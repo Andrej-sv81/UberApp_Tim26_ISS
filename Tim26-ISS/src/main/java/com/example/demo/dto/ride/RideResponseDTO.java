@@ -79,38 +79,58 @@ public class RideResponseDTO {
         this.scheduledTime = newRide.getScheduledTime().toString();
     }
 
-    public RideResponseDTO(Ride ride, RejectionMessageService rejectionMessageService, PassengerService passengerService, RouteService routeService) {
-        DriverRideOverDTO driver = new DriverRideOverDTO(ride.getDriver().getId(), ride.getDriver().getEmail());
-        RejectionDTO rejection = new RejectionDTO(rejectionMessageService.getMessageFromRide(ride.getId()));
-
-        List<PassengerRideOverDTO> passengers = new ArrayList<PassengerRideOverDTO>();
-        List<Passenger> ridePassengers = passengerService.getPassengersOfRide(ride.getId());
-        for(Passenger p: ridePassengers){
-            passengers.add(new PassengerRideOverDTO(p.getId(), p.getEmail()));
-        }
-
-        List<RouteDTO> routes = new ArrayList<RouteDTO>();
-        List<Route> rideRoutes = routeService.getRoutesFromRide(ride.getId());
-        for(Route r: rideRoutes){
-            routes.add(new RouteDTO(new LocationDTO(r.getStartLocation()), new LocationDTO(r.getDestination())));
-        }
-
+    public RideResponseDTO(Ride ride){
+        DriverRideOverDTO driverDTO = new DriverRideOverDTO(ride.getDriver().getId(), ride.getDriver().getEmail());
+        //TODO putnici,odbijanje,lokacije
         this.id = ride.getId();
         this.startTime = ride.getStartTime().toString();
         this.endTime = ride.getEndTime().toString();
         this.totalCost = ride.getTotalCost();
-        this.driver = driver;
-        this.passengers = passengers;
+        this.driver = driverDTO;
         this.estimatedTimeInMinutes = ride.getEstimatedTime();
         this.vehicleType = ride.getVehicleType().getName().toString();
         this.babyTransport = ride.isBabyFlag();
         this.petTransport = ride.isPetFlag();
-        this.rejection = rejection;
-        this.locations = routes;
         this.status = ride.getRideState().toString();
-        this.scheduledTime = ride.getScheduledTime() == null ? "" : ride.getScheduledTime().toString();
+        this.scheduledTime = ride.getScheduledTime() == null ? "" : ride.getScheduledTime().toString();;
 
     }
+
+    //TODO DTO JE SAMO ZA PODATKE NIKAKO ZA SERVISE I OSTALE STVARI!!!
+//    public RideResponseDTO(Ride ride, RejectionMessageService rejectionMessageService, PassengerService passengerService, RouteService routeService) {
+//        DriverRideOverDTO driver = new DriverRideOverDTO(ride.getDriver().getId(), ride.getDriver().getEmail());
+//        RejectionDTO rejection = new RejectionDTO(rejectionMessageService.getMessageFromRide(ride.getId()));
+//
+//        List<PassengerRideOverDTO> passengers = new ArrayList<PassengerRideOverDTO>();
+//        List<Passenger> ridePassengers = passengerService.getPassengersOfRide(ride.getId());
+//        for(Passenger p: ridePassengers){
+//            passengers.add(new PassengerRideOverDTO(p.getId(), p.getEmail()));
+//        }
+//
+//        List<RouteDTO> routes = new ArrayList<RouteDTO>();
+//        List<Route> rideRoutes = routeService.getRoutesFromRide(ride.getId());
+//        for(Route r: rideRoutes){
+//            routes.add(new RouteDTO(new LocationDTO(r.getStartLocation()), new LocationDTO(r.getDestination())));
+//        }
+//
+//        this.id = ride.getId();
+//        this.startTime = ride.getStartTime().toString();
+//        this.endTime = ride.getEndTime().toString();
+//        this.totalCost = ride.getTotalCost();
+//        this.driver = driver;
+//        this.passengers = passengers;
+//        this.estimatedTimeInMinutes = ride.getEstimatedTime();
+//        this.vehicleType = ride.getVehicleType().getName().toString();
+//        this.babyTransport = ride.isBabyFlag();
+//        this.petTransport = ride.isPetFlag();
+//        this.rejection = rejection;
+//        this.locations = routes;
+//        this.status = ride.getRideState().toString();
+//        this.scheduledTime = ride.getScheduledTime() == null ? "" : ride.getScheduledTime().toString();
+//
+//    }
+
+
 
     public Integer getId() {
         return id;

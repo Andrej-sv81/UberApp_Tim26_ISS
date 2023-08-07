@@ -7,11 +7,16 @@ import com.example.demo.service.interfaces.IWorkingHourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 @Service
 public class WorkingHourService implements IWorkingHourService {
 
@@ -29,36 +34,27 @@ public class WorkingHourService implements IWorkingHourService {
         return workingHourRepository.getWorkingHourByDriver(driver);
     }
 
-    @Override
-    public boolean validateDriverWorkingHours(Integer id) {
-        List<WorkingHour> workingHours = getWorkingHoursForValidation(id);
-        long totalWorkingMinutes = 0L;
-        if (workingHours.isEmpty())
-            return true; // driver is valid and can accept ride
-        for (WorkingHour wh : workingHours){
-            totalWorkingMinutes += ChronoUnit.MINUTES.between((Temporal) wh.getStartTime(), (Temporal) wh.getEndTime());
-        }
-        if (totalWorkingMinutes>8L*60L)
-            return false;
-        return true;
-    }
+
 
     @Override
-    public List<WorkingHour> getWorkingHoursForValidation(Integer id) {
-        List<WorkingHour> allWorkingHours = workingHourRepository.getWorkingHourByDriver_Id(id);
-        Date dayBefore = new Date();
-        //  TODO ODUZMI 24H!!
-        if (allWorkingHours.isEmpty())
-            return allWorkingHours;
-        for (WorkingHour wh:allWorkingHours){
-            if (wh.getEndTime().before(dayBefore)) {
-                allWorkingHours.remove(wh);
-            } else if (wh.getStartTime().before(dayBefore)) {
-                wh.setStartTime(dayBefore);
-            } else if (wh.getStartTime().equals(wh.getEndTime())) {
-                wh.setEndTime(new Date());  // znaci naisao je na trenutni working hour vozac je idalje aktivan
+    public Duration getTotalHoursWorkedInLastDay(Integer id) {
+        //TODO ODRADI GET TOTAL HOURS WORKED IN LAST DAY
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        //List<WorkingHour> workingHours = workingHourRepository.findAllByDriverIdAndEndTimeAfter(id, yesterday); //TODO
+        List<WorkingHour> workingHours = null;
+        if(workingHours.size() == 0) return Duration.ZERO;
+        Duration totalDurationWorked = Duration.ZERO;
+        for(WorkingHour workingHour: workingHours){
+            if(workingHour.getStartTime().equals(workingHour.getEndTime())){
+                totalDurationWorked = totalDurationWorked.plus(Duration.between((Temporal) workingHour.getStartTime(), LocalDateTime.now()));
+                continue;
+            }
+            if(workingHour.getStartTime().after(Date.from(yesterday.atZone(ZoneId.of("Europe/Paris")).toInstant()))){
+                totalDurationWorked = totalDurationWorked.plus(Duration.between((Temporal) workingHour.getStartTime(), (Temporal) workingHour.getEndTime()));
+            }else{
+                totalDurationWorked = totalDurationWorked.plus(Duration.between((Temporal) yesterday, (Temporal) workingHour.getEndTime()));
             }
         }
-        return allWorkingHours;
+        return totalDurationWorked;
     }
 }

@@ -53,6 +53,10 @@ public class RideDTO {
         this.scheduledTime = ride.getScheduledTime() == null ? "" : ride.getScheduledTime().toString();
     }
 
+    public RideDTO(Ride ride) {
+
+    }
+
 
     public Integer getId() {
         return id;

@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.websockethandler.RideHandler;
+import com.example.demo.websockethandler.RideSimulation;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
@@ -60,6 +62,7 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer, WebSocket
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-
+        registry.addHandler(new RideHandler(), "/socket");
+        registry.addHandler(new RideSimulation(), "/vehicle-simulation");
     }
 }

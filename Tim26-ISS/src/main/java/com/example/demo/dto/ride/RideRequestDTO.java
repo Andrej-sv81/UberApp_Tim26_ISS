@@ -2,6 +2,7 @@ package com.example.demo.dto.ride;
 
 import com.example.demo.dto.RouteDTO;
 import com.example.demo.dto.passenger.PassengerRideOverDTO;
+import org.springframework.lang.Nullable;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class RideRequestDTO
     @NotNull
     private boolean petTransport;
 
+    @Nullable
     private String scheduledTime;
     public RideRequestDTO() {
     }

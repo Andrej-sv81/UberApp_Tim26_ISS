@@ -27,8 +27,8 @@ public class Ride {
     @ManyToMany(fetch = FetchType.LAZY)
     @Column(name = "passengers",nullable = false)
     private List<Passenger> passengers;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Route> routes;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Route routes;
 
     @Column(name="estimated_time")
     private Integer estimatedTime;
@@ -56,7 +56,7 @@ public class Ride {
     }
     public Ride(Date startTime, Date endTime,
                 int totalCost, Driver driver,
-                List<Passenger> passengers, List<Route> routes,
+                List<Passenger> passengers, Route routes,
                 Integer estimatedTime, List<Review> reviews,
                 RideState rideState, RejectionMessage rejectionMessage,
                 boolean panicFlag, boolean babyFlag, boolean petFlag, VehicleType vehicleType, Date scheduledTime) {
@@ -132,11 +132,11 @@ public class Ride {
         this.passengers = passengers;
     }
 
-    public List<Route> getRoutes() {
+    public Route getRoutes() {
         return routes;
     }
 
-    public void setRoutes(List<Route> routes) {
+    public void setRoute(Route routes) {
         this.routes = routes;
     }
 

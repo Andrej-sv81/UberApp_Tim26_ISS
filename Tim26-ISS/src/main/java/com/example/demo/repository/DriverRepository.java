@@ -22,7 +22,6 @@ public interface DriverRepository  extends  UserRepository{
     @Query("select d from Driver d where d.email = ?1")
     Optional<Driver> findByEmail(String mail);
 
-
     @Query("select d.documents from Driver d where d.id=?1")
     List<Document> getDocuments(Integer id);
 
