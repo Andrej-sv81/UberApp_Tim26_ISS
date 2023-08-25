@@ -8,6 +8,7 @@ import com.example.demo.dto.ride.RidePassengerDTO;
 import com.example.demo.dto.ride.RideRequestDTO;
 import com.example.demo.dto.ride.RideResponseDTO;
 import com.example.demo.exceptions.*;
+import com.example.demo.handlers.RideRequestHandler;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
 import com.example.demo.service.*;
@@ -167,9 +168,11 @@ public class RideController {
                                 RideState.PENDING, null, false,
                                 ride.isBabyTransport(), ride.isPetTransport(), vehicleType, scheduledTime);
         //TODO assign ride to driver import assign service
+        // STAVLJEN JE FIKSNI VOZAC NE RADI BIRANJE
         Optional<User> proba = driverRepository.findById(2);
         newRide.setDriver((Driver) proba.get());
         rideService.save(newRide);
+
 
         for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity
             List<Ride> rides = p.getRides();
@@ -180,7 +183,7 @@ public class RideController {
         RideResponseDTO response = new RideResponseDTO(newRide, ride.getPassengers(), ride.getLocations());
         DriverRideOverDTO probaResponse = new DriverRideOverDTO(proba.get().getId(),proba.get().getEmail());
         response.setDriver(probaResponse);
-        simpMessagingTemplate.convertAndSend("/rideOut/" + proba.get().getId(),objectMapper.writeValueAsString(response));
+        RideRequestHandler.notifyDriverRideCreated(RideRequestHandler.driverSessions.get(response.getDriver().getId().toString()),response);
         return new ResponseEntity<RideResponseDTO>(response, HttpStatus.OK);
     }
 

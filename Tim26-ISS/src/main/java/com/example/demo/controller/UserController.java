@@ -278,44 +278,6 @@ public class UserController {
         response.setId(id);
         return new ResponseEntity<UserMessageResponseDTO>(response, HttpStatus.OK);
     }
-
-
-
-
-
-    //------------------------------------------------------ADMIN-----------------------------------------------------
-    //ADMIN Endpoint
-//    @PutMapping(value = "/{id}/block")
-//    public ResponseStatusException blockUser(@PathVariable(value = "id", required = true) Integer id) throws Exception {
-//        return new ResponseStatusException(HttpStatus.NO_CONTENT);
-//    }
-//    //ADMIN Endpoint
-//    @PutMapping(value = "/{id}/unblock")
-//    public ResponseStatusException unblockUser(@PathVariable(value = "id", required = true) Integer id) throws Exception {
-//        return new ResponseStatusException(HttpStatus.NO_CONTENT);
-//    }
-//    //ADMIN Endpoint
-//    @PostMapping(value = "/{id}/note", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<UserNoteResponseDTO> createNote(@PathVariable(value = "id", required = true) Integer id,
-//                                                          @RequestBody UserNoteRequestDTO request) throws Exception {
-//        UserNoteResponseDTO response = new UserNoteResponseDTO();
-//        response.setId(id);
-//        return new ResponseEntity<UserNoteResponseDTO>(response, HttpStatus.OK);
-//    }
-//    //ADMIN Endpoint
-//    @GetMapping(value = "/{id}/note", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<MultipleMessagesDTO> getNotes(
-//            @PathVariable(value = "id", required = true) Integer id,
-//            @RequestParam(required = false) Integer page,
-//            @RequestParam(required = false) Integer size) {
-//        MultipleMessagesDTO response = new MultipleMessagesDTO();
-//        List<UserNoteResponseDTO> list = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            list.add(new UserNoteResponseDTO());
-//        }
-//        response.setResults(list);
-//        return new ResponseEntity<MultipleMessagesDTO>(response, HttpStatus.OK);
-//    }
 }
 
 

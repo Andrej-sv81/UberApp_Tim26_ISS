@@ -92,8 +92,8 @@ public class VehicleService implements IVehicleService {
                     Location location = vehicle.getLocation();
                     saveLocationForCurrentRide(location, route, steps, vehicle);
                     //RideSimulationHandler.notifyUsersAboutVehicleLocations(sessions, location);
-                    LocationDTO locationDTO = new LocationDTO(vehicle.getId(),location);
-                    simpMessagingTemplate.convertAndSend("/map-updates/update-vehicle-position", locationDTO);
+                    //LocationDTO locationDTO = new LocationDTO(vehicle.getId(),location);
+                    //simpMessagingTemplate.convertAndSend("/map-updates/update-vehicle-position", locationDTO);
                     steps++;
                 }else timer.cancel();
             }

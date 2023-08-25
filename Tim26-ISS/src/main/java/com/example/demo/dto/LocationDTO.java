@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 public class LocationDTO {
 
-    private Integer id=0;
     @NotBlank
     private String address;
     @NotNull
@@ -28,12 +27,7 @@ public class LocationDTO {
             this.latitude = location.getLatitude();
             this.longitude = location.getLongitude();
     }
-    public LocationDTO(Integer id,Location location) {
-        this.id = id;
-        this.address = location.getAddress();
-        this.latitude = location.getLatitude();
-        this.longitude = location.getLongitude();
-    }
+
 
     public String getAddress() {
         return address;
@@ -59,13 +53,6 @@ public class LocationDTO {
         this.latitude = latitude;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @Override
     public String toString() {
