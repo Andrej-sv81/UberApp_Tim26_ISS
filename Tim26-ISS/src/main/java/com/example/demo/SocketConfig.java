@@ -22,44 +22,13 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer, WebSocket
     }
 
     @Override
-    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
-        WebSocketMessageBrokerConfigurer.super.configureWebSocketTransport(registry);
-    }
-
-    //-----------
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        WebSocketMessageBrokerConfigurer.super.configureClientInboundChannel(registration);
-    }
-
-    @Override
-    public void configureClientOutboundChannel(ChannelRegistration registration) {
-        WebSocketMessageBrokerConfigurer.super.configureClientOutboundChannel(registration);
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        WebSocketMessageBrokerConfigurer.super.addArgumentResolvers(argumentResolvers);
-    }
-
-    @Override
-    public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
-        WebSocketMessageBrokerConfigurer.super.addReturnValueHandlers(returnValueHandlers);
-    }
-
-    @Override
-    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-        return WebSocketMessageBrokerConfigurer.super.configureMessageConverters(messageConverters);
-    }
-
-    @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         WebSocketMessageBrokerConfigurer.super.configureMessageBroker(registry);
-        registry.setApplicationDestinationPrefixes("/rideIn").enableSimpleBroker("/rideOut");
+        registry.setApplicationDestinationPrefixes("/ws-in").enableSimpleBroker("/ws-out");
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-
+        // TODO deo za ANDROID
     }
 }

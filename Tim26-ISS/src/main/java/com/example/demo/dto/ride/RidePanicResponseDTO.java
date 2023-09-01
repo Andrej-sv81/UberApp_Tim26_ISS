@@ -40,31 +40,31 @@ public class RidePanicResponseDTO {
         this.reason = reason;
     }
 
-    public RidePanicResponseDTO(Panic panic,
-                                RejectionMessageService rejectionMessageService,
-                                RouteService routeService,
-                                PassengerService passengerService) {
-        this.id = panic.getId();
-        this.user = new UserResponseDTO(panic.getUser());
-        RideDriverDTO driver = new RideDriverDTO(panic.getRide().getDriver().getId(), panic.getRide().getDriver().getEmail());
-        RejectionDTO rejection = new RejectionDTO(rejectionMessageService.getMessageFromRide(panic.getRide().getId()));
-
-        List<RidePassengerDTO> passengers = new ArrayList<RidePassengerDTO>();
-        List<Passenger> ridePassengers = passengerService.getPassengersOfRide(panic.getRide().getId());
-        for(Passenger p: ridePassengers){
-            passengers.add(new RidePassengerDTO(p.getId(), p.getEmail()));
-        }
-
-        List<RidePathDTO> routes = new ArrayList<RidePathDTO>();
-        List<Route> rideRoutes = routeService.getRoutesFromRide(panic.getRide().getId());
-        for(Route r: rideRoutes){
-            routes.add(new RidePathDTO(new LocationDTO(r.getStartLocation()), new LocationDTO(r.getDestination())));
-        }
-
-        this.ride = new RideDTO(panic.getRide(), driver, passengers, rejection, routes);
-        this.time = panic.getTime().toString();
-        this.reason = panic.getPanicMessage();
-    }
+//    public RidePanicResponseDTO(Panic panic,
+//                                RejectionMessageService rejectionMessageService,
+//                                RouteService routeService,
+//                                PassengerService passengerService) {
+//        this.id = panic.getId();
+//        this.user = new UserResponseDTO(panic.getUser());
+//        RideDriverDTO driver = new RideDriverDTO(panic.getRide().getDriver().getId(), panic.getRide().getDriver().getEmail());
+//        RejectionDTO rejection = new RejectionDTO(rejectionMessageService.getMessageFromRide(panic.getRide().getId()));
+//
+//        List<RidePassengerDTO> passengers = new ArrayList<RidePassengerDTO>();
+//        List<Passenger> ridePassengers = passengerService.getPassengersOfRide(panic.getRide().getId());
+//        for(Passenger p: ridePassengers){
+//            passengers.add(new RidePassengerDTO(p.getId(), p.getEmail()));
+//        }
+//
+//        List<RidePathDTO> routes = new ArrayList<RidePathDTO>();
+//        List<Route> rideRoutes = routeService.getRoutesFromRide(panic.getRide().getId());
+//        for(Route r: rideRoutes){
+//            routes.add(new RidePathDTO(new LocationDTO(r.getStartLocation()), new LocationDTO(r.getDestination())));
+//        }
+//
+//        this.ride = new RideDTO(panic.getRide(), driver, passengers, rejection, routes);
+//        this.time = panic.getTime().toString();
+//        this.reason = panic.getPanicMessage();
+//    }
 
     public Integer getId() {
         return id;
