@@ -28,4 +28,6 @@ public interface IDriverService {
     public List<Driver> findFreeDrivers(Ride ride);
     public List<Driver> removeReservedDrivers(List<Driver> drivers,Ride ride);
     public boolean overLappingRides(Ride ride1,Ride ride2);
+
+    DriverReportDTO getReports(Integer driverId);
 }

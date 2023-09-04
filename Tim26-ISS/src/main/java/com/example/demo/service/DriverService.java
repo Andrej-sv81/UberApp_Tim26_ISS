@@ -221,4 +221,9 @@ public class DriverService implements IDriverService {
         return false;
     }
 
+    @Override
+    public DriverReportDTO getReports(Integer driverId) {
+        return null;
+    }
+
 }
