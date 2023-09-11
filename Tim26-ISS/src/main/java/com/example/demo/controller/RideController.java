@@ -3,10 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.dto.driver.DriverRideOverDTO;
 import com.example.demo.dto.passenger.PassengerRideOverDTO;
-import com.example.demo.dto.ride.RidePanicResponseDTO;
-import com.example.demo.dto.ride.RidePassengerDTO;
-import com.example.demo.dto.ride.RideRequestDTO;
-import com.example.demo.dto.ride.RideResponseDTO;
+import com.example.demo.dto.ride.*;
 import com.example.demo.exceptions.*;
 import com.example.demo.model.*;
 import com.example.demo.repository.DriverRepository;
@@ -65,122 +62,17 @@ public class RideController {
     @Autowired
     AssignRideService assignRideService;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
-    //TODO add map for rejected rides by drivers
-    public Map<Integer,List<Driver>> rejectedRides = new HashMap<Integer,List<Driver>>();
-    @Autowired
     private DriverRepository driverRepository;
 
+    public Map<Integer,List<Driver>> rejectedRides = new HashMap<Integer,List<Driver>>();
 
-    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
-    @PostMapping(path = "/sim",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RideResponseDTO> createRideSim(@Valid @RequestBody RideRequestDTO ride,
-                                                      Principal userPrincipal) throws JsonProcessingException {
 
-        Passenger passenger = passengerService.findPassengerByEmail(userPrincipal.getName());
-        VehicleType vehicleType = vehicleTypeService.findOneByName(
-                VehicleTypeEnum.getType(ride.getVehicleType()));
-        double[] timeCostAndDistance = caclculateTimeAndCost(ride.getLocations().get(0), vehicleType);
-        int estimated_time = (int)timeCostAndDistance[0];
-        int total_cost = (int)timeCostAndDistance[1];
-        double distance = timeCostAndDistance[2];
-
-        List<Passenger> passengerList = new ArrayList<Passenger>();
-        for(PassengerRideOverDTO p: ride.getPassengers()){
-            Passenger newP = passengerService.findPassengerByEmail(p.getEmail());
-            passengerList.add(newP);
-        }
-
-        List<Route> routeList = new ArrayList<Route>();
-        Location start = new Location(ride.getLocations().get(0).getDeparture());
-        Location end = new Location(ride.getLocations().get(0).getDestination());
-        Route route = new Route(start, end, distance);
-        routeList.add(route);
-
-        Ride newRide = new Ride(null, null, total_cost, null,
-                passengerList, routeList, estimated_time, null,
-                RideState.PENDING, null, false,
-                ride.isBabyTransport(), ride.isPetTransport(), vehicleType, null);
-
-        rideService.save(newRide);
-
-        for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity
-            List<Ride> rides = p.getRides();
-            rides.add(newRide);
-            p.setRides(rides);
-            passengerService.insert(p);
-        }
-        RideResponseDTO response = new RideResponseDTO(newRide, ride.getPassengers(), ride.getLocations());
-
-//        DriverRideOverDTO probaResponse = new DriverRideOverDTO(proba.get().getId(),proba.get().getEmail());
-//        response.setDriver(probaResponse);
-//        simpMessagingTemplate.convertAndSend("/rideOut/" + proba.get().getId(),objectMapper.writeValueAsString(response));
-
-        return new ResponseEntity<RideResponseDTO>(response, HttpStatus.OK);
-    }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> createRide(@Valid @RequestBody RideRequestDTO ride,
                                                       Principal userPrincipal) throws JsonProcessingException {
 
-        Passenger passenger = passengerService.findPassengerByEmail(userPrincipal.getName());
-        List<Ride> pendingRides = rideService.findPendingRides(passenger.getId()); //checks for pending rides
-
-        VehicleType vehicleType = vehicleTypeService.findOneByName(
-                                VehicleTypeEnum.getType(ride.getVehicleType()));
-        double[] timeCostAndDistance = caclculateTimeAndCost(ride.getLocations().get(0), vehicleType);
-        int estimated_time = (int)timeCostAndDistance[0];
-        int total_cost = (int)timeCostAndDistance[1];
-        double distance = timeCostAndDistance[2];
-
-        List<Passenger> passengerList = new ArrayList<Passenger>();
-        for(PassengerRideOverDTO p: ride.getPassengers()){
-            Passenger newP = passengerService.findPassengerByEmail(p.getEmail());
-            passengerList.add(newP);
-        }
-
-        List<Route> routeList = new ArrayList<Route>();
-        Location start = new Location(ride.getLocations().get(0).getDeparture());
-        Location end = new Location(ride.getLocations().get(0).getDestination());
-        Route route = new Route(start, end, distance);
-        routeList.add(route);
-
-        List<Review> reviews = new ArrayList<Review>();
-
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date scheduledTime;
-        try {
-            if(!ride.getScheduledTime().equals("")) {
-                scheduledTime = formatter.parse(ride.getScheduledTime());
-            }else {
-                scheduledTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault())
-                                .toInstant());;
-            }
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        Ride newRide = new Ride(null, null, total_cost, null,
-                                passengerList, routeList, estimated_time, reviews,
-                                RideState.PENDING, null, false,
-                                ride.isBabyTransport(), ride.isPetTransport(), vehicleType, scheduledTime);
-        //TODO assign ride to driver import assign service
-        Optional<User> proba = driverRepository.findById(2);
-        newRide.setDriver((Driver) proba.get());
-        rideService.save(newRide);
-
-        for(Passenger p: passengerList){ // Petlja za bidirekciono cuvanje, jer ne mozemo cascadeAll zbog Dethached entity
-            List<Ride> rides = p.getRides();
-            rides.add(newRide);
-            p.setRides(rides);
-            passengerService.insert(p);
-        }
-        RideResponseDTO response = new RideResponseDTO(newRide, ride.getPassengers(), ride.getLocations());
-        DriverRideOverDTO probaResponse = new DriverRideOverDTO(proba.get().getId(),proba.get().getEmail());
-        response.setDriver(probaResponse);
-        simpMessagingTemplate.convertAndSend("/rideOut/" + proba.get().getId(),objectMapper.writeValueAsString(response));
+        RideResponseDTO response = rideService.createRide(ride,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response, HttpStatus.OK);
     }
 
@@ -192,8 +84,7 @@ public class RideController {
         if(user.getId() != driverId){
             throw new UserIdNotMatchingException();
         }
-        Ride ride = rideService.findActiveRideForDriver(driverId);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.findActiveRideForDriver(driverId);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
 
@@ -205,17 +96,14 @@ public class RideController {
         if(user.getId() != passengerId){
             throw new UserIdNotMatchingException();
         }
-        Ride ride = rideService.findActiveRideForPassenger(passengerId);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.findActiveRideForPassenger(passengerId);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> getDetailsRide(@PathVariable(value = "id", required = true) @NotNull Integer id){
-
-        Ride ride = rideService.findOneById(id);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.rideDetails(id);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
 
@@ -223,29 +111,12 @@ public class RideController {
     @PutMapping(value = "{id}/withdraw",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> cancelRide(@PathVariable(value = "id", required = true) @NotNull Integer id,
                                                       Principal userPrincipal){
-        Passenger passenger = passengerService.findPassengerByEmail(userPrincipal.getName());
-        List<Passenger> passengerList = passengerService.getPassengersOfRide(id);
-        boolean contains = false;
-        for(Passenger p: passengerList){
-            if(p.getId() == passenger.getId()){
-                contains = true;
-            }
-        }
-        if(!contains){
-            throw new UserIdNotMatchingException();
-        }
-
-        Ride ride = rideService.findOneById(id);
-        if(ride.getRideState() == RideState.PENDING || ride.getRideState() == RideState.STARTED){
-            ride.setRideState(RideState.CANCELED);
-        }else{
-            throw new CannotCancelRideException();
-        }
-
-        rideService.save(ride);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.cancelRidePassenger(id,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
+
+
+    // TODO PANIC PROCEDURE!!!!!!!!!!!!!!!!!
     @PreAuthorize("hasAuthority('ROLE_PASSENGER') || hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/panic",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RidePanicResponseDTO> panicProcedure(@PathVariable(value = "id", required = true) @NotNull Integer id,
@@ -256,92 +127,37 @@ public class RideController {
         Date date = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());;
 
         Panic panic = new Panic(user, ride, date, explanation.getReason());
-
         panicService.save(panic);
-        RidePanicResponseDTO response = new RidePanicResponseDTO(panic, rejectionMessageService, routeService, passengerService);
+        RidePanicResponseDTO response = new RidePanicResponseDTO();
         return new ResponseEntity<RidePanicResponseDTO>(response,HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/start",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> startRide(@PathVariable("id") @NotNull Integer id,
                                                      Principal userPrincipal){
-        Driver rideDriver = driverService.getDriverOfRide(id);
-        if(!rideDriver.getEmail().equals(userPrincipal.getName())){
-            throw new UserIdNotMatchingException();
-        }
-
-        Ride ride = rideService.findOneById(id);
-        if(ride.getRideState() == RideState.ACCEPTED){
-            ride.setRideState(RideState.STARTED);
-            ride.setStartTime(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
-        }else{
-            throw new CannotStartRideException();
-        }
-
-        rideService.save(ride);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.startRide(id,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/accept",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> acceptRide(@PathVariable("id") @NotNull Integer id,
                                                       Principal userPrincipal){
-        Driver driver = driverService.findByEmail(userPrincipal.getName());
-        Ride ride = rideService.findOneById(id);
-        if(ride.getRideState() == RideState.PENDING){
-            ride.setRideState(RideState.ACCEPTED);
-            ride.setDriver(driver);
-        }else{
-            throw new CannotAcceptRideException();
-        }
-        rideService.save(ride);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.acceptRide(id,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/end",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> endRide(@PathVariable("id") @NotNull Integer id,
                                                    Principal userPrincipal){
-        Driver rideDriver = driverService.getDriverOfRide(id);
-        if(!rideDriver.getEmail().equals(userPrincipal.getName())){
-            throw new UserIdNotMatchingException();
-        }
-        Ride ride = rideService.findOneById(id);
-        if(ride.getRideState() == RideState.STARTED){
-            ride.setRideState(RideState.FINISHED);
-            ride.setEndTime(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
-        }else{
-            throw new CannotEndRideException();
-        }
-        rideService.save(ride);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.endRide(id,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/cancel",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> cancelWithExplanation(@PathVariable("id")@NotNull Integer id,
-                                                                 @Valid @RequestBody ExplanationDTO explanation,
+                                                                  @RequestBody ExplanationDTO explanation,
                                                                  Principal userPrincipal){
-        Driver rideDriver = driverService.getDriverOfRide(id);
-        if(!rideDriver.getEmail().equals(userPrincipal.getName())){
-            throw new UserIdNotMatchingException();
-        }
-
-        Ride ride = rideService.findOneById(id);
-
-        RejectionMessage rejectionMessage = new RejectionMessage(ride, explanation.getReason(),
-                    (User) rideDriver, Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
-
-
-        if(ride.getRideState() == RideState.PENDING || ride.getRideState() == RideState.STARTED){
-            ride.setRideState(RideState.REJECTED);
-            ride.setRejectionMessage(rejectionMessage);
-        }else{
-            throw new CannotCancelRideException();
-        }
-
-        rideService.save(ride);
-        RideResponseDTO response = new RideResponseDTO(ride, rejectionMessageService, passengerService, routeService);
+        RideResponseDTO response = rideService.decline(id,explanation,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
@@ -401,15 +217,11 @@ public class RideController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public double[] caclculateTimeAndCost(RouteDTO route, VehicleType type){
-        LocationDTO start = route.getDeparture();
-        LocationDTO finish = route.getDestination();
-        double distance = EstimatedCost.calculateDistance(start.getLatitude(), start.getLongitude(),
-                                                          finish.getLatitude(), finish.getLongitude());
-
-        double price = type.getPrice() + distance * 120;
-        double time = distance/80 * 60;
-
-        return new double[]{time, price, distance};
+    @PutMapping(value="/simulate/{id}")
+    public ResponseEntity<String> simulateRide(@PathVariable Integer id){
+        rideService.simulate(id);
+        return new ResponseEntity<>("Simulating ...",HttpStatus.OK);
     }
+
+
 }

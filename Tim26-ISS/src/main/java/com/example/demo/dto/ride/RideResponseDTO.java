@@ -76,39 +76,39 @@ public class RideResponseDTO {
         this.rejection = null;
         this.locations = route;
         this.status = newRide.getRideState().toString();
-        this.scheduledTime = newRide.getScheduledTime().toString();
+        if (newRide.getScheduledTime() != null) {
+            this.scheduledTime = newRide.getScheduledTime().toString();
+        } else {
+            this.scheduledTime = null; // Or some other default value if needed
+        }
     }
 
-    public RideResponseDTO(Ride ride, RejectionMessageService rejectionMessageService, PassengerService passengerService, RouteService routeService) {
-        DriverRideOverDTO driver = new DriverRideOverDTO(ride.getDriver().getId(), ride.getDriver().getEmail());
-        RejectionDTO rejection = new RejectionDTO(rejectionMessageService.getMessageFromRide(ride.getId()));
-
-        List<PassengerRideOverDTO> passengers = new ArrayList<PassengerRideOverDTO>();
-        List<Passenger> ridePassengers = passengerService.getPassengersOfRide(ride.getId());
-        for(Passenger p: ridePassengers){
-            passengers.add(new PassengerRideOverDTO(p.getId(), p.getEmail()));
-        }
-
-        List<RouteDTO> routes = new ArrayList<RouteDTO>();
-        List<Route> rideRoutes = routeService.getRoutesFromRide(ride.getId());
-        for(Route r: rideRoutes){
-            routes.add(new RouteDTO(new LocationDTO(r.getStartLocation()), new LocationDTO(r.getDestination())));
-        }
-
+    public RideResponseDTO(Ride ride){
+        DriverRideOverDTO driverDTO = new DriverRideOverDTO(ride.getDriver().getId(), ride.getDriver().getEmail());
+        //TODO putnici,odbijanje,lokacije
         this.id = ride.getId();
-        this.startTime = ride.getStartTime().toString();
-        this.endTime = ride.getEndTime().toString();
+        if (ride.getStartTime() != null) {
+            this.startTime = ride.getStartTime().toString();
+        } else {
+            this.startTime = ""; // Or some other default value if needed
+        }
+        if (ride.getEndTime() != null) {
+            this.endTime = ride.getEndTime().toString();
+        } else {
+            this.endTime = ""; // Or some other default value if needed
+        }
         this.totalCost = ride.getTotalCost();
-        this.driver = driver;
-        this.passengers = passengers;
+        this.driver = driverDTO;
         this.estimatedTimeInMinutes = ride.getEstimatedTime();
         this.vehicleType = ride.getVehicleType().getName().toString();
         this.babyTransport = ride.isBabyFlag();
         this.petTransport = ride.isPetFlag();
-        this.rejection = rejection;
-        this.locations = routes;
         this.status = ride.getRideState().toString();
-        this.scheduledTime = ride.getScheduledTime() == null ? "" : ride.getScheduledTime().toString();
+        if (ride.getScheduledTime() != null) {
+            this.scheduledTime = ride.getScheduledTime().toString();
+        } else {
+            this.scheduledTime = null; // Or some other default value if needed
+        }
 
     }
 
