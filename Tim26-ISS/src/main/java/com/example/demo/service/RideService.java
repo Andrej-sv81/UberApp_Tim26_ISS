@@ -12,19 +12,21 @@ import com.example.demo.dto.ride.RideRequestDTO;
 import com.example.demo.dto.ride.RideResponseDTO;
 import com.example.demo.exceptions.*;
 import com.example.demo.model.*;
-import com.example.demo.repository.DriverRepository;
-import com.example.demo.repository.RideRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.interfaces.IRideService;
 import com.example.demo.util.cost.EstimatedCost;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
@@ -34,10 +36,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RideService implements IRideService {
@@ -53,7 +52,12 @@ public class RideService implements IRideService {
     @Autowired
     private DriverRepository driverRepository;
     @Autowired
-    private RideService rideService;
+    private LocationRepository locationRepository;
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private RejectionMessageRepository rejectionMessageRepository;
     @Autowired
     RejectionMessageService rejectionMessageService;
     @Autowired
@@ -226,7 +230,7 @@ public class RideService implements IRideService {
     public RideResponseDTO createRide(RideRequestDTO request, Principal userPrincipal) {
 
         Passenger passenger = passengerService.findPassengerByEmail(userPrincipal.getName());
-        List<Ride> pendingRides = rideService.findPendingRides(passenger.getId()); //checks for pending rides
+        List<Ride> pendingRides = findPendingRides(passenger.getId()); //checks for pending rides
 
         VehicleType vehicleType = vehicleTypeService.findOneByName(
                 VehicleTypeEnum.getType(request.getVehicleType()));
@@ -255,8 +259,9 @@ public class RideService implements IRideService {
             if(!request.getScheduledTime().equals("")) {
                 scheduledTime = formatter.parse(request.getScheduledTime());
             }else {
-                scheduledTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault())
-                        .toInstant());;
+//                scheduledTime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault())
+//                        .toInstant());
+                scheduledTime = null;
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -279,6 +284,8 @@ public class RideService implements IRideService {
         RideResponseDTO response = new RideResponseDTO(newRide, request.getPassengers(), request.getLocations());
         DriverRideOverDTO probaResponse = new DriverRideOverDTO(proba.get().getId(),proba.get().getEmail());
         response.setDriver(probaResponse);
+        simpMessagingTemplate.convertAndSend("/topic/driver/ride/"+response.getDriver().getId(), response);
+        //TODO dodaj slanje poruke na soket
         return response;
     }
 
@@ -330,6 +337,7 @@ public class RideService implements IRideService {
         }else{
             throw new CannotCancelRideException();
         }
+        this.rejectionMessageRepository.save(rejectionMessage);
         ride.setRideState(RideState.REJECTED);
         this.rideRepository.save(ride);
         RideResponseDTO responseDTO = new RideResponseDTO(ride);
@@ -446,6 +454,115 @@ public class RideService implements IRideService {
         rideResponseDTO.setLocations(routes);
         rideResponseDTO.setRejection(rejection);
         return rideResponseDTO;
+    }
+
+    public void simulate(Integer rideId){
+
+        Ride ride = rideRepository.findById(rideId).get();
+        String apiKey = "5b3ce3597851110001cf6248acf7e99f6e904b6bb968826264133fe3"; // TODO ZAMENI API KEY
+        String baseUrl = "https://api.openrouteservice.org/v2/directions/driving-car";
+        String start = ride.getRoutes().get(0).getStartLocation().getLongitude() + "," + ride.getRoutes().get(0).getStartLocation().getLatitude();
+        String end = ride.getRoutes().get(0).getDestination().getLongitude() + "," +  ride.getRoutes().get(0).getDestination().getLatitude();
+
+        List<LocationDTO> routePoints;
+
+        if(ride.getRideState() == RideState.ACCEPTED){
+            end = start;
+            start = ride.getDriver().getVehicle().getLocation().getLongitude() + "," + ride.getDriver().getVehicle().getLocation().getLatitude();
+            routePoints = callEndpointForRoute(apiKey,start,end,baseUrl);
+        }
+        else if(ride.getRideState() == RideState.STARTED){
+            routePoints = callEndpointForRoute(apiKey,start,end,baseUrl);
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Can't simulate a ride that isnt active or accepted");
+        }
+
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int i = 0;
+            @Override
+            public void run() {
+                if (i < routePoints.size() && (ride.getRideState() == RideState.ACCEPTED || ride.getRideState() == RideState.STARTED)) {
+                    Location currentLocation = ride.getDriver().getVehicle().getLocation();
+                    currentLocation.setLatitude(routePoints.get(i).getLatitude());
+                    currentLocation.setLongitude(routePoints.get(i).getLongitude());
+                    currentLocation.setAddress(getUpdatedVehicleAddressWithCoordinates((float) currentLocation.getLatitude(), (float) currentLocation.getLongitude()));
+                    locationRepository.save(currentLocation);
+                    ride.getDriver().getVehicle().setLocation(currentLocation);
+                    vehicleRepository.save(ride.getDriver().getVehicle());
+                    sendNewVehicleLocationUpdate(rideId,new LocationDTO(currentLocation));
+                    i++;
+                } else {
+                    timer.cancel();
+                }
+            }
+        }, 5000, 1000);
+
+
+
+    }
+
+    public String getUpdatedVehicleAddressWithCoordinates(float lat, float lon){
+        String url="https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat="+lat+"&lon="+lon;
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+        String responseString = response.getBody();
+        JSONObject json = new JSONObject(responseString);
+        String address = json.getString("display_name");
+        return address;
+
+    }
+
+    public List<LocationDTO> callEndpointForRoute(String apiKey, String start, String end, String baseUrl){
+        String url = baseUrl+"?api_key="+apiKey+"&start="+start+"&end="+end;
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+
+        String responseString = response.getBody();
+        JSONObject json = new JSONObject(responseString);
+        JSONArray features = json.getJSONArray("features");
+        JSONObject firstFeature = features.getJSONObject(0);
+        JSONObject geometry = firstFeature.getJSONObject("geometry");
+        JSONArray coordinates = geometry.getJSONArray("coordinates");
+        List<LocationDTO> routePoints = new ArrayList<>();
+        for (int i = 0; i < coordinates.length(); i++) {
+            JSONArray coord = coordinates.getJSONArray(i);
+
+            double lon = coord.getDouble(0);
+            double lat = coord.getDouble(1);
+            LocationDTO geoLocationDTO = new LocationDTO();
+            geoLocationDTO.setLongitude(Double.valueOf(lon).floatValue());
+            geoLocationDTO.setLatitude(Double.valueOf(lat).floatValue());
+            routePoints.add(geoLocationDTO);
+        }
+        return routePoints;
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    public void sendPassengerRideUpdate(RideDTO update) {
+        for(RidePassengerDTO p: update.getPassengers()){
+            simpMessagingTemplate.convertAndSend("/topic/passenger/ride/"+p.getId(), update);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    public void sendNewVehicleLocationUpdate(Integer rideId,LocationDTO update) {
+        Ride r = rideRepository.findById(rideId).get();
+        for(Passenger p: r.getPassengers()){
+            simpMessagingTemplate.convertAndSend("/topic/vehicleLocation/ride/user/"+p.getId(), update);
+        }
+        simpMessagingTemplate.convertAndSend("/topic/vehicleLocation/ride/user/"+r.getDriver().getId(), update);
+
     }
 
 }

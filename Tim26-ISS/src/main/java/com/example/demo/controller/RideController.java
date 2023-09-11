@@ -155,7 +155,7 @@ public class RideController {
     @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping(value = "/{id}/cancel",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RideResponseDTO> cancelWithExplanation(@PathVariable("id")@NotNull Integer id,
-                                                                 @Valid @RequestBody ExplanationDTO explanation,
+                                                                  @RequestBody ExplanationDTO explanation,
                                                                  Principal userPrincipal){
         RideResponseDTO response = rideService.decline(id,explanation,userPrincipal);
         return new ResponseEntity<RideResponseDTO>(response,HttpStatus.OK);
@@ -217,7 +217,11 @@ public class RideController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @PutMapping(value="/simulate/{id}")
+    public ResponseEntity<String> simulateRide(@PathVariable Integer id){
+        rideService.simulate(id);
+        return new ResponseEntity<>("Simulating ...",HttpStatus.OK);
+    }
 
 
 }
