@@ -1,5 +1,6 @@
 package com.example.demo.service.interfaces;
 
+import com.example.demo.dto.DriverReportDTO;
 import com.example.demo.dto.driver.*;
 import com.example.demo.model.Document;
 import com.example.demo.model.Driver;
@@ -28,4 +29,6 @@ public interface IDriverService {
     public List<Driver> findFreeDrivers(Ride ride);
     public List<Driver> removeReservedDrivers(List<Driver> drivers,Ride ride);
     public boolean overLappingRides(Ride ride1,Ride ride2);
+
+    DriverReportDTO getReports(Integer driverId);
 }
