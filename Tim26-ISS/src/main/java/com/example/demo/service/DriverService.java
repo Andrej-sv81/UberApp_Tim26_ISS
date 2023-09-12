@@ -220,8 +220,18 @@ public class DriverService implements IDriverService {
 
     @Override
     public DriverReportDTO getReports(Integer driverId) {
-        DriverReportDTO response = new DriverReportDTO();
 
+        List<Integer> numberOfRides = new ArrayList<>();
+        List<Integer> sumOfPrices = new ArrayList<>();
+
+        for(int i = 1; i<13; i++) {
+            Integer count = rideRepository.getNumOfRides(driverId, i).isPresent() ?  rideRepository.getNumOfRides(driverId, i).get() : 0;
+            Integer sum = rideRepository.getSumOfPrices(driverId, i).isPresent() ? rideRepository.getSumOfPrices(driverId, i).get() : 0;
+            numberOfRides.add(count);
+            sumOfPrices.add(sum);
+        }
+
+        DriverReportDTO response = new DriverReportDTO(numberOfRides, sumOfPrices);
         return response;
     }
 

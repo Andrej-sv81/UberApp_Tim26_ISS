@@ -31,6 +31,16 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
     Page<Ride> getRides(Integer id, Date from, Date to, Pageable pageable);
 
 
+//    @Query("select count(*) from Ride r where r.driver.id = ?1")
+//    Optional<Integer> getNumOfRides(Integer driver_id);
+//    @Query("select sum(r.totalCost) from Ride r where r.driver.id = ?1")
+//    Optional<Integer> getSumOfPrices(Integer driver_id);
+
+    @Query(value = "SELECT COUNT(*) FROM RIDE WHERE DRIVER_ID = ?1 AND MONTH(START_TIME) = ?2", nativeQuery = true)
+    Optional<Integer> getNumOfRides(Integer driver_id, Integer month);
+    @Query(value = "SELECT SUM(TOTAL_COST) FROM RIDE WHERE DRIVER_ID = ?1 AND MONTH(START_TIME) = ?2", nativeQuery = true)
+    Optional<Integer> getSumOfPrices(Integer driver_id, Integer month);
+
     //Passenger Native Querries
     @Query(value = "SELECT * FROM RIDE WHERE RIDE_ID IN (SELECT RIDE_ID FROM PASSENGER_RIDES WHERE USER_ID= ?1)", nativeQuery = true)
     List<Ride> getRidesPassenger(Integer id);

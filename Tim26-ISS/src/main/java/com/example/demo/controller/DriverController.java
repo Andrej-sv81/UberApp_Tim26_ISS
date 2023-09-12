@@ -278,13 +278,14 @@ public class DriverController {
         return new ResponseEntity<MultipleRidesDTO>(response,HttpStatus.OK);
     }
 
-    @GetMapping(value="/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/report/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     public ResponseEntity<DriverReportDTO> getReports(@PathVariable("id") Integer driverId,Principal userPrincipal){
         Optional<User> found = driverRepository.findById(driverId);
-        if (found.isEmpty())
-            throw new UserDoesNotExistException();
-        if (!found.get().getEmail().equals(userPrincipal.getName()))
-            throw new UserIdNotMatchingException();
+//        if (found.isEmpty())
+//            throw new UserDoesNotExistException();
+//        if (!found.get().getEmail().equals(userPrincipal.getName()))
+//            throw new UserIdNotMatchingException();
         DriverReportDTO response = driverService.getReports(driverId);
         return new ResponseEntity<DriverReportDTO>(response,HttpStatus.OK);
     }
