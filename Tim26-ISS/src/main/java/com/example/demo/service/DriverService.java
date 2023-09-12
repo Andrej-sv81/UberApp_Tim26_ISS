@@ -1,13 +1,13 @@
 package com.example.demo.service;
 
 
+import com.example.demo.dto.DriverReportDTO;
 import com.example.demo.dto.driver.DriverDocumentsRequestDTO;
 import com.example.demo.dto.driver.DriverDocumentsResponseDTO;
 import com.example.demo.dto.driver.DriverRequestDTO;
 import com.example.demo.dto.driver.DriverResponseDTO;
 import com.example.demo.exceptions.UserDoesNotExistException;
 import com.example.demo.dto.driver.*;
-import com.example.demo.dto.passenger.PassengerResponseDTO;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.interfaces.IDriverService;
@@ -19,9 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.transaction.Transactional;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -219,6 +216,13 @@ public class DriverService implements IDriverService {
         else if (request.getScheduledTime().before(booked.getScheduledTime()) && endRequest.after(endBooked))
             return true;
         return false;
+    }
+
+    @Override
+    public DriverReportDTO getReports(Integer driverId) {
+        DriverReportDTO response = new DriverReportDTO();
+
+        return response;
     }
 
 }
