@@ -319,6 +319,7 @@ public class RideService implements IRideService {
         rideRepository.save(ride);
         RideResponseDTO initialDTO = new RideResponseDTO(ride);
         RideResponseDTO response = addFields(initialDTO);
+        sendPassengerRideUpdate(response);
         return response;
     }
 
@@ -342,6 +343,7 @@ public class RideService implements IRideService {
         this.rideRepository.save(ride);
         RideResponseDTO responseDTO = new RideResponseDTO(ride);
         RideResponseDTO response = addFields(responseDTO);
+        sendPassengerRideUpdate(response);
         return response;
     }
 
@@ -360,6 +362,7 @@ public class RideService implements IRideService {
         save(ride);
         RideResponseDTO initalResponse = new RideResponseDTO(ride);
         RideResponseDTO response = addFields(initalResponse);
+        sendPassengerRideUpdate(response);
         return response;
     }
 
@@ -379,6 +382,7 @@ public class RideService implements IRideService {
         save(ride);
         RideResponseDTO initalResponse = new RideResponseDTO(ride);
         RideResponseDTO response = addFields(initalResponse);
+        sendPassengerRideUpdate(response);
         return response;
     }
 
@@ -404,6 +408,7 @@ public class RideService implements IRideService {
         save(ride);
         RideResponseDTO canceled = new RideResponseDTO(ride);
         RideResponseDTO response = addFields(canceled);
+        sendPassengerRideUpdate(response);
         return response;
     }
 
@@ -548,14 +553,14 @@ public class RideService implements IRideService {
         return routePoints;
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
-    public void sendPassengerRideUpdate(RideDTO update) {
-        for(RidePassengerDTO p: update.getPassengers()){
+    //@CrossOrigin(origins = "http://localhost:4200")
+    public void sendPassengerRideUpdate(RideResponseDTO update) {
+        for(PassengerRideOverDTO p: update.getPassengers()){
             simpMessagingTemplate.convertAndSend("/topic/passenger/ride/"+p.getId(), update);
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    //@CrossOrigin(origins = "http://localhost:4200")
     public void sendNewVehicleLocationUpdate(Integer rideId,LocationDTO update) {
         Ride r = rideRepository.findById(rideId).get();
         for(Passenger p: r.getPassengers()){
